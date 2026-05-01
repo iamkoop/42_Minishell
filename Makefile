@@ -10,7 +10,7 @@ NAME = minishell
 
 HEADER = minishell.h
 
-LIBFT = libft_lib
+LIBFT = 42_Libft
 LIBFT_A = $(LIBFT)/libft.a
 CREATE = ar rcs
 
