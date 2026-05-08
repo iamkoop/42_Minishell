@@ -1,7 +1,7 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -Ilibft_lib
+CFLAGS = -Werror -Wall -Wextra -g -I42_Libft
 
-CFILES = test_command_exec.c
+CFILES = convert_envp_to_lst.c test_command_exec.c
 
 OFILES = $(CFILES:.c=.o)
 

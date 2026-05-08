@@ -6,10 +6,16 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include "libft_lib/libft.h"
+# include "42_Libft/libft.h"
 # include <errno.h>
+
+typedef struct s_env_var
+{
+	char				*key;
+	char				*value;
+}					t_env_var;
 
 //command execution
 void execute_command(char	*cmd_and_args);
 
-#endif
+# endif
