@@ -1,28 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_command_exec.c                                :+:      :+:    :+:   */
+/*   regression_testing_execution.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/30 18:26:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/19 15:54:18 by nildruon         ###   ########.fr       */
+/*   Created: 2026/05/19 12:38:16 by nildruon          #+#    #+#             */
+/*   Updated: 2026/05/19 17:28:14 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "testing.h"
 
-int main(int argc, char	**argv, char	**envp)
+void testing_exec(char **argv, char **envp)
 {
-	t_single_linked_node	*env;
-	
-	if(argc != 2)
-	{
-		ft_putstr_fd("Wrong amount of arguments", 2);
-		return(1);
-	}
-	printf("test");
-	env = env_lst(envp);
-	argv = NULL;
-	envp = NULL;
+    (void)argv;
+    (void)envp;
+    
+    
 }

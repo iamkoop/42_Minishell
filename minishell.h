@@ -17,5 +17,5 @@ typedef struct s_env_var
 
 //command execution
 void execute_command(char	*cmd_and_args);
-
+t_single_linked_node	*env_lst(char	**envp);
 # endif

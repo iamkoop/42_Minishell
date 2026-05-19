@@ -1,28 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_command_exec.c                                :+:      :+:    :+:   */
+/*   env_test.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/30 18:26:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/19 15:54:18 by nildruon         ###   ########.fr       */
+/*   Created: 2026/05/19 17:26:57 by nildruon          #+#    #+#             */
+/*   Updated: 2026/05/19 18:09:46 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "testing.h"
 
-int main(int argc, char	**argv, char	**envp)
+int env_tests()
 {
-	t_single_linked_node	*env;
+	printf("\n--- Running Enviroment Conversion Tests ---\n");
 	
-	if(argc != 2)
-	{
-		ft_putstr_fd("Wrong amount of arguments", 2);
-		return(1);
-	}
-	printf("test");
-	env = env_lst(envp);
-	argv = NULL;
-	envp = NULL;
+    printf("---------------------------------------------\n\n");
+	return(0);
 }
