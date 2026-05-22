@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 12:38:16 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/19 17:28:14 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/22 17:55:47 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void testing_exec(char **argv, char **envp)
 {
+	int i = 0;
     (void)argv;
-    (void)envp;
-    
-    
+    i += env_tests(envp);
+	
 }

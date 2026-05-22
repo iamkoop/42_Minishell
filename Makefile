@@ -41,7 +41,7 @@ re: fclean all
 #  TESTING CONFIGURATION (DELETE / COMMENT THIS ENTIRE BLOCK FOR DEFENSE)     #
 # ============================================================================ #
 
-TEST_NAME   = test_runner
+TEST_NAME   = test
 TEST_FLAGS  = -Itesting
 
 # 1. DEEP SEARCH: This recursively finds EVERY .c file inside testing/ and all subfolders

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/19 16:57:19 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/22 18:59:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_single_linked_node	*env_lst(char	**envp)
 		if(!current->next)
 			return(NULL);
 		current = current->next;
-		current->content = create_env_node(envp[var++]);
+		current->content = create_env_node(envp[var]);
 		if(!current->content)
 			return (free(current), NULL);
 		var++;

@@ -6,13 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 18:26:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/19 15:54:18 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/22 17:33:37 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int argc, char	**argv, char	**envp)
+/* int main(int argc, char	**argv, char	**envp)
 {
 	t_single_linked_node	*env;
 	
@@ -25,4 +25,4 @@ int main(int argc, char	**argv, char	**envp)
 	env = env_lst(envp);
 	argv = NULL;
 	envp = NULL;
-}
+} */
