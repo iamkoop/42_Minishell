@@ -6,21 +6,24 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 17:26:57 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/22 18:06:26 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/25 21:41:57 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-static int test_creation(char **envp)
+/* static int test_creation(char **envp)
 {
     printf("\n--- Running Environment creation Test ---\n");
     
     // 1. Generate the linked list using your function
     t_single_linked_node *curr_node = env_lst(envp);
+	t_single_linked_node *start = curr_node;
     int i = 0;
     int tests_failed = 0;
 
+	if(!envp || !*envp)
+		return(0);
     // 2. Iterate through both envp and the linked list simultaneously
     while (envp[i] != NULL && curr_node != NULL)
     {
@@ -88,16 +91,30 @@ static int test_creation(char **envp)
     if (tests_failed == 0)
         printf("RESULT: ALL TESTS PASSED SUCCESSFULLY!\n\n");
     else
-        printf("RESULT: %d TEST(S) FAILED.\n\n", tests_failed);
-
+		printf("RESULT: %d TEST(S) FAILED.\n\n", tests_failed);
     // Return 1 for success (0 failures), 0 for failure
+	ft_single_lstclear(&start, del_env_node_content);
     return (tests_failed == 0);
 }
-
+ */
 int env_tests(char **envp)
 {
+	t_single_linked_node *curr_node = env_to_lst(envp);
 	printf("\n--- Running Enviroment Conversion Tests ---\n");
-	test_creation(envp);
+	
+	//test_creation(envp);
+	printf("---------------------------------------------\n\n");
+	char	**str = env_to_char_arr(curr_node);
+	if(!str)
+		printf("You fucked up");
+	int r = 0;
+	for(int i = 0; str[i] ; i++)
+	{
+		printf("%s\n", str[i]);
+		r = i;
+	}
+	printf("%d\n", r);
+	ft_single_lstclear(&curr_node, del_env_node_content);
     printf("---------------------------------------------\n\n");
 	return(0);
 }

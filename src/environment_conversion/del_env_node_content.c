@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_command_exec.c                                :+:      :+:    :+:   */
+/*   del_env_node_content.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/30 18:26:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/22 17:33:37 by nildruon         ###   ########.fr       */
+/*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
+/*   Updated: 2026/05/25 19:01:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-/* int main(int argc, char	**argv, char	**envp)
+void del_env_node_content(void	*content)
 {
-	t_single_linked_node	*env;
-	
-	if(argc != 2)
-	{
-		ft_putstr_fd("Wrong amount of arguments", 2);
-		return(1);
-	}
-	printf("test");
-	env = env_lst(envp);
-	argv = NULL;
-	envp = NULL;
-} */
+	t_env_var *node;
+
+	node = (t_env_var	*)content;
+	if(!content)
+		return	;
+	free(node->key);
+	free(node->value);
+	free(node);
+}

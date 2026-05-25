@@ -15,7 +15,8 @@ typedef struct s_env_var
 	char				*value;
 }					t_env_var;
 
-//command execution
-void execute_command(char	*cmd_and_args);
-t_single_linked_node	*env_lst(char	**envp);
+//environment conversion
+t_single_linked_node	*env_to_lst(char	**envp);
+void					del_env_node_content(void	*content);
+char					**env_to_char_arr(t_single_linked_node	*lst);
 # endif

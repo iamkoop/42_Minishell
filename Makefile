@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Werror -Wall -Wextra -g -I42_Libft
 
-EXECFILES = convert_envp_to_lst.c test_command_exec.c
+EXECFILES = src/environment_conversion/convert_env_char_arr_to_lst.c src/environment_conversion/del_env_node_content.c src/environment_conversion/convert_env_lst_to_char_arr.c
 CFILES = $(EXECFILES)
 OFILES = $(CFILES:.c=.o)
 

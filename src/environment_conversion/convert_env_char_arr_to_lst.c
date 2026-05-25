@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_envp_to_lst.c                              :+:      :+:    :+:   */
+/*   convert_env_char_arr_to_lst.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/22 18:59:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/25 21:38:52 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static t_env_var	*create_env_node(char	*str)
 {
@@ -37,7 +37,19 @@ static t_env_var	*create_env_node(char	*str)
 	return (node);
 }
 
-t_single_linked_node	*env_lst(char	**envp)
+static int help_convert_env_to_lst(t_single_linked_node **current, char	*envp)
+{
+	(*current)->next = ft_single_lstnew(NULL);
+	if(!(*current)->next)
+		return(0);
+	(*current) = (*current)->next;
+	(*current)->content = create_env_node(envp);
+	if(!(*current)->content)
+		return(0);
+	return(1);
+}
+
+t_single_linked_node	*env_to_lst(char	**envp)
 {
 	int var;
 	t_single_linked_node	*env_lst;
@@ -55,13 +67,8 @@ t_single_linked_node	*env_lst(char	**envp)
 	env_lst = current;	
 	while (envp[var])
 	{
-		current->next = ft_single_lstnew(NULL);
-		if(!current->next)
-			return(NULL);
-		current = current->next;
-		current->content = create_env_node(envp[var]);
-		if(!current->content)
-			return (free(current), NULL);
+		if(!help_convert_env_to_lst(&current, envp[var]))
+			return(ft_single_lstclear(&env_lst, del_env_node_content), NULL);
 		var++;
 	}
 	current->next = NULL;
