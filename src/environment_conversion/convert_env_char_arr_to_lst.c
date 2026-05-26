@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/26 16:04:33 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/26 18:32:37 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static t_env_var	*create_env_node(char	*str)
 
 	str_len = ft_strlen(str);
 	key_len = 0;
-	if(!ft_strchr(str, '='))
 	while (str[key_len] && str[key_len] != '=')
 		key_len++;
 	node = malloc(sizeof(t_env_var));
