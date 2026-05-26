@@ -6,15 +6,15 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/25 15:54:21 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/26 10:20:13 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+#include "../minishell.h"
 
 void	ft_get_commandline_input(char **env);
 void	initiate_tokenization(char *input, char **env);
 
-void	ft_get_commandline_input(char **env)
+void	get_commandline_input(char **env)
 {
 	char	*input;
 
