@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 19:54:45 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/25 20:56:00 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/26 15:35:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	**env_to_char_arr(t_single_linked_node	*lst)
 	
 	if(!lst)
 		return(NULL);
-	env = malloc(sizeof(char	*) *ft_single_lstsize(lst) + 1);
+	env = malloc(sizeof(char	*) * (ft_single_lstsize(lst) + 1));
 	if(!env)
 		return(NULL);
 	i = 0;

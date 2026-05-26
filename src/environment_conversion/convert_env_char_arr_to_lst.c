@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/25 21:38:52 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/26 16:04:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static t_env_var	*create_env_node(char	*str)
 
 	str_len = ft_strlen(str);
 	key_len = 0;
+	if(!ft_strchr(str, '='))
 	while (str[key_len] && str[key_len] != '=')
 		key_len++;
 	node = malloc(sizeof(t_env_var));
@@ -39,13 +40,21 @@ static t_env_var	*create_env_node(char	*str)
 
 static int help_convert_env_to_lst(t_single_linked_node **current, char	*envp)
 {
+	t_single_linked_node	*node;
+
+	node = *current;
 	(*current)->next = ft_single_lstnew(NULL);
 	if(!(*current)->next)
 		return(0);
 	(*current) = (*current)->next;
 	(*current)->content = create_env_node(envp);
 	if(!(*current)->content)
-		return(0);
+	{
+		node->next = NULL;
+        free(*current); 
+        *current = node;
+		return(0);	
+	}
 	return(1);
 }
 

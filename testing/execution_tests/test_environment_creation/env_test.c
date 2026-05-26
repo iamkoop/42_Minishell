@@ -6,18 +6,18 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 17:26:57 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/25 21:41:57 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/26 15:51:01 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-/* static int test_creation(char **envp)
+static int test_creation(char **envp)
 {
     printf("\n--- Running Environment creation Test ---\n");
     
     // 1. Generate the linked list using your function
-    t_single_linked_node *curr_node = env_lst(envp);
+    t_single_linked_node *curr_node = env_to_lst(envp);
 	t_single_linked_node *start = curr_node;
     int i = 0;
     int tests_failed = 0;
@@ -96,25 +96,41 @@
 	ft_single_lstclear(&start, del_env_node_content);
     return (tests_failed == 0);
 }
- */
+
 int env_tests(char **envp)
 {
 	t_single_linked_node *curr_node = env_to_lst(envp);
-	printf("\n--- Running Enviroment Conversion Tests ---\n");
-	
-	//test_creation(envp);
-	printf("---------------------------------------------\n\n");
-	char	**str = env_to_char_arr(curr_node);
-	if(!str)
-		printf("You fucked up");
-	int r = 0;
-	for(int i = 0; str[i] ; i++)
-	{
-		printf("%s\n", str[i]);
-		r = i;
-	}
-	printf("%d\n", r);
-	ft_single_lstclear(&curr_node, del_env_node_content);
+    
+    // IF MALLOC FAILS HERE, STOP IMMEDIATELY. DON'T RUN FURTHER TESTS.
+    if (!curr_node && envp && *envp)
+        return (1);
+
+    printf("\n--- Running Enviroment Conversion Tests ---\n");
+    
+    // Stop regenerating the list inside test_creation! 
+    // Pass 'curr_node' into it instead of making it call env_to_lst again.
+    test_creation(envp); 
+    
     printf("---------------------------------------------\n\n");
-	return(0);
+    char    **str = env_to_char_arr(curr_node);
+    if(!str)
+    {
+        ft_single_lstclear(&curr_node, del_env_node_content);
+        return(1); 
+    }
+    
+    int r = 0;
+    for(int i = 0; str[i] ; i++)
+    {
+        printf("%s\n", str[i]);
+        r++;
+    }
+    printf("%d\n", r);
+    
+    // Clean up the char** array strings and the array wrapper here too!
+    // (Assuming you have a function like ft_free_matrix)
+    
+    ft_single_lstclear(&curr_node, del_env_node_content);
+    printf("---------------------------------------------\n\n");
+    return(0);
 }
