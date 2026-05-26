@@ -6,13 +6,12 @@
 /* By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /* +#+#+#+#+#+   +#+           */
 /* Created: 2026/05/19 17:26:57 by nildruon          #+#    #+#             */
-/* Updated: 2026/05/26 18:00:00 by nildruon         ###   ########.fr       */
+/* Updated: 2026/05/26 18:30:00 by nildruon         ###   ########.fr       */
 /* */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-// Helper to free a null-terminated array of strings (matrix)
 static void free_char_matrix(char **matrix)
 {
 	int i;
@@ -36,16 +35,14 @@ static int test_creation(char **envp, t_single_linked_node *curr_node)
 	int i = 0;
 	int tests_failed = 0;
 
-	printf("🔸 [TEST] Direction 1: envp[][] -> Linked List\n");
-
-	// Edge Case: Empty environment
+	// Edge Case: Completely Empty environment
 	if (!envp || !*envp)
 	{
 		if (!curr_node)
-			printf("  [OK]   Empty envp successfully produced an empty Linked List.\n");
+			printf("  [OK]   Direction 1: Empty environment conversion handled correctly.\n");
 		else
 		{
-			printf("  [FAIL] Empty envp produced a non-empty Linked List.\n");
+			printf("  [FAIL] Direction 1: Empty environment produced a non-empty Linked List.\n");
 			tests_failed++;
 		}
 		return (tests_failed == 0);
@@ -57,31 +54,44 @@ static int test_creation(char **envp, t_single_linked_node *curr_node)
 		
 		if (!var || !var->key)
 		{
-			printf("  [FAIL] Node %d: Node content or key is NULL\n", i);
+			printf("  [FAIL] Direction 1 (Index %d): Node content or key is NULL.\n", i);
 			tests_failed++;
 			curr_node = curr_node->next;
 			i++;
 			continue;
 		}
 
-		// Verify Key
 		size_t key_len = strlen(var->key);
-		if (strncmp(envp[i], var->key, key_len) != 0 || envp[i][key_len] != '=')
+		
+		// Handle Edge Case: String without an '=' sign (e.g. export KEY)
+		char *has_equal = strchr(envp[i], '=');
+		if (!has_equal)
 		{
-			printf("  [FAIL] Node %d: Key mismatch.\n", i);
-			printf("         Expected start: %s=\n", var->key);
-			printf("         Actual envp:    %s\n", envp[i]);
+			if (strcmp(envp[i], var->key) == 0 && (var->value == NULL || var->value[0] == '\0'))
+				printf("  [OK]   Direction 1 (Index %d): Valueless key '%s' parsed correctly.\n", i, var->key);
+			else
+			{
+				printf("  [FAIL] Direction 1 (Index %d): Mismatch on valueless key.\n", i);
+				printf("         Expected Key: %s, Got: %s\n", envp[i], var->key);
+				tests_failed++;
+			}
+		}
+		// Standard verification for KEY=VALUE
+		else if (strncmp(envp[i], var->key, key_len) != 0 || envp[i][key_len] != '=')
+		{
+			printf("  [FAIL] Direction 1 (Index %d): Key mismatch.\n", i);
+			printf("         Expected: %s=...\n", var->key);
+			printf("         Actual:   %s\n", envp[i]);
 			tests_failed++;
 		}
 		else
 		{
-			// Verify Value (Handles "KEY=" empty string cases)
 			char *expected_value = envp[i] + key_len + 1;
 			char *actual_value = var->value ? var->value : "";
 
 			if (strcmp(expected_value, actual_value) != 0)
 			{
-				printf("  [FAIL] Value mismatch for key '%s'.\n", var->key);
+				printf("  [FAIL] Direction 1: Value mismatch for key '%s'.\n", var->key);
 				printf("         Expected: \"%s\"\n", expected_value);
 				printf("         Actual:   \"%s\"\n", actual_value);
 				tests_failed++;
@@ -91,21 +101,14 @@ static int test_creation(char **envp, t_single_linked_node *curr_node)
 		i++;
 	}
 
-	// Length Verification
-	if (envp[i] != NULL)
+	if (envp[i] != NULL || curr_node != NULL)
 	{
-		printf("  [FAIL] Mismatch: envp has more items than the linked list.\n");
-		tests_failed++;
-	}
-	else if (curr_node != NULL)
-	{
-		printf("  [FAIL] Mismatch: Linked list has more items than envp.\n");
+		printf("  [FAIL] Direction 1: Size mismatch between envp matrix and list nodes.\n");
 		tests_failed++;
 	}
 
 	if (tests_failed == 0)
-		printf("  [OK]   All nodes match envp perfectly.\n");
-
+		printf("  [OK]   Direction 1: Matrix to Linked List conversion matching perfectly.\n");
 	return (tests_failed == 0);
 }
 
@@ -118,16 +121,13 @@ static int test_reversion(t_single_linked_node *head, char **reverted_arr)
 	int tests_failed = 0;
 	t_single_linked_node *curr = head;
 
-	printf("🔸 [TEST] Direction 2: Linked List -> envp[][]\n");
-
-	// Edge Case: Empty list
 	if (!head)
 	{
 		if (!reverted_arr || !*reverted_arr)
-			printf("  [OK]   Empty Linked List successfully produced an empty array.\n");
+			printf("  [OK]   Direction 2: Empty Linked List conversion handled correctly.\n");
 		else
 		{
-			printf("  [FAIL] Empty Linked List produced a non-empty array.\n");
+			printf("  [FAIL] Direction 2: Empty Linked List produced a non-empty matrix.\n");
 			tests_failed++;
 		}
 		return (tests_failed == 0);
@@ -135,7 +135,7 @@ static int test_reversion(t_single_linked_node *head, char **reverted_arr)
 
 	if (!reverted_arr)
 	{
-		printf("  [FAIL] Reverted array pointer is completely NULL while list has items.\n");
+		printf("  [FAIL] Direction 2: Reverted matrix pointer is completely NULL.\n");
 		return (0);
 	}
 
@@ -146,27 +146,30 @@ static int test_reversion(t_single_linked_node *head, char **reverted_arr)
 		{
 			curr = curr->next;
 			i++;
-			continue; // test_creation handles logging this node fault
+			continue;
 		}
 
-		// Reconstruct expected text format: "KEY=VALUE"
 		char *actual_value = var->value ? var->value : "";
 		size_t allocation_size = strlen(var->key) + strlen(actual_value) + 2;
 		char *expected_str = malloc(allocation_size);
 		
 		if (!expected_str)
 		{
-			printf("  [CRIT] Malloc error during test string creation.\n");
+			printf("  [CRIT] Malloc error while preparing expected evaluation string.\n");
 			return (0);
 		}
-		sprintf(expected_str, "%s=%s", var->key, actual_value);
+		
+		// If node value explicitly doesn't exist, check how your project exports it
+		if (!var->value)
+			sprintf(expected_str, "%s", var->key); // normal behavior for valueless keys
+		else
+			sprintf(expected_str, "%s=%s", var->key, actual_value);
 
-		// Compare
 		if (strcmp(expected_str, reverted_arr[i]) != 0)
 		{
-			printf("  [FAIL] Index %d: Reverted string format error.\n", i);
-			printf("         Expected: %s\n", expected_str);
-			printf("         Actual:   %s\n", reverted_arr[i]);
+			printf("  [FAIL] Direction 2 (Index %d): String format error.\n", i);
+			printf("         Expected output: %s\n", expected_str);
+			printf("         Actual output:   %s\n", reverted_arr[i]);
 			tests_failed++;
 		}
 
@@ -175,22 +178,49 @@ static int test_reversion(t_single_linked_node *head, char **reverted_arr)
 		i++;
 	}
 
-	// Length Verification
-	if (reverted_arr[i] != NULL)
+	if (reverted_arr[i] != NULL || curr != NULL)
 	{
-		printf("  [FAIL] Mismatch: Reverted array has more elements than the linked list.\n");
-		tests_failed++;
-	}
-	else if (curr != NULL)
-	{
-		printf("  [FAIL] Mismatch: Linked list has more elements than reverted array.\n");
+		printf("  [FAIL] Direction 2: Size mismatch between list nodes and regenerated matrix.\n");
 		tests_failed++;
 	}
 
 	if (tests_failed == 0)
-		printf("  [OK]   Reverted array matches the Linked List perfectly.\n");
-
+		printf("  [OK]   Direction 2: Linked List to Matrix reconstruction matching perfectly.\n");
 	return (tests_failed == 0);
+}
+
+/* ========================================================================== */
+/* TEST EXECUTION HARNESS                                                     */
+/* ========================================================================== */
+static int run_test_suite(const char *test_name, char **test_envp)
+{
+	printf("🔷 [SUITE] %s\n", test_name);
+
+	t_single_linked_node *list = env_to_lst(test_envp);
+	if (!list && test_envp && *test_envp)
+	{
+		printf("  [FAIL] env_to_lst returned NULL (Premature allocation failure).\n\n");
+		return (0);
+	}
+
+	int creation_ok = test_creation(test_envp, list);
+	
+	char **reverted_arr = env_to_char_arr(list);
+	if (!reverted_arr && list)
+	{
+		printf("  [FAIL] env_to_char_arr returned NULL (Premature allocation failure).\n");
+		ft_single_lstclear(&list, del_env_node_content);
+		printf("\n");
+		return (0);
+	}
+
+	int reversion_ok = test_reversion(list, reverted_arr);
+
+	ft_single_lstclear(&list, del_env_node_content);
+	free_char_matrix(reverted_arr);
+	printf("\n");
+
+	return (creation_ok && reversion_ok);
 }
 
 /* ========================================================================== */
@@ -198,54 +228,41 @@ static int test_reversion(t_single_linked_node *head, char **reverted_arr)
 /* ========================================================================== */
 int env_tests(char **envp)
 {
-	printf("\n=============================================\n");
-	printf("   RUNNING ENVIRONMENT CONVERSION TESTS      \n");
-	printf("=============================================\n");
+	int global_success = 1;
 
-	// 1. Generate the working linked list
-	t_single_linked_node *curr_node = env_to_lst(envp);
-	
-	// Edge case safeguard for Malloc Failure
-	if (!curr_node && envp && *envp)
-	{
-		printf("[CRIT] env_to_lst returned NULL (Potential Malloc Failure).\n");
-		printf("RESULT: FAILURE\n\n");
-		return (1);
-	}
+	printf("====================================================\n");
+	printf("       RUNNING MINI-SHELL ENVIRONMENT TESTER        \n");
+	printf("====================================================\n\n");
 
-	// 2. Test Direction 1: envp to Linked List
-	int creation_ok = test_creation(envp, curr_node);
-	printf("\n");
+	// --- EDGE CASE 1: Completely Empty Environment Matrix ---
+	char *empty_env[] = { NULL };
+	global_success &= run_test_suite("Edge Case: Completely Empty Environment (env -i)", empty_env);
 
-	// 3. Generate the working back-reversion array 
-	char **reverted_arr = env_to_char_arr(curr_node);
-	
-	if (!reverted_arr && curr_node)
-	{
-		printf("[CRIT] env_to_char_arr returned NULL (Potential Malloc Failure).\n");
-		ft_single_lstclear(&curr_node, del_env_node_content);
-		printf("RESULT: FAILURE\n\n");
-		return (1);
-	}
+	// --- EDGE CASE 2: Key with completely empty value ---
+	char *empty_val_env[] = { "EMPTY_VAL=", "NORMAL=abc", NULL };
+	global_success &= run_test_suite("Edge Case: Keys ending explicitly with '='", empty_val_env);
 
-	// 4. Test Direction 2: Linked List back to envp
-	int reversion_ok = test_reversion(curr_node, reverted_arr);
+	// --- EDGE CASE 3: Keys with no '=' symbol (Exported variables) ---
+	char *no_equal_env[] = { "NO_EQUAL_SIGN", "VALID=123", NULL };
+	global_success &= run_test_suite("Edge Case: Valueless identifier attributes", no_equal_env);
 
-	// Cleanup EVERYTHING safely
-	ft_single_lstclear(&curr_node, del_env_node_content);
-	free_char_matrix(reverted_arr);
+	// --- EDGE CASE 4: Values containing internal '=' characters ---
+	char *multi_equal_env[] = { "PATH=/usr/bin=/bin", "EQUALS======", NULL };
+	global_success &= run_test_suite("Edge Case: Values loaded with internal assignment tokens", multi_equal_env);
 
-	printf("\n---------------------------------------------\n");
-	if (creation_ok && reversion_ok)
-	{
-		printf("🎉 RESULT: ALL ENVIRONMENT TESTS PASSED!\n");
-		printf("---------------------------------------------\n\n");
-		return (0);
-	}
+	// --- EDGE CASE 5: Odd alphanumeric characters inside variable values ---
+	char *special_chars_env[] = { "SPECIAL=~!@#$%^&*()_+{}|:<>?-=[]\\;',./", NULL };
+	global_success &= run_test_suite("Edge Case: Raw special/symbolic value payloads", special_chars_env);
+
+	// --- TEST 6: Actual Host System Environment ---
+	global_success &= run_test_suite("Standard Suite: Host System Environment Matrix", envp);
+
+	printf("----------------------------------------------------\n");
+	if (global_success)
+		printf("🎉 VERDICT: ALL TEST SUITES PASSED VALIDATION!\n");
 	else
-	{
-		printf("❌ RESULT: SOME TESTS FAILED.\n");
-		printf("---------------------------------------------\n\n");
-		return (1);
-	}
+		printf("❌ VERDICT: ONE OR MORE EDGE CASES ENCOUNTERED REJECTIONS.\n");
+	printf("====================================================\n\n");
+
+	return (!global_success);
 }
