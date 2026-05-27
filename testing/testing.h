@@ -18,5 +18,6 @@ int env_tests(char **envp);
 //builtins testing
 int builtins_tests(char **argv, char **envp);
 int test_env(char **envp);
+int	test_echo();
 
 # endif
