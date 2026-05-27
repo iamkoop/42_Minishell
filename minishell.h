@@ -19,4 +19,6 @@ typedef struct s_env_var
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
 char					**env_to_char_arr(t_single_linked_node	*lst);
+//builtins
+void					env(t_single_linked_node	*envp);
 # endif

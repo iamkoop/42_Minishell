@@ -1,7 +1,18 @@
 CC = cc
 CFLAGS = -Werror -Wall -Wextra -g -I42_Libft
 
-EXECFILES = src/environment_conversion/convert_env_char_arr_to_lst.c src/environment_conversion/del_env_node_content.c src/environment_conversion/convert_env_lst_to_char_arr.c
+ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
+						 src/environment_conversion/del_env_node_content.c \
+						 src/environment_conversion/convert_env_lst_to_char_arr.c
+
+BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
+					src/builtin_functions/echo.c \
+					src/builtin_functions/env.c \
+					src/builtin_functions/exit.c \
+					src/builtin_functions/export.c \
+					src/builtin_functions/pwd.c \
+					src/builtin_functions/unset.c
+EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS)
 CFILES = $(EXECFILES)
 OFILES = $(CFILES:.c=.o)
 
