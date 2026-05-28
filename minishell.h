@@ -16,6 +16,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include "42_Libft/libft.h"
+# include <errno.h>
 
 //Delete after integrating libft!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # include <strings.h>
@@ -77,6 +82,21 @@ typedef struct s_cmds_list
 	t_command			*cmd;
 	struct s_cmds_list	*next;
 }		t_cmds_list;
+
+//env_var_struct
+typedef struct s_env_var
+{
+	char				*key;
+	char				*value;
+}					t_env_var;
+
+//environment conversion
+t_single_linked_node	*env_to_lst(char	**envp);
+void					del_env_node_content(void	*content);
+char					**env_to_char_arr(t_single_linked_node	*lst);
+//builtins
+void					env(t_single_linked_node	*envp);
+void					echo(char	**input);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);
