@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/26 11:10:11 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/26 16:18:44 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -85,9 +85,13 @@ int		tokenization(char *input, char **env, t_token_node *token_lst,
 void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
 void	delimit_token(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri);
+char	*quote_removal(char *delimiter);
+int		here_doc(char *input, char **env, t_token_node *token_lst,
+			t_token_iteri *iteri);
 
 //Testers:
 void	tokenization_testing(t_token_node *token_lst, char **env);
 void	initiate_tokenization(char *input, char **env);
+int		heredoc_filename_creation(char *filename);
 
 #endif
