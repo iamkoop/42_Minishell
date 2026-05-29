@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/26 16:18:44 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/29 22:04:26 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include "42_Libft/libft.h"
 # include <errno.h>
+# include <stdbool.h>
 
 //Delete after integrating libft!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # include <strings.h>
@@ -90,6 +91,7 @@ typedef struct s_env_var
 	char				*value;
 }					t_env_var;
 
+//FUNCTIONS
 //environment conversion
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
@@ -97,8 +99,7 @@ char					**env_to_char_arr(t_single_linked_node	*lst);
 //builtins
 void					env(t_single_linked_node	*envp);
 void					echo(char	**input);
-
-//Functions of minishell:
+//parsing
 void	get_commandline_input(char **env);
 int		tokenization(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
@@ -106,12 +107,11 @@ void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
 void	delimit_token(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri);
 char	*quote_removal(char *delimiter);
-int		here_doc(char *input, char **env, t_token_node *token_lst,
+int		here_doc(char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
 
-//Testers:
-void	tokenization_testing(t_token_node *token_lst, char **env);
-void	initiate_tokenization(char *input, char **env);
+//TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void    tokenization_testing(t_token_node *token_lst, char **env);
 int		heredoc_filename_creation(char *filename);
 
 #endif
