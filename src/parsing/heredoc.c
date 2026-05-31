@@ -6,16 +6,16 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/29 22:05:57 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/31 15:58:42 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
-int	here_doc(char **env, t_token_node *token_lst,
+int	here_doc(char *input, char **env, t_token_node *token_lst,
 		t_token_iteri *iteri);
 int	heredoc_filename_creation(char *filename);
 
-int	here_doc(char **env, t_token_node *token_lst,
+int	here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri)
 {
 	int		len;
@@ -46,7 +46,7 @@ int	here_doc(char **env, t_token_node *token_lst,
 	}
 	if (heredoc_filename_creation(filename))
 		return (1);
-	fd = open((const char*)filename, O_WRONLY, O_CREAT, 0644);
+	fd = open((const char*)filename, O_WRONLY | O_CREAT, 0644);
 	if (fd == -1)
 	{
 		perror(NULL);
@@ -69,6 +69,7 @@ int	here_doc(char **env, t_token_node *token_lst,
 	}
 	close(fd);
 	ft_strlcpy(token_lst[iteri->token - 1].token_str, filename, 17);
+	tokenization(input, env, token_lst, iteri);
 	return (0);
 }
 
@@ -81,7 +82,8 @@ int	heredoc_filename_creation(char *filename)
 	memcpy(filename, start, 9);
 	if (num > 99)
 	{
-		write(2, "You exceeded the limit of 100 heredocs\n", 39);
+		write(2, "You exceeded the limit of 100 heredocs in one minishell \
+				session\nClose and restart minishell", 39);
 		return 1;
 	}
 	filename[9] = num / 10 + '0';
