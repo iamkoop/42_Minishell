@@ -20,4 +20,10 @@ int builtins_tests(char **argv, char **envp);
 int test_env(char **envp);
 int	test_echo();
 
+//parsing testing:
+void    testing_parsing(char **env);
+void	tokenization_testing(t_token_node *token_lst, char **env);
+void	initiate_tokenization(char *input, char **env);
+int		heredoc_filename_creation(char *filename);
+
 # endif

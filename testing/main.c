@@ -6,13 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/26 13:23:12 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/05/29 20:21:14 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-int main(int argc, char	**argv, char	**envp)
+int main(int argc, char	**argv, char **envp)
 {
 	if(argc == -1)
 		return(-1);
@@ -24,4 +24,5 @@ int main(int argc, char	**argv, char	**envp)
 	printf("---------------------------\n");
 	printf("All Exectution Tests\n");
 	testing_exec(argv, envp);
+	testing_parsing(envp);
 }

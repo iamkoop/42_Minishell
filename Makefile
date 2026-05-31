@@ -1,5 +1,6 @@
 CC = cc
 CFLAGS = -Werror -Wall -Wextra -g -I42_Libft
+LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
 						 src/environment_conversion/del_env_node_content.c \
@@ -12,7 +13,15 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/export.c \
 					src/builtin_functions/pwd.c \
 					src/builtin_functions/unset.c
-EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS)
+
+PARSING = src/parsing/readline.c \
+		  src/parsing/tokenization.c \
+		  src/parsing/tokenization_helpers.c \
+		  src/parsing/heredoc.c \
+		  src/parsing/quote_removal.c \
+		  src/parsing/error.c \
+
+EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(PARSING)
 CFILES = $(EXECFILES)
 OFILES = $(CFILES:.c=.o)
 
@@ -34,7 +43,7 @@ all: $(NAME)
 
 $(NAME): $(OFILES)
 	make -C $(LIBFT)
-	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(FDFFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(FDFFLAGS) $(LDFLAGS) -o $(NAME)
 
 fclean: clean test_fclean
 	$(REMOVE) $(NAME)
@@ -49,7 +58,7 @@ re: fclean all
 .PHONY: all clean fclean re test test_clean test_fclean
 
 # ============================================================================ #
-#  TESTING CONFIGURATION (DELETE / COMMENT THIS ENTIRE BLOCK FOR DEFENSE)     #
+#  TESTING CONFIGURATION (DELETE / COMMENT THIS ENTIRE BLOCK FOR DEFENSE)      #
 # ============================================================================ #
 
 TEST_NAME   = test
@@ -66,7 +75,7 @@ $(TEST_OFILES): %.o: %.c testing/testing.h $(HEADER)
 # Test execution target
 test: $(OFILES) $(TEST_OFILES)
 	make -C $(LIBFT)
-	$(CC) $(CFLAGS) $(TEST_FLAGS) $(OFILES) $(TEST_OFILES) $(LIBFT_A) -o $(TEST_NAME)
+	$(CC) $(CFLAGS) $(TEST_FLAGS) $(OFILES) $(TEST_OFILES) $(LIBFT_A) $(LDFLAGS) -o $(TEST_NAME)
 
 # Dedicated cleanup rules for the testing suite
 test_clean:

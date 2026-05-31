@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/31 15:58:42 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/31 17:07:54 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
@@ -14,11 +14,12 @@
 int	here_doc(char *input, char **env, t_token_node *token_lst,
 		t_token_iteri *iteri);
 int	heredoc_filename_creation(char *filename);
+int write_check(ssize_t c_written, size_t len);
 
 int	here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri)
 {
-	int		len;
+	size_t	len;
 	char	delimiter[HD_DELIMITER_LEN];
 	char	*heredoc_input;
 	char	filename[16];
@@ -60,11 +61,11 @@ int	here_doc(char *input, char **env, t_token_node *token_lst,
 //		var_expansion(heredoc_input, expansion);
 		len = ft_strlen(heredoc_input);
 		c_written = write(fd, heredoc_input, len);
-		if (c_written == -1 || c_written != len)
-		{
-			perror(NULL);
+		if (write_check(c_written, len))
 			return (1);
-		}
+		c_written = write(fd, "\n", 1);
+		if (write_check(c_written, 1))
+			return (1);
 		free(heredoc_input);
 	}
 	close(fd);
@@ -94,5 +95,21 @@ int	heredoc_filename_creation(char *filename)
 	filename[14] = 't';
 	filename[15] = 0;
 	num++;
+	return (0);
+}
+
+int	write_check(ssize_t c_written, size_t len)
+{
+	if (c_written == -1)
+	{
+		perror(NULL);
+		return (1);
+	}
+	else if (c_written != (ssize_t)len)
+	{
+		error("cannot create temp file for here-document: No space left \
+				on device");
+		return (1);
+	}
 	return (0);
 }

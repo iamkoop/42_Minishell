@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/29 22:04:26 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/05/31 16:45:12 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -107,8 +107,9 @@ void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
 void	delimit_token(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri);
 char	*quote_removal(char *delimiter);
-int		here_doc(char **env, t_token_node *token_lst,
+int		here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+void	error(char *message);
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void    tokenization_testing(t_token_node *token_lst, char **env);
