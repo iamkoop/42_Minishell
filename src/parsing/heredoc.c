@@ -6,14 +6,14 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/31 17:07:54 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/01 14:10:02 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
 int	here_doc(char *input, char **env, t_token_node *token_lst,
 		t_token_iteri *iteri);
-int	heredoc_filename_creation(char *filename);
+int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 int write_check(ssize_t c_written, size_t len);
 
 int	here_doc(char *input, char **env, t_token_node *token_lst,
@@ -45,9 +45,9 @@ int	here_doc(char *input, char **env, t_token_node *token_lst,
 		expansion = true;
 		quote_removal(delimiter);
 	}
-	if (heredoc_filename_creation(filename))
+	if (heredoc_filename_creation(filename, input, iteri))
 		return (1);
-	fd = open((const char*)filename, O_WRONLY | O_CREAT, 0644);
+	fd = open((const char*)filename, O_TRUNC | O_WRONLY | O_CREAT, 0644);
 	if (fd == -1)
 	{
 		perror(NULL);
@@ -74,7 +74,7 @@ int	here_doc(char *input, char **env, t_token_node *token_lst,
 	return (0);
 }
 
-int	heredoc_filename_creation(char *filename)
+int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri)
 {
 	static int	num;
 	char		*start;
@@ -95,6 +95,8 @@ int	heredoc_filename_creation(char *filename)
 	filename[14] = 't';
 	filename[15] = 0;
 	num++;
+	if (input[iteri->i] == 0)
+		num = 0;
 	return (0);
 }
 
@@ -112,4 +114,9 @@ int	write_check(ssize_t c_written, size_t len)
 		return (1);
 	}
 	return (0);
+}
+
+void	delete_hd_files()
+{
+	
 }
