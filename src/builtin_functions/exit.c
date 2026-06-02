@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/29 22:36:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/02 18:18:48 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int num_is_valid_help(char	*str, int is_negative)
 	len = ft_strlen(str);
 	if((!is_negative && len < 19) || (is_negative && len < 20))
 		return(1);
-	while (str[--i])
+	while (str[++i])
 	{
 		if(is_negative)
 		{
@@ -56,7 +56,7 @@ static int num_is_valid(char	*str)
 		if(!ft_isalnum(str[i++]))
 			return(0);
 	}
-	if(str[0] = '-')
+	if(str[0] == '-')
 		is_negative = 1;
 	else
 		is_negative = 0;	
@@ -75,10 +75,9 @@ static void error_msg(char *arg)
 		ft_putendl_fd("too many arguments", 2);
 }
 
-void builtin_exit(char	**input, int prev_exit_code)
+void builtin_exit(char	**input)
 {
 	int			len;
-	long long	num;
 
 	len = 0;
 	ft_putendl_fd("exit", 1);

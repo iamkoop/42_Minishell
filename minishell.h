@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/26 16:18:44 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/02 17:41:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef MINISHELL_H
+
 # define MINISHELL_H
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -97,6 +97,7 @@ char					**env_to_char_arr(t_single_linked_node	*lst);
 //builtins
 void					env(t_single_linked_node	*envp);
 void					echo(char	**input);
+void					builtin_exit(char	**input);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);
@@ -114,4 +115,3 @@ void	tokenization_testing(t_token_node *token_lst, char **env);
 void	initiate_tokenization(char *input, char **env);
 int		heredoc_filename_creation(char *filename);
 
-#endif

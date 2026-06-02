@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 15:50:14 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/27 18:10:57 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/02 17:49:28 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,6 @@ int builtins_tests(char **argv, char **envp)
 	(void)argv;
 	test_env(envp);
 	test_echo();
+	test_builtin_exit(envp);
 	return(1);
 }

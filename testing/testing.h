@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #include "../minishell.h"
 
 //main
@@ -19,5 +20,6 @@ int env_tests(char **envp);
 int builtins_tests(char **argv, char **envp);
 int test_env(char **envp);
 int	test_echo();
+int test_builtin_exit(char **envp);
 
 # endif
