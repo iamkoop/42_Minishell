@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:32 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/29 15:56:44 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/02 23:27:05 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,8 @@ static int is_validFlag(char	*str, int	*print_nl)
 void echo(char	**input)
 {
 	int print_nl;
-	int print;
 	int i;
 
-	print = 0;
 	print_nl = 1;
 	i = 1;
 	while (input[i] && is_validFlag(input[i], &print_nl))

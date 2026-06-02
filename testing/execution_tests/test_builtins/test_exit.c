@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 17:48:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/02 18:19:20 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/02 23:27:21 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ static int run_single_exit_test(t_exit_test test, t_single_linked_node *lst)
     int     err_pipe[2];
     pid_t   pid;
 
-	if(test.expected_status == 0)
-		printf("");
     if (pipe(out_pipe) == -1 || pipe(err_pipe) == -1)
     {
         perror("pipe failed");
