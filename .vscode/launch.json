@@ -17,6 +17,21 @@
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
+                },
+                {
+                    "description": "Force GDB to switch focus to the child process on fork",
+                    "text": "set follow-fork-mode child",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "CRITICAL: Tell GDB to keep both parent and child alive simultaneously",
+                    "text": "set detach-on-fork off",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Prevent GDB from losing track if the child calls an exec function",
+                    "text": "set follow-exec-mode new",
+                    "ignoreFailures": true
                 }
             ],
             "preLaunchTask": "Make Test"
