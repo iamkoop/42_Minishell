@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 15:50:14 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/02 17:49:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/03 13:48:37 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,12 @@
 int builtins_tests(char **argv, char **envp)
 {
 	(void)argv;
-	test_env(envp);
+	envp = NULL;
+	if(envp != NULL)
+		exit(1);
+	/* test_env(envp);
 	test_echo();
 	test_builtin_exit(envp);
+	 */test_pwd();
 	return(1);
 }

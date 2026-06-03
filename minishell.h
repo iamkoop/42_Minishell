@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/02 17:41:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/03 12:10:17 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ char					**env_to_char_arr(t_single_linked_node	*lst);
 void					env(t_single_linked_node	*envp);
 void					echo(char	**input);
 void					builtin_exit(char	**input);
+void					pwd(char	**input);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);

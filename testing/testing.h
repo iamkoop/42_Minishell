@@ -21,5 +21,6 @@ int builtins_tests(char **argv, char **envp);
 int test_env(char **envp);
 int	test_echo();
 int test_builtin_exit(char **envp);
+int test_pwd(void);
 
 # endif
