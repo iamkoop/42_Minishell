@@ -6,10 +6,10 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/29 22:11:23 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/01 09:49:56 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int			tokenization(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri);
@@ -64,6 +64,7 @@ static void	here_or_append(char *input, char **env, t_token_node *token_lst,
 	{
 		add_to_token(input[iteri->i], token_lst, iteri);
 		token_lst[iteri->token].token_type = HERE_DOC;
+		delimit_token(input, env, token_lst, iteri);
 	}
 }
 

@@ -9,18 +9,18 @@
 /*   Updated: 2026/06/03 16:58:18 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
+#include "../../minishell.h"
+
+int			here_doc(char *input, char **env, t_token_node *token_lst,
+				t_token_iteri *iteri);
+static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
+				t_token_iteri *iteri, bool *expansion);
+static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
+static int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter);
+static int	write_check(ssize_t c_written, size_t len);
 
 int	here_doc(char *input, char **env, t_token_node *token_lst,
-		t_token_iteri *iteri);
-int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
-			t_token_iteri *iteri, bool *expansion);
-int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
-int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter);
-int write_check(ssize_t c_written, size_t len);
-
-int	here_doc(char *input, char **env, t_token_node *token_lst,
-			t_token_iteri *iteri)
+		t_token_iteri *iteri)
 {
 	char	delimiter[HD_DELIMITER_LEN];
 	char	filename[16];
@@ -48,8 +48,8 @@ int	here_doc(char *input, char **env, t_token_node *token_lst,
 	return (0);
 }
 
-int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
-			t_token_iteri *iteri, bool *expansion)
+static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
+		t_token_iteri *iteri, bool *expansion)
 {
 	size_t	len;
 
@@ -70,7 +70,7 @@ int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
 	return (0);
 }
 
-int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri)
+static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri)
 {
 	static int	num;
 	char		*start;
@@ -95,7 +95,7 @@ int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri)
 	return (0);
 }
 
-int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter)
+static int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter)
 {
 	char	*heredoc_input;
 	size_t	len;
@@ -120,7 +120,7 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter)
 	return (0);
 }
 
-int	write_check(ssize_t c_written, size_t len)
+static int	write_check(ssize_t c_written, size_t len)
 {
 	if (c_written == -1)
 	{

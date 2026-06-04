@@ -20,6 +20,7 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/heredoc.c \
 		  src/parsing/quote_removal.c \
 		  src/parsing/error.c \
+		  src/parsing/delete_heredocs.c \
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(PARSING)
 CFILES = $(EXECFILES)

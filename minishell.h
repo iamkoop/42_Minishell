@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/31 16:45:12 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/04 18:13:50 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -22,6 +22,7 @@
 # include "42_Libft/libft.h"
 # include <errno.h>
 # include <stdbool.h>
+# include <dirent.h>
 
 //Delete after integrating libft!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # include <strings.h>
@@ -110,9 +111,10 @@ char	*quote_removal(char *delimiter);
 int		here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
 void	error(char *message);
+void	delete_hd_files();
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void    tokenization_testing(t_token_node *token_lst, char **env);
-int		heredoc_filename_creation(char *filename);
+void    	tokenization_testing(t_token_node *token_lst, char **env);
+//static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
 #endif

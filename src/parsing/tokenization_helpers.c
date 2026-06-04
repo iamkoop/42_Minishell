@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 10:56:18 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/31 15:43:59 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/01 10:29:35 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
@@ -25,7 +25,6 @@ void	delimit_token(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri)
 {
 	env = NULL;
-	input = NULL;
 	iteri->token++;
 	iteri->t = 0;
 	if (iteri->token >= 2

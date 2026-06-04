@@ -24,6 +24,6 @@ int	test_echo();
 void    testing_parsing(char **env);
 void	tokenization_testing(t_token_node *token_lst, char **env);
 void	initiate_tokenization(char *input, char **env);
-int		heredoc_filename_creation(char *filename);
+int		heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
 # endif
