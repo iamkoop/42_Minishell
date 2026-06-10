@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/04 18:13:50 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/10 11:02:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -51,17 +51,18 @@ typedef struct s_token_node
 
 typedef struct s_token_iteri
 {
-	int	token;
-	int	t;
-	int i;
+	int		token;
+	int		t;
+	int		i;
 }		t_token_iteri;
 
 //Commands for execution:
 enum e_redir_type
 {
-	RE_IN,
-	RE_OUT,
-	RE_APPEND,
+	IN,
+	OUT,
+	APPEND,
+	HERE,
 } ;
 
 typedef struct s_redir_list
@@ -74,16 +75,15 @@ typedef struct s_redir_list
 
 typedef struct s_command
 {
-	char			**argv;
-	int				*expand_var;
-	t_redir_list	*redir;
+	char					**argv;
+	t_single_linked_node	*redir;
 }		t_command;
 
-typedef struct s_cmds_list
+typedef struct	s_cmd_data
 {
-	t_command			*cmd;
-	struct s_cmds_list	*next;
-}		t_cmds_list;
+	t_single_linked_node	*head;
+	t_single_linked_node	*tail;
+}		t_cmd_data;
 
 //env_var_struct
 typedef struct s_env_var

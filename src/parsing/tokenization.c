@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/01 09:49:56 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/06/05 17:04:20 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -47,7 +47,7 @@ int	tokenization(char *input, char **env, t_token_node *token_lst,
 	}
 	delimit_token(input, env, token_lst, iteri);
 	tokenization_testing(token_lst, env);
-//	grouping(env, token_lst);
+//	parsing(env, token_lst, iteri);
 	return (0);
 }
 
