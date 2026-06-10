@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/08 18:24:40 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/10 01:56:09 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,36 @@ typedef struct s_env_var
 	char				*value;
 }					t_env_var;
 
+typedef struct s_create_env_node_vars
+{
+	size_t			key_len;
+	size_t			str_len;
+}					t_create_env_node_vars;
+
 typedef struct s_pwds
 {
 	char				old_pwd[4096];
-	char				*new_pwd;
-}					t_env_var;
+	char				new_pwd[4096];
+}					t_pwds;
 
-//environment conversion
+typedef struct s_pwd_and_key_len
+{
+	size_t 		pwd_l;
+	size_t		key_l;
+}				t_pwd_and_key_len;
+
+//environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
 char					**env_to_char_arr(t_single_linked_node	*lst);
+t_single_linked_node	*get_env_from_lst(char	*to_find, t_single_linked_node	*envp);
+
 //builtins
 void					env(t_single_linked_node	*envp);
 void					echo(char	**input);
 void					builtin_exit(char	**input);
 void					pwd(char	**input);
-int					cd(char **input, t_single_linked_node	*envp);
+int						cd(char **input, t_single_linked_node	*envp);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 20:59:35 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/08 18:07:23 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/10 01:51:52 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,67 @@ static int cd_no_args(t_single_linked_node	*envp)
 	return (0);
 }
 
+static void update_env(char	*pwd, char	*to_find, t_single_linked_node	*envp)
+{
+	t_env_var	*tmp;
+	t_pwd_and_key_len	l;
+
+	l.pwd_l = ft_strlen(to_find);
+	while (envp != NULL)
+	{
+		tmp = (t_env_var	*)envp->content;
+		l.key_l = ft_strlen(tmp->key);
+		if (l.key_l == l.pwd_l && !ft_strncmp(to_find, tmp->key, l.key_l))
+		{
+			free(tmp->value);
+			tmp->value = ft_strdup(pwd);
+			if(!tmp->value)
+				ft_putendl_fd("minishell: cd: malloc fail", 2);
+			break ;
+		}
+		envp = envp->next;
+	}
+}
+
+static int above_dir_del_case(t_pwds *pwds, t_single_linked_node	*envp, char	*cmd_arg)
+{
+	char	*new_pwd;
+	
+	update_env(pwds->old_pwd, "OLDPWD", envp);
+	new_pwd = ft_strjoin_three(pwds->old_pwd, "/", cmd_arg);
+	if(!new_pwd)
+		return(ft_putendl_fd("minishell: cd: malloc fail", 2), 1);
+	update_env(new_pwd, "PWD",envp);
+	free(new_pwd);
+	perror("error retrieving current directory: getcwd");
+	return(0);
+}
+
+static void copy_pwd_from_env(t_pwds *pwds, char	*to_find, t_single_linked_node	*envp)
+{
+	t_env_var	*tmp;
+	t_pwd_and_key_len	l;
+
+	l.pwd_l = ft_strlen(to_find);
+	pwds->old_pwd[0] = '\0';
+	while (envp != NULL)
+	{
+		tmp = (t_env_var	*)envp->content;
+		l.key_l = ft_strlen(tmp->key);
+		if (l.key_l == l.pwd_l && !ft_strncmp(to_find, tmp->key, l.key_l))
+		{
+			ft_strlcpy(pwds->old_pwd, tmp->value, ft_strlen(tmp->value));
+			break ;
+		}
+		envp = envp->next;
+	}
+	if (pwds->old_pwd[0] == '\0')
+            ft_strlcpy(pwds->old_pwd, ".", sizeof(pwds->old_pwd));
+}
+
 int cd(char **input, t_single_linked_node	*envp)
 {
-	char	*old_pwd;
-	char	*new_pwd;
+	t_pwds pwds;
 	int i;
 
 	i = 0;
@@ -71,12 +128,16 @@ int cd(char **input, t_single_linked_node	*envp)
 	if(i == 1)
 		return (cd_no_args(envp));
 	if(ft_strlen(input[1]) == 0)
-		return(free(old_pwd), 0);
+		return(0);
+	if(input)
+	if(!getcwd(pwds.old_pwd, sizeof(pwds.old_pwd)))
+		copy_pwd_from_env(&pwds, "PWD", envp);
 	if(chdir(input[1]) == -1)
-		return (perror("minishell: cd: "), 1);
-	new_pwd = getcwd(NULL, 0);
-	if(!new_pwd)
-		return(free(old_pwd), perror("minishell: cd"), 1);
-	return (free(old_pwd), free(new_pwd), 0);
+		return (perror("minishell: cd "), 1);
+	if(!getcwd(pwds.new_pwd, sizeof(pwds.new_pwd)))
+		return(above_dir_del_case(&pwds, envp, input[1]));
+	update_env(pwds.old_pwd, "OLDPWD", envp);
+	update_env(pwds.new_pwd, "PWD", envp);
+	return (0);
 } 
 

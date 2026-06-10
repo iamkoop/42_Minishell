@@ -12,257 +12,246 @@
 
 #include "testing.h"
 
+typedef struct s_get_env_test
+{
+    char    *test_name;
+    char    *to_find;
+    char    *expected_value; // NULL if node shouldn't be found
+}   t_get_env_test;
+
 static void free_char_matrix(char **matrix)
 {
-	int i;
+    int i;
 
-	if (!matrix)
-		return;
-	i = 0;
-	while (matrix[i])
-	{
-		free(matrix[i]);
-		i++;
-	}
-	free(matrix);
+    if (!matrix)
+        return;
+    i = 0;
+    while (matrix[i])
+    {
+        free(matrix[i]);
+        i++;
+    }
+    free(matrix);
 }
 
-/* ========================================================================== */
-/* 1. TEST DIRECTION: envp[][] -> Linked List                                 */
-/* ========================================================================== */
-static int test_creation(char **envp, t_single_linked_node *curr_node)
+// --- Helper: Runs isolated tests for get_env_from_lst ---
+static int test_get_env_func(t_single_linked_node *lst)
 {
-	int i = 0;
-	int tests_failed = 0;
+    int success = 1;
 
-	// Edge Case: Completely Empty environment
-	if (!envp || !*envp)
-	{
-		if (!curr_node)
-			printf("  [OK]   Direction 1: Empty environment conversion handled correctly.\n");
-		else
-		{
-			printf("  [FAIL] Direction 1: Empty environment produced a non-empty Linked List.\n");
-			tests_failed++;
-		}
-		return (tests_failed == 0);
-	}
+    t_get_env_test tests[] = {
+        {"Find standard existing key", "VALID", "123"},
+        {"Find key with internal assignment tokens", "PATH", "/usr/bin=/bin"},
+        {"Find key with empty value token", "EMPTY_VAL", ""},
+        {"Look up non-existent key", "NOT_FOUND_KEY", NULL},
+        {"Look up completely NULL string pointer", NULL, NULL},
+        {"Look up partial key match (security check)", "VALI", NULL}
+    };
 
-	while (envp[i] != NULL && curr_node != NULL)
-	{
-		t_env_var *var = (t_env_var *)curr_node->content;
-		
-		if (!var || !var->key)
-		{
-			printf("  [FAIL] Direction 1 (Index %d): Node content or key is NULL.\n", i);
-			tests_failed++;
-			curr_node = curr_node->next;
-			i++;
-			continue;
-		}
+    int num_tests = sizeof(tests) / sizeof(tests[0]);
 
-		size_t key_len = strlen(var->key);
-		
-		// Handle Edge Case: String without an '=' sign (e.g. export KEY)
-		char *has_equal = strchr(envp[i], '=');
-		if (!has_equal)
-		{
-			if (strcmp(envp[i], var->key) == 0 && (var->value == NULL || var->value[0] == '\0'))
-				printf("  [OK]   Direction 1 (Index %d): Valueless key '%s' parsed correctly.\n", i, var->key);
-			else
-			{
-				printf("  [FAIL] Direction 1 (Index %d): Mismatch on valueless key.\n", i);
-				printf("         Expected Key: %s, Got: %s\n", envp[i], var->key);
-				tests_failed++;
-			}
-		}
-		// Standard verification for KEY=VALUE
-		else if (strncmp(envp[i], var->key, key_len) != 0 || envp[i][key_len] != '=')
-		{
-			printf("  [FAIL] Direction 1 (Index %d): Key mismatch.\n", i);
-			printf("         Expected: %s=...\n", var->key);
-			printf("         Actual:   %s\n", envp[i]);
-			tests_failed++;
-		}
-		else
-		{
-			char *expected_value = envp[i] + key_len + 1;
-			char *actual_value = var->value ? var->value : "";
+    printf("\n--- Running get_env_from_lst Tests ---\n");
 
-			if (strcmp(expected_value, actual_value) != 0)
-			{
-				printf("  [FAIL] Direction 1: Value mismatch for key '%s'.\n", var->key);
-				printf("         Expected: \"%s\"\n", expected_value);
-				printf("         Actual:   \"%s\"\n", actual_value);
-				tests_failed++;
-			}
-		}
-		curr_node = curr_node->next;
-		i++;
-	}
+    // Special sub-edgecase: Querying a completely empty list 
+    t_single_linked_node *node = get_env_from_lst("VALID", NULL);
+    if (node != NULL)
+    {
+        printf("❌ FAIL: get_env_from_lst on NULL list returned a node!\n");
+        success = 0;
+    }
+    else
+        printf("✅ PASS: Guard check on NULL list reference\n");
 
-	if (envp[i] != NULL || curr_node != NULL)
-	{
-		printf("  [FAIL] Direction 1: Size mismatch between envp matrix and list nodes.\n");
-		tests_failed++;
-	}
-
-	if (tests_failed == 0)
-		printf("  [OK]   Direction 1: Matrix to Linked List conversion matching perfectly.\n");
-	return (tests_failed == 0);
+    for (int i = 0; i < num_tests; i++)
+    {
+        node = get_env_from_lst(tests[i].to_find, lst);
+        
+        if (tests[i].expected_value == NULL)
+        {
+            if (node == NULL || ((t_env_var *)node->content)->value == NULL)
+                printf("✅ PASS: %s\n", tests[i].test_name);
+            else
+            {
+                printf("❌ FAIL: %s\n", tests[i].test_name);
+                printf("   Expected: NULL node pointer or NULL value\n");
+                printf("   Got Key : \"%s\" with Value: \"%s\"\n", 
+                    ((t_env_var *)node->content)->key, ((t_env_var *)node->content)->value);
+                success = 0;
+            }
+        }
+        else
+        {
+            if (!node || !node->content)
+            {
+                printf("❌ FAIL: %s\n", tests[i].test_name);
+                printf("   Expected Value: \"%s\"\n", tests[i].expected_value);
+                printf("   Got           : NULL node pointer\n");
+                success = 0;
+                continue;
+            }
+            
+            t_env_var *var = (t_env_var *)node->content;
+            char *actual_val = var->value ? var->value : "";
+            if (strcmp(actual_val, tests[i].expected_value) == 0)
+                printf("✅ PASS: %s\n", tests[i].test_name);
+            else
+            {
+                printf("❌ FAIL: %s\n", tests[i].test_name);
+                printf("   Expected Value: \"%s\"\n", tests[i].expected_value);
+                printf("   Got Value     : \"%s\"\n", actual_val);
+                success = 0;
+            }
+        }
+    }
+    return (success);
 }
 
-/* ========================================================================== */
-/* 2. TEST DIRECTION: Linked List -> envp[][]                                 */
-/* ========================================================================== */
-static int test_reversion(t_single_linked_node *head, char **reverted_arr)
+// --- Helper: Matrix to Linked List Validation ---
+static int verify_matrix_to_lst(char **envp, t_single_linked_node *lst)
 {
-	int i = 0;
-	int tests_failed = 0;
-	t_single_linked_node *curr = head;
+    int i = 0;
+    t_single_linked_node *curr = lst;
 
-	if (!head)
-	{
-		if (!reverted_arr || !*reverted_arr)
-			printf("  [OK]   Direction 2: Empty Linked List conversion handled correctly.\n");
-		else
-		{
-			printf("  [FAIL] Direction 2: Empty Linked List produced a non-empty matrix.\n");
-			tests_failed++;
-		}
-		return (tests_failed == 0);
-	}
+    if ((!envp || !*envp) && !lst)
+        return (1);
+    if ((!envp || !*envp) || !lst)
+        return (0);
 
-	if (!reverted_arr)
-	{
-		printf("  [FAIL] Direction 2: Reverted matrix pointer is completely NULL.\n");
-		return (0);
-	}
+    while (envp[i] != NULL && curr != NULL)
+    {
+        t_env_var *var = (t_env_var *)curr->content;
+        if (!var || !var->key)
+            return (0);
 
-	while (curr != NULL && reverted_arr[i] != NULL)
-	{
-		t_env_var *var = (t_env_var *)curr->content;
-		if (!var || !var->key)
-		{
-			curr = curr->next;
-			i++;
-			continue;
-		}
+        size_t key_len = strlen(var->key);
+        char *has_equal = strchr(envp[i], '=');
 
-		char *actual_value = var->value ? var->value : "";
-		size_t allocation_size = strlen(var->key) + strlen(actual_value) + 2;
-		char *expected_str = malloc(allocation_size);
-		
-		if (!expected_str)
-		{
-			printf("  [CRIT] Malloc error while preparing expected evaluation string.\n");
-			return (0);
-		}
-		
-		// If node value explicitly doesn't exist, check how your project exports it
-		if (!var->value)
-			sprintf(expected_str, "%s", var->key); // normal behavior for valueless keys
-		else
-			sprintf(expected_str, "%s=%s", var->key, actual_value);
-
-		if (strcmp(expected_str, reverted_arr[i]) != 0)
-		{
-			printf("  [FAIL] Direction 2 (Index %d): String format error.\n", i);
-			printf("         Expected output: %s\n", expected_str);
-			printf("         Actual output:   %s\n", reverted_arr[i]);
-			tests_failed++;
-		}
-
-		free(expected_str);
-		curr = curr->next;
-		i++;
-	}
-
-	if (reverted_arr[i] != NULL || curr != NULL)
-	{
-		printf("  [FAIL] Direction 2: Size mismatch between list nodes and regenerated matrix.\n");
-		tests_failed++;
-	}
-
-	if (tests_failed == 0)
-		printf("  [OK]   Direction 2: Linked List to Matrix reconstruction matching perfectly.\n");
-	return (tests_failed == 0);
+        if (!has_equal)
+        {
+            if (strcmp(envp[i], var->key) != 0)
+                return (0);
+        }
+        else if (strncmp(envp[i], var->key, key_len) != 0 || envp[i][key_len] != '=')
+            return (0);
+        else
+        {
+            char *expected_val = envp[i] + key_len + 1;
+            char *actual_val = var->value ? var->value : "";
+            if (strcmp(expected_val, actual_val) != 0)
+                return (0);
+        }
+        curr = curr->next;
+        i++;
+    }
+    return (envp[i] == NULL && curr == NULL);
 }
 
-/* ========================================================================== */
-/* TEST EXECUTION HARNESS                                                     */
-/* ========================================================================== */
-static int run_test_suite(const char *test_name, char **test_envp)
+// --- Helper: Linked List to Matrix Validation ---
+static int verify_lst_to_matrix(t_single_linked_node *lst, char **matrix)
 {
-	printf("🔷 [SUITE] %s\n", test_name);
+    int i = 0;
+    t_single_linked_node *curr = lst;
 
-	t_single_linked_node *list = env_to_lst(test_envp);
-	if (!list && test_envp && *test_envp)
-	{
-		printf("  [FAIL] env_to_lst returned NULL (Premature allocation failure).\n\n");
-		return (0);
-	}
+    if (!lst && (!matrix || !*matrix))
+        return (1);
+    if (!lst || !matrix)
+        return (0);
 
-	int creation_ok = test_creation(test_envp, list);
-	
-	char **reverted_arr = env_to_char_arr(list);
-	if (!reverted_arr && list)
-	{
-		printf("  [FAIL] env_to_char_arr returned NULL (Premature allocation failure).\n");
-		ft_single_lstclear(&list, del_env_node_content);
-		printf("\n");
-		return (0);
-	}
+    while (curr != NULL && matrix[i] != NULL)
+    {
+        t_env_var *var = (t_env_var *)curr->content;
+        if (!var || !var->key)
+            return (0);
 
-	int reversion_ok = test_reversion(list, reverted_arr);
+        char *actual_val = var->value ? var->value : "";
+        size_t alloc_size = strlen(var->key) + strlen(actual_val) + 2;
+        char *expected_str = malloc(alloc_size);
+        if (!expected_str)
+            return (0);
 
-	ft_single_lstclear(&list, del_env_node_content);
-	free_char_matrix(reverted_arr);
-	printf("\n");
+        if (!var->value || strlen(var->value) == 0)
+            sprintf(expected_str, "%s", var->key);
+        else
+            sprintf(expected_str, "%s=%s", var->key, actual_val);
 
-	return (creation_ok && reversion_ok);
+        int match = (strcmp(expected_str, matrix[i]) == 0);
+        free(expected_str);
+
+        if (!match)
+            return (0);
+
+        curr = curr->next;
+        i++;
+    }
+    return (curr == NULL && matrix[i] == NULL);
 }
 
-/* ========================================================================== */
-/* MAIN TEST CONTROLLER                                                       */
-/* ========================================================================== */
-int env_tests(char **envp)
+// --- Main Testing Framework Engine ---
+int env_test(char **envp)
 {
-	int global_success = 1;
+    int success = 1;
 
-	printf("====================================================\n");
-	printf("       RUNNING MINI-SHELL ENVIRONMENT TESTER        \n");
-	printf("====================================================\n\n");
+    char *case1[] = { NULL };
+    char *case2[] = { "EMPTY_VAL=", "VALID=123", NULL };
+    char *case4[] = { "PATH=/usr/bin=/bin", "EQUALS======", "VALID=123", NULL };
+    char *case5[] = { "SPECIAL=~!@#$%^&*()_+{}|:<>?-=[]\\;',./", "VALID=123", NULL };
 
-	// --- EDGE CASE 1: Completely Empty Environment Matrix ---
-	char *empty_env[] = { NULL };
-	global_success &= run_test_suite("Edge Case: Completely Empty Environment (env -i)", empty_env);
+    struct {
+        char *name;
+        char **env_matrix;
+    } conversion_cases[] = {
+        {"Empty Environment Matrix (env -i)", case1},
+        {"Keys explicitly ending with '='", case2},
+        {"Values loaded with internal '=' assignments", case4},
+        {"Raw special/symbolic payload values", case5},
+    };
 
-	// --- EDGE CASE 2: Key with completely empty value ---
-	char *empty_val_env[] = { "EMPTY_VAL=", "NORMAL=abc", NULL };
-	global_success &= run_test_suite("Edge Case: Keys ending explicitly with '='", empty_val_env);
+    int num_cases = sizeof(conversion_cases) / sizeof(conversion_cases[0]);
 
-	// --- EDGE CASE 3: Keys with no '=' symbol (Exported variables) ---
-	char *no_equal_env[] = { "NO_EQUAL_SIGN", "VALID=123", NULL };
-	global_success &= run_test_suite("Edge Case: Valueless identifier attributes", no_equal_env);
+    printf("\n--- Running Env Conversion Pipeline Tests ---\n");
 
-	// --- EDGE CASE 4: Values containing internal '=' characters ---
-	char *multi_equal_env[] = { "PATH=/usr/bin=/bin", "EQUALS======", NULL };
-	global_success &= run_test_suite("Edge Case: Values loaded with internal assignment tokens", multi_equal_env);
+    for (int i = 0; i < num_cases; i++)
+    {
+        t_single_linked_node *lst = env_to_lst(conversion_cases[i].env_matrix);
+        char **reverted_matrix = env_to_char_arr(lst);
 
-	// --- EDGE CASE 5: Odd alphanumeric characters inside variable values ---
-	char *special_chars_env[] = { "SPECIAL=~!@#$%^&*()_+{}|:<>?-=[]\\;',./", NULL };
-	global_success &= run_test_suite("Edge Case: Raw special/symbolic value payloads", special_chars_env);
+        int dir1 = verify_matrix_to_lst(conversion_cases[i].env_matrix, lst);
+        int dir2 = verify_lst_to_matrix(lst, reverted_matrix);
 
-	// --- TEST 6: Actual Host System Environment ---
-	global_success &= run_test_suite("Standard Suite: Host System Environment Matrix", envp);
+        if (dir1 && dir2)
+            printf("✅ PASS: %s\n", conversion_cases[i].name);
+        else
+        {
+            printf("❌ FAIL: %s\n", conversion_cases[i].name);
+            if (!dir1) printf("   -> Matrix-to-List Conversion Failure\n");
+            if (!dir2) printf("   -> List-to-Matrix Conversion Failure\n");
+            success = 0;
+        }
 
-	printf("----------------------------------------------------\n");
-	if (global_success)
-		printf("🎉 VERDICT: ALL TEST SUITES PASSED VALIDATION!\n");
-	else
-		printf("❌ VERDICT: ONE OR MORE EDGE CASES ENCOUNTERED REJECTIONS.\n");
-	printf("====================================================\n\n");
+        ft_single_lstclear(&lst, del_env_node_content);
+        free_char_matrix(reverted_matrix);
+    }
 
-	return (!global_success);
+    // --- Dynamic OS Host Env Matrix Parsing Validation ---
+    t_single_linked_node *host_lst = env_to_lst(envp);
+    char **host_reverted = env_to_char_arr(host_lst);
+    
+    if (verify_matrix_to_lst(envp, host_lst) && verify_lst_to_matrix(host_lst, host_reverted))
+        printf("✅ PASS: Standard Host System Environment Matrix\n");
+    else
+    {
+        printf("❌ FAIL: Standard Host System Environment Matrix\n");
+        success = 0;
+    }
+    free_char_matrix(host_reverted);
+
+    // --- Run Look-Up Utility Suite on Multi-Context List Node Target ---
+    t_single_linked_node *lookup_lst = env_to_lst(case4);
+    if (!test_get_env_func(lookup_lst))
+        success = 0;
+
+    ft_single_lstclear(&lookup_lst, del_env_node_content);
+    ft_single_lstclear(&host_lst, del_env_node_content);
+
+    return (success);
 }
