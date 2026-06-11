@@ -6,13 +6,16 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 20:59:35 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 22:12:45 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 23:59:25 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 //TODO: Norminette and use the func get env from lst could remove alot of lines :)
+//TODO: You check if input[1] is "-" and set pwds.is_dash = 1. But cd - shouldn't just change directories;
+//TODO: it is supposed to change to the path stored in $OLDPWD and print that path to stdout. 
+//TODO: Right now, your code literally tries to chdir("-"), which will fail unless you have a directory named -.
 
 static char *get_home_env(t_single_linked_node	*envp)
 {
