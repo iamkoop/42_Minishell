@@ -1,14 +1,15 @@
 /* ************************************************************************** */
-/* */
-/* :::      ::::::::   */
-/* env_test.c                                         :+:      :+:    :+:   */
-/* +:+ +:+         +:+     */
-/* By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
-/* +#+#+#+#+#+   +#+           */
-/* Created: 2026/05/19 17:26:57 by nildruon          #+#    #+#             */
-/* Updated: 2026/05/26 18:30:00 by nildruon         ###   ########.fr       */
-/* */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_manipulation_tests.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/11 19:10:17 by nildruon          #+#    #+#             */
+/*   Updated: 2026/06/11 21:18:18 by nildruon         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
+
 
 #include "testing.h"
 
@@ -16,7 +17,7 @@ typedef struct s_get_env_test
 {
     char    *test_name;
     char    *to_find;
-    char    *expected_value; // NULL if node shouldn't be found
+    char    *expected_value;
 }   t_get_env_test;
 
 static void free_char_matrix(char **matrix)
@@ -34,7 +35,7 @@ static void free_char_matrix(char **matrix)
     free(matrix);
 }
 
-// --- Helper: Runs isolated tests for get_env_from_lst ---
+// --- Target 3 Validation: Runs isolated tests for get_env_from_lst ---
 static int test_get_env_func(t_single_linked_node *lst)
 {
     int success = 1;
@@ -52,7 +53,7 @@ static int test_get_env_func(t_single_linked_node *lst)
 
     printf("\n--- Running get_env_from_lst Tests ---\n");
 
-    // Special sub-edgecase: Querying a completely empty list 
+    // Guard edgecase: Querying a completely empty list 
     t_single_linked_node *node = get_env_from_lst("VALID", NULL);
     if (node != NULL)
     {
@@ -106,7 +107,7 @@ static int test_get_env_func(t_single_linked_node *lst)
     return (success);
 }
 
-// --- Helper: Matrix to Linked List Validation ---
+// --- Target 1 Helper Validation: Matrix to Linked List Integrity Verification ---
 static int verify_matrix_to_lst(char **envp, t_single_linked_node *lst)
 {
     int i = 0;
@@ -146,7 +147,7 @@ static int verify_matrix_to_lst(char **envp, t_single_linked_node *lst)
     return (envp[i] == NULL && curr == NULL);
 }
 
-// --- Helper: Linked List to Matrix Validation ---
+// --- Target 2 Helper Validation: Linked List to Matrix Integrity Verification ---
 static int verify_lst_to_matrix(t_single_linked_node *lst, char **matrix)
 {
     int i = 0;
@@ -186,15 +187,16 @@ static int verify_lst_to_matrix(t_single_linked_node *lst, char **matrix)
     return (curr == NULL && matrix[i] == NULL);
 }
 
-// --- Main Testing Framework Engine ---
-int env_test(char **envp)
+// --- Pipeline Testing Framework Suite Engine ---
+int env_manipulation_tests(char **envp)
 {
     int success = 1;
 
     char *case1[] = { NULL };
     char *case2[] = { "EMPTY_VAL=", "VALID=123", NULL };
-    char *case4[] = { "PATH=/usr/bin=/bin", "EQUALS======", "VALID=123", NULL };
-    char *case5[] = { "SPECIAL=~!@#$%^&*()_+{}|:<>?-=[]\\;',./", "VALID=123", NULL };
+    // Fixed lookup test dependency array:
+    char *case3[] = { "PATH=/usr/bin=/bin", "EQUALS======", "VALID=123", "EMPTY_VAL=", NULL };
+    char *case4[] = { "SPECIAL=~!@#$%^&*()_+{}|:<>?-=[]\\;',./", "VALID=123", NULL };
 
     struct {
         char *name;
@@ -202,13 +204,13 @@ int env_test(char **envp)
     } conversion_cases[] = {
         {"Empty Environment Matrix (env -i)", case1},
         {"Keys explicitly ending with '='", case2},
-        {"Values loaded with internal '=' assignments", case4},
-        {"Raw special/symbolic payload values", case5},
+        {"Values loaded with internal '=' assignments", case3},
+        {"Raw special/symbolic payload values", case4},
     };
 
     int num_cases = sizeof(conversion_cases) / sizeof(conversion_cases[0]);
 
-    printf("\n--- Running Env Conversion Pipeline Tests ---\n");
+    printf("\n--- Running Env Conversion Pipeline Tests (env_to_lst & env_to_char_arr) ---\n");
 
     for (int i = 0; i < num_cases; i++)
     {
@@ -223,30 +225,31 @@ int env_test(char **envp)
         else
         {
             printf("❌ FAIL: %s\n", conversion_cases[i].name);
-            if (!dir1) printf("   -> Matrix-to-List Conversion Failure\n");
-            if (!dir2) printf("   -> List-to-Matrix Conversion Failure\n");
+            if (!dir1) printf("   -> env_to_lst Conversion Failure\n");
+            if (!dir2) printf("   -> env_to_char_arr Conversion Failure\n");
             success = 0;
         }
 
+        // Guarantees allocation teardown under any pass/fail scenario
         ft_single_lstclear(&lst, del_env_node_content);
         free_char_matrix(reverted_matrix);
     }
 
-    // --- Dynamic OS Host Env Matrix Parsing Validation ---
+    // --- Dynamic Host OS Validation Check ---
     t_single_linked_node *host_lst = env_to_lst(envp);
     char **host_reverted = env_to_char_arr(host_lst);
     
     if (verify_matrix_to_lst(envp, host_lst) && verify_lst_to_matrix(host_lst, host_reverted))
-        printf("✅ PASS: Standard Host System Environment Matrix\n");
+        printf("✅ PASS: Standard Host System Environment Matrix Parsing\n");
     else
     {
-        printf("❌ FAIL: Standard Host System Environment Matrix\n");
+        printf("❌ FAIL: Standard Host System Environment Matrix Parsing\n");
         success = 0;
     }
     free_char_matrix(host_reverted);
 
-    // --- Run Look-Up Utility Suite on Multi-Context List Node Target ---
-    t_single_linked_node *lookup_lst = env_to_lst(case4);
+    // --- Testing target 3: get_env_from_lst lookup suite ---
+    t_single_linked_node *lookup_lst = env_to_lst(case3);
     if (!test_get_env_func(lookup_lst))
         success = 0;
 

@@ -15,6 +15,7 @@ void testing_exec(char	**argv, char	**envp);
 
 //environment conversion tests
 int env_tests(char **envp);
+int env_manipulation_tests(char **envp);
 
 //builtins testing
 int builtins_tests(char **argv, char **envp);

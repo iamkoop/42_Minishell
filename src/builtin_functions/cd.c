@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 20:59:35 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/10 01:51:52 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 22:10:15 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 //TODO: change PWD when you cd
 //TODO: integrate environment changes when using cd
 
-static char	*get_home_env(t_single_linked_node	*envp)
+static char *get_home_env(t_single_linked_node	*envp)
 {
 	t_env_var	*tmp;
 	char		*to_find = "HOME";
@@ -79,7 +79,7 @@ static void update_env(char	*pwd, char	*to_find, t_single_linked_node	*envp)
 	}
 }
 
-static int above_dir_del_case(t_pwds *pwds, t_single_linked_node	*envp, char	*cmd_arg)
+static int above_dir_del_case(t_pwds_vars *pwds, t_single_linked_node	*envp, char	*cmd_arg)
 {
 	char	*new_pwd;
 	
@@ -93,7 +93,7 @@ static int above_dir_del_case(t_pwds *pwds, t_single_linked_node	*envp, char	*cm
 	return(0);
 }
 
-static void copy_pwd_from_env(t_pwds *pwds, char	*to_find, t_single_linked_node	*envp)
+static void copy_pwd_from_env(t_pwds_vars *pwds, char	*to_find, t_single_linked_node	*envp)
 {
 	t_env_var	*tmp;
 	t_pwd_and_key_len	l;
@@ -115,12 +115,22 @@ static void copy_pwd_from_env(t_pwds *pwds, char	*to_find, t_single_linked_node	
             ft_strlcpy(pwds->old_pwd, ".", sizeof(pwds->old_pwd));
 }
 
+static int dash_error_msg(char *msg ,int is_dash)
+{
+	if(is_dash)
+		ft_putendl_fd("minishell: cd: OLDPWD not set", 2);
+	else
+		perror(msg);
+	return(1);
+}
+
 int cd(char **input, t_single_linked_node	*envp)
 {
-	t_pwds pwds;
+	t_pwds_vars pwds;
 	int i;
 
 	i = 0;
+	pwds.is_dash = 0;
 	while (input[i])
 		i++;
 	if(i > 2)
@@ -129,11 +139,12 @@ int cd(char **input, t_single_linked_node	*envp)
 		return (cd_no_args(envp));
 	if(ft_strlen(input[1]) == 0)
 		return(0);
-	if(input)
+	if(ft_strlen(input[1]) == 1 && input[1][0] == '-')
+		pwds.is_dash = 1;
 	if(!getcwd(pwds.old_pwd, sizeof(pwds.old_pwd)))
 		copy_pwd_from_env(&pwds, "PWD", envp);
 	if(chdir(input[1]) == -1)
-		return (perror("minishell: cd "), 1);
+		return (dash_error_msg("minishell: cd ", pwds.is_dash));
 	if(!getcwd(pwds.new_pwd, sizeof(pwds.new_pwd)))
 		return(above_dir_del_case(&pwds, envp, input[1]));
 	update_env(pwds.old_pwd, "OLDPWD", envp);

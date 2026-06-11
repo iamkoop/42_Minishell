@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/10 01:56:09 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 21:39:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,16 @@ typedef struct s_create_env_node_vars
 {
 	size_t			key_len;
 	size_t			str_len;
+	int				no_equals;
 }					t_create_env_node_vars;
 
-typedef struct s_pwds
+
+typedef struct s_pwds_vars
 {
 	char				old_pwd[4096];
 	char				new_pwd[4096];
-}					t_pwds;
+	int					is_dash;
+}					t_pwds_vars;
 
 typedef struct s_pwd_and_key_len
 {

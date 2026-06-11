@@ -6,34 +6,51 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/26 18:32:37 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 17:47:02 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static t_env_var	*create_env_node(char	*str)
+static t_env_var	*create_node_and_key(t_create_env_node_vars	*vars, char *s)
 {
 	t_env_var	*node;
-	int			key_len;
-	int			str_len;
 
-	str_len = ft_strlen(str);
-	key_len = 0;
-	while (str[key_len] && str[key_len] != '=')
-		key_len++;
 	node = malloc(sizeof(t_env_var));
 	if(!node)
 		return(NULL);
-	node->key = ft_calloc(key_len + 1, sizeof(char));
+	node->key = ft_calloc(vars->key_len + 1, sizeof(char));
 	if(!node->key)
 		return(free(node), NULL);
-	ft_strlcpy(node->key, str, key_len + 1);
-	str += (key_len + 1);
-	node->value = ft_calloc(str_len - key_len + 1, sizeof(char));
-	if(!node->value)
-		return(free(node->key), free(node), NULL);
-	ft_strlcpy(node->value, str, str_len - key_len + 1);
+	ft_strlcpy(node->key, s, vars->key_len + 1);
+	return(node);
+}
+
+static t_env_var	*create_env_node(char	*str)
+{
+	t_env_var	*node;
+	t_create_env_node_vars	vars;
+
+	vars.str_len = ft_strlen(str);
+	vars.key_len = 0;
+	vars.no_equals = 0;
+	while (str[vars.key_len] && str[vars.key_len] != '=')
+		vars.key_len++;
+	if (str[vars.key_len] != '=')
+		vars.no_equals = 1;
+	node = create_node_and_key(&vars, str);
+	if(!node)
+		return(NULL);
+	str += (vars.key_len + 1);
+	if(!vars.no_equals)
+	{
+		node->value = ft_calloc(vars.str_len - vars.key_len + 1, sizeof(char));
+		if(!node->value)
+			return(free(node->key), free(node), NULL);
+		ft_strlcpy(node->value, str, vars.str_len - vars.key_len + 1);
+	}
+	else
+		node->value = NULL;
 	return (node);
 }
 
