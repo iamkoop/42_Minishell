@@ -6,15 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 20:59:35 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 22:10:15 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 22:12:45 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//TODO: change OLDPWD if it exits (bash doenst create one if you dont have it)
-//TODO: change PWD when you cd
-//TODO: integrate environment changes when using cd
+//TODO: Norminette and use the func get env from lst could remove alot of lines :)
 
 static char *get_home_env(t_single_linked_node	*envp)
 {
