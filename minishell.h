@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/11 21:39:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/12 16:34:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ void					echo(char	**input);
 void					builtin_exit(char	**input);
 void					pwd(char	**input);
 int						cd(char **input, t_single_linked_node	*envp);
+int						unset(char	**input, t_single_linked_node	**envp);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);

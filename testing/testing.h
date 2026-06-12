@@ -24,5 +24,6 @@ int	test_echo();
 int test_builtin_exit(char **envp);
 int test_pwd(void);
 int test_cd(char **envp);
+int test_unset(char **envp);
 
 # endif
