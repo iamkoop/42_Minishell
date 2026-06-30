@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/12 16:34:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/30 02:05:45 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_cmds_list
 	struct s_cmds_list	*next;
 }		t_cmds_list;
 
-//env_var_struct
+//vars structs that will need to goo
 typedef struct s_env_var
 {
 	char				*key;
@@ -111,6 +111,22 @@ typedef struct s_pwd_and_key_len
 	size_t		key_l;
 }				t_pwd_and_key_len;
 
+typedef struct s_print_sorted_env_vars
+{
+	t_single_linked_node    *tmp_lst;
+    t_env_var               *tmp_env_var;
+    t_single_linked_node    *curr_smllst_alpha;
+	t_single_linked_node	*prev_smllst_alpha;
+	int						lst_len;
+	int						curr_cnt;
+}				t_print_sorted_env_vars;
+
+typedef struct s_export_vars
+{
+	t_single_linked_node    *node;
+
+}				t_export_vars;
+
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
@@ -124,6 +140,7 @@ void					builtin_exit(char	**input);
 void					pwd(char	**input);
 int						cd(char **input, t_single_linked_node	*envp);
 int						unset(char	**input, t_single_linked_node	**envp);
+int						export(char **input, t_single_linked_node *envp);
 
 //Functions of minishell:
 void	get_commandline_input(char **env);

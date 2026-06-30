@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 15:50:14 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/12 16:39:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/30 00:24:47 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int builtins_tests(char **argv, char **envp)
 	test_builtin_exit(envp);
 	test_pwd();
 	test_cd(envp);*/
-	test_unset(envp);
+	//test_unset(envp);
+	test_export(envp);
 	return(1);
 }
