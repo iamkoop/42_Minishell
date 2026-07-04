@@ -1,27 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_builtins.c                                    :+:      :+:    :+:   */
+/*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/27 15:50:14 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/01 07:56:05 by nilsdruon        ###   ########.fr       */
+/*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
+/*   Updated: 2026/07/01 20:05:32 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "testing.h"
+#include "../minishell.h"
 
-int builtins_tests(char **argv, char **envp)
-{
-	(void)argv;
-	(void)envp;
-	/*env_tests(envp);
-	test_echo();
-	test_builtin_exit(envp);
-	test_pwd();
-	test_cd(envp);
-	test_unset(envp);
-	test_export(envp);*/
-	return(1);
-}
