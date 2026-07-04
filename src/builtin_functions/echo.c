@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:32 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/02 23:27:05 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/04 15:41:16 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int is_validFlag(char	*str, int	*print_nl)
 	return(1);
 }
  
-void echo(char	**input)
+int echo(char	**input)
 {
 	int print_nl;
 	int i;
@@ -44,7 +44,7 @@ void echo(char	**input)
 			i++;
 	while (input[i])
 	{
-		ft_putstr_fd(input[i],1);
+		ft_putstr_fd(input[i], 1);
 		if(input[i +1])
 			ft_putchar_fd(' ', 1);
 		i++;
@@ -52,4 +52,5 @@ void echo(char	**input)
 	
 	if(print_nl)
 		ft_putchar_fd('\n', 1);
+	return(0);
 }
