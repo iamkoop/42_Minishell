@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/04 16:37:25 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/05 01:04:29 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ static int execute_builtin(char   **cmd_and_args, t_single_linked_node  *envp)
 
 int exec_command(char   **cmd_and_args, t_single_linked_node    *envp)
 {
+
     if(is_builtin(cmd_and_args[0]))
-        return (execute_builtin(cmd_and_args, envp));
+        return(execute_builtin(cmd_and_args, envp));
+    if()
+    return(1);
 }

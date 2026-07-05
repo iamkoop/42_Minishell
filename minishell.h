@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/04 16:37:48 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/05 01:00:45 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,12 @@ typedef struct s_export_vars
 	t_single_linked_node    *node;
 
 }				t_export_vars;
+
+typedef struct s_exit_status
+{
+	int exit_status;
+
+}				t_exit_status;
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
