@@ -17,4 +17,5 @@ void testing_exec(char **argv, char **envp)
    	env_tests(envp);
 	env_manipulation_tests(envp);
 	builtins_tests(argv, envp);
+	test_exec_command(envp);
 }

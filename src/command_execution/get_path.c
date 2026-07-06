@@ -6,13 +6,19 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/05 11:33:55 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/06 17:21:59 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static char	*check_access(char	*cmd, int *exit_status, int send_perror)
+static void print_error(char	*cmd)
+{
+	ft_putstr_fd("minishell: ", 2);
+	perror(cmd);
+}
+
+static char	*check_access(char	*cmd, t_exit_status	*mini, int send_perror)
 {
 	int	access_valid;
 
@@ -25,22 +31,20 @@ static char	*check_access(char	*cmd, int *exit_status, int send_perror)
 		else
 		{
 			if (send_perror)
-				perror(cmd);
-			if (!*exit_status)
-				*exit_status = 126;
+				print_error(cmd);
+			mini->exit_status = 126;
 		}
 	}
 	else
 	{
 		if (send_perror)
-			perror(cmd);
-		if (!*exit_status)
-			*exit_status = 127;
+			print_error(cmd);
+		mini->exit_status = 127;
 	}
 	return (NULL);
 }
 
-static char	*colon_edge_case(char *env, int	*exit_status)
+static char	*colon_edge_case(char *env, t_exit_status	*mini)
 {
 	int		i;
 	int		len;
@@ -56,7 +60,11 @@ static char	*colon_edge_case(char *env, int	*exit_status)
 		{
 			joined = ft_strjoin("./", env);
 			if (!joined)
-				return (malloc_fail_handler("join failed\n", exit_status, 0));
+			{
+				ft_putendl_fd("minishell: colon_edge_case: join failed", 2);
+				mini->exit_status = 1;
+				return(NULL);
+			}
 			if (check_access(joined, 0, 0))
 				return (joined);
 		}
@@ -67,82 +75,74 @@ static char	*colon_edge_case(char *env, int	*exit_status)
 	return (NULL);
 }
 
-static char	*find_exacutable(char *cmd, char *env, int	*exit_status)
+static char	*find_exacutable(char *cmd, char *env, t_exit_status	*mini)
 {
 	char	*command;
 	char	**splitted;
 	int		i;
 
-	command = colon_edge_case(env, exit_status);
+	command = colon_edge_case(env, mini);
 	if (command)
 		return (command);
 	splitted = ft_split(env, ':');
 	if (!splitted)
-		return (ft_putstr_fd("split alloc fail", 2), NULL);
+		return (ft_putendl_fd("minishell: find_exacutable: split alloc fail", 2), NULL);
 	i = 0;
 	while (splitted[i])
 	{
 		command = ft_strjoin_three(splitted[i], "/", cmd);
 		if (!command)
 			return (ft_putstr_fd("cmd alloc fail\n", 2),
-				free_the_split(splitted), NULL);
-		if (check_access(command, exit_status, 0))
-			return (free_the_split(splitted), command);
+				ft_free_the_split(splitted), NULL);
+		if (check_access(command, mini, 0))
+			return (ft_free_the_split(splitted), command);
 		free(command);
 		i++;
 	}
-	free_the_split(splitted);
-	return (perror(cmd), NULL);
+	ft_free_the_split(splitted);
+	return (print_error(cmd), NULL);
 }
 
-static char	*check_if_its_a_path(char *cmd, int	*exit_status)
+static char	*check_if_its_a_path(char *cmd, t_exit_status *mini, int *iterate)
 {
-	if (!cmd || !*cmd)
-	{
-		*exit_status = 127;
-		return (NULL);
-	}
 	if (ft_strchr(cmd, '/'))
 	{
-		if (check_access(cmd, exit_status, 1))
-			return (cmd);
-	}
-	return (NULL);
-}
-
-char	*get_path(t_pipex *pip, char *cmd)
-{
-	int		i;
-	char	*path;
-
-	i = 0;
-	if (!cmd || !*cmd)
-		return (get_path_err_handler(pip, cmd, 0), NULL);
-	if (check_if_its_a_path(cmd, &pip->exit_status))
-		return (ft_strdup(cmd));
-	while (pip->envp && pip->envp[i])
-	{
-		if (ft_strncmp(pip->envp[i], "PATH=", 5) == 0)
+		if (check_access(cmd, mini, 1))
 		{
-			path = find_exacutable(cmd, pip->envp[i] + 5, &pip->exit_status);
-			if (!path || !*path)
-			{
-				if (!pip->exit_status)
-					pip->exit_status = 127;
-				return (NULL);
-			}
-			return (path);
+			*iterate = 1;
+			return (cmd);
 		}
-		i++;
+		else
+			*iterate = 0;
 	}
-	get_path_err_handler(pip, cmd, 1);
 	return (NULL);
 }
 
-char	*get_path(char *cmd, t_single_linked_node   *envp)
+char	*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini)
 {
+	t_env_var	*content;
+	char		*path;
+	int			iterate_envp;
+	
     if (!cmd || !*cmd)
     {
-        
-    }
+		mini->exit_status = 127;
+		ft_putstr_fd("Minishell: command not found\n", 2);
+	}
+	if(check_if_its_a_path(cmd, mini, &iterate_envp))
+		return(ft_strdup(cmd));
+	while (envp && iterate_envp)
+	{
+		content = (t_env_var	*)envp->content;
+		if (ft_strncmp(content->key, "PATH", 4) == 0)
+		{
+			path = find_exacutable(cmd, content->value, mini);
+			if (!path || !*path)
+				return (NULL);
+			return (path);
+		}
+		envp = envp->next;
+	}
+	mini->exit_status = 127;
+	return (NULL);
 }

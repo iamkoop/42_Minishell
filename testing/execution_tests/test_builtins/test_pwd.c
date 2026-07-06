@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 12:09:29 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/06/03 14:15:10 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/06 13:31:29 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ static int run_single_pwd_test(t_pwd_test test, const char *system_cwd)
         close(err_pipe[1]);
 
         // CALLING YOUR PWD IMPLEMENTATION
-        pwd(test.input);
+        int ret = pwd(test.input);
 
-        exit(0);
+        exit(ret);
     }
 
     close(out_pipe[1]);

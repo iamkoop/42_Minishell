@@ -26,5 +26,6 @@ int test_pwd(void);
 int test_cd(char **envp);
 int test_unset(char **envp);
 int test_export(char **envp);
+int test_exec_command(char **envp);
 
 # endif

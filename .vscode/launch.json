@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Debug Minishell Test Runner",
-            "type": "lldb",
+            "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/test",
             "args": [],
@@ -25,23 +25,23 @@
                 },
                 {
                     "description": "Disable debuginfod completely to prevent infinite loading hang",
-                    "text": "-gdb-set debuginfod enabled off",
+                    "text": "set debuginfod urls ",
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Force GDB to switch focus to the child process on fork",
-                    "text": "set follow-fork-mode child",
-                    "ignoreFailures": false
-                },
-                {
-                    "description": "CRITICAL: Tell GDB to keep both parent and child alive simultaneously",
-                    "text": "set detach-on-fork off",
-                    "ignoreFailures": false
-                },
-                {
-                    "description": "Prevent GDB from losing track if the child calls an exec function",
-                    "text": "set follow-exec-mode new",
+                    "description": "Disable debuginfod enabled",
+                    "text": "set debuginfod enabled off",
                     "ignoreFailures": true
+                },
+                {
+                    "description": "Let GDB follow the parent process and let the child run normally",
+                    "text": "set follow-fork-mode parent",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Detach from child process on fork so it doesn't get suspended",
+                    "text": "set detach-on-fork on",
+                    "ignoreFailures": false
                 }
             ],
             "preLaunchTask": "Make Test"

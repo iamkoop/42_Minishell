@@ -13,7 +13,11 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/export.c \
 					src/builtin_functions/pwd.c \
 					src/builtin_functions/unset.c
-EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS)
+COMMAND_EXECUTION = src/command_execution/command_execution.c \
+					src/command_execution/get_path.c \
+					src/command_execution/is_builtin.c
+
+EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION)
 CFILES = $(EXECFILES)
 OFILES = $(CFILES:.c=.o)
 

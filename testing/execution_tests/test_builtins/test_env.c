@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 15:50:10 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 19:19:13 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/06 12:57:06 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ static char **duplicate_envp(char **envp)
     while (envp && envp[count])
         count++;
     
-    char **copy = malloc(sizeof(char *) * (count + 1));
+    // Using calloc so trailing pointers are NULL, preventing free_local_matrix from crashing on early failure
+    char **copy = calloc(count + 1, sizeof(char *));
     if (!copy)
         return (NULL);
         
@@ -44,7 +45,6 @@ static char **duplicate_envp(char **envp)
             return (NULL);
         }
     }
-    copy[count] = NULL;
     return (copy);
 }
 
@@ -81,6 +81,9 @@ int env_tests(char **envp)
     int success = 1;
     char *empty_envp[] = { NULL };
     char **current_envp;
+    
+    // Standard mock input for "env" with no additional arguments
+    char *mock_input[] = { "env", NULL };
 
     // Isolate host envp into clean heap memory to protect against mutation/segfaults
     char **safe_envp = duplicate_envp(envp);
@@ -111,7 +114,10 @@ int env_tests(char **envp)
         close(pipefd[1]);
 
         t_single_linked_node *lst = env_to_lst(current_envp);
-        env(lst);
+        
+        // Call updated env signature and capture the return status
+        int ret_status = env(mock_input, lst);
+        
         ft_single_lstclear(&lst, del_env_node_content);
 
         fflush(stdout);
@@ -123,11 +129,13 @@ int env_tests(char **envp)
         {
             ssize_t bytes = read(pipefd[0], buffer, 65535);
             (void)bytes;
-            if (verify_output(buffer, current_envp))
-                printf("✅ PASS: env() output perfectly matches input matrix layout!\n");
+            
+            // Validate both output format AND correct success return status (0)
+            if (verify_output(buffer, current_envp) && ret_status == 0)
+                printf("✅ PASS: env() output perfectly matches and returned 0!\n");
             else
             {
-                printf("❌ FAIL: env() output mismatch!\n");
+                printf("❌ FAIL: env() output mismatch or bad return status (ret: %d)!\n", ret_status);
                 success = 0;
             }
             free(buffer);

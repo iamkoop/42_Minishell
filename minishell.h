@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/05 01:00:45 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/06 13:00:49 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ int						export(char **input, t_single_linked_node *envp);
 
 int						is_builtin(char *cmd);
 int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
+char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
 //Functions of minishell:
 void	get_commandline_input(char **env);
 int		tokenization(char *input, char **env, t_token_node *token_lst,
