@@ -105,9 +105,10 @@ static int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter)
 	while (42)
 	{
 		heredoc_input = readline("> ");
-		if (!strncmp(delimiter, heredoc_input, HD_DELIMITER_LEN))
+		if (!ft_strncmp(delimiter, heredoc_input, HD_DELIMITER_LEN))
 			break ;
-//		var_expansion(heredoc_input, expansion);
+//		if(expansion)
+//			var_expansion(heredoc_input, env);
 		len = ft_strlen(heredoc_input);
 		c_written = write(fd, heredoc_input, len);
 		if (write_check(c_written, len))

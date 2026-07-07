@@ -13,13 +13,18 @@
 
 int initiate_parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri)
 {
-	t_command				*cmd;
 	t_cmd_data				cmd_data;
+	t_command				*cmd;
 
 	cmd = ft_calloc(1, sizeof(t_command));
+	if(!cmd)
+		return (1);
 	cmd_data.head = ft_single_lstnew(cmd);
+	if(!cmd_data-head)
+		return (1);
 	cmd_data.tail = cmd_data.head;
-    assert(token_lst != NULL);
+	assert(token_lst != NULL);
+	assert(cmd_data != NULL);
 	if (parsing(env, token_lst, iteri, &cmd_data))
 		return (1);
 	return(0);
@@ -54,6 +59,7 @@ int	parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 	}
 	return (0);
 }
+
 int	is_redirection(t_token_node *token_lst, t_token_iteri *iteri)
 {
 	if (iteri->token != 0 &&
@@ -69,8 +75,8 @@ int	is_redirection(t_token_node *token_lst, t_token_iteri *iteri)
 int	redirect(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
-	t_redir_list			*curr_redir;
-	t_command				*tmp_cmd;
+	t_redir_list		*curr_redir;
+	t_command		*tmp_cmd;
 	t_single_linked_node	*tmp_redir;
 
 	tmp_cmd = (t_command *)cmd_data->tail->content;
@@ -78,7 +84,7 @@ int	redirect(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 	if (!curr_redir)
 		return (1);
 	redir_type_assignment(curr_redir, token_lst);
-	curr_redir->filename = calloc(1, ft_strlen(token_lst->token_str));
+	curr_redir->filename = calloc(1, ft_strlen(token_lst->token_str) + 1);
 	if (!curr_redir->filename)
 		return (1);
 //	var-expansion_quote-removal;
@@ -132,15 +138,33 @@ int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 }
 
 int	word_or_pipe(char **env, t_token_node *token_lst, t_token_iteri *iteri,
-		t_command *cmd_lst)
+		t_cmd_data *cmd_data)
 {
 	if (token_lst[iteri->token].token_type == WORD)
 	{
 		//var_expansion;
-		//adding_word_to_argv;
+		//while(array[i])
+		//	adding_word_to_argv;
 	}
 	else if (token_lst[iteri->token].token_type == PIPE)
 	{
-		//delimit_command;
+		if(delimit_command(cmd_data))
+			return (1);
 	}
+}
+
+int	delimit_command(t_cmd_data *cmd_data)
+{
+	t_command		*new_cmd;
+	t_single_linked_node	new_node_ptr;
+
+	new_cmd = calloc(1, sizeof(t_command));
+	if(!new_cmd)
+		return (1);
+	new_node_ptr = ft_single_lstnew(new_cmd);
+	if(!tmp_node_ptr)
+		return (1);
+	ft_lstadd_back_single_linked(&cmd_data->head, new_node_ptr);
+	cmd_data->tail = new_node_ptr;
+	return (0);
 }
