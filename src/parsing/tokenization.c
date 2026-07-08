@@ -30,7 +30,8 @@ int	tokenization(char *input, char **env, t_token_node *token_lst,
 	status = 0;
 	while (input[iteri->i])
 	{
-		if (iteri->i != 0 && iteri->t == 1 && (input[iteri->i] == '>' || input[iteri->i] == '<'))
+		if (iteri->i != 0 && (input[iteri->i - 1] == '>' || input[iteri->i - 1] == '<')
+				&& (input[iteri->i] == '>' || input[iteri->i] == '<'))
 			here_or_append(input, env, token_lst, iteri);
 		else if (input[iteri->i] == '<' || input[iteri->i] == '>' || input[iteri->i] == '|')
 			operators(input, env, token_lst, iteri);
@@ -106,7 +107,7 @@ static int	quotation_mode(char *input, char **env, t_token_node *token_lst,
 		add_to_token(input[iteri->i], token_lst, iteri);
 		iteri->i++;
 	}
-	if (input[iteri->i])
+	if (input[iteri->i] == c)
 	{
 		add_to_token(input[iteri->i], token_lst, iteri);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
