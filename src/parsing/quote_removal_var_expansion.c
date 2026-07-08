@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include  "../../minishell.h"
 
-char	**quote_rm_var_expan(char *s, t_single_linked_node *env)
+char	**quote_rm_var_expan(char *s, t_single_linked_node *env, bool heredoc)
 {
 	t_quote_iteri	iteri;
 	static char	word[WORD_AMOUNT][WORD_STR_SIZE];
@@ -19,7 +19,7 @@ char	**quote_rm_var_expan(char *s, t_single_linked_node *env)
 	bzero(&iteri, sizeof(t_quote_iteri));
 	while(s[iteri.i])
 	{
-		if(s[iteri.i] == '\'' || s[iteri.i] == '\"')
+		if((s[iteri.i] == '\'' || s[iteri.i] == '\"') && heredoc == false)
 			if(quote_mode(s, words, &iteri, env))
 				return (NULL);
 		else if(s[iteri.i] == '$')
