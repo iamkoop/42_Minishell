@@ -11,31 +11,30 @@
 /* ************************************************************************** */
 #include  "../../minishell.h"
 
-char	**quote_rm_var_expan(char *s, t_single_linked_node *env, bool heredoc)
+int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_single_linked_node *env, bool heredoc)
 {
 	t_quote_iteri	iteri;
-	static char	word[WORD_AMOUNT][WORD_STR_SIZE];
 
-	bzero(&iteri, sizeof(t_quote_iteri));
+	ft_bzero(&iteri, sizeof(t_quote_iteri));
 	while(s[iteri.i])
 	{
 		if((s[iteri.i] == '\'' || s[iteri.i] == '\"') && heredoc == false)
 			if(quote_mode(s, words, &iteri, env))
-				return (NULL);
+				return (1);
 		else if(s[iteri.i] == '$')
 			variable_expansion(s, words, &iteri, env);
 		else
 		{
-			words[iteri->wi][iteri->wj] = s[iteri->i];
-			iteri->wj++;
-			iteri->i++;
+			words[iteri.wi][iteri.wj] = s[iteri.i];
+			iteri.wj++;
+			iteri.i++;
 		}
 	}
 	word[iteri.wi][iteri.wj] = 0;
 	return (word);
 }
 
-int	quote_mode(char *s, char **word, t_quote_iteri *iteri, t_single_linked_node *env)
+int	quote_mode(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	char	c;
 
@@ -68,7 +67,7 @@ int	quote_mode(char *s, char **word, t_quote_iteri *iteri, t_single_linked_node 
 	return (0);
 }
 
-void	variable_expansion(char *s, char **word, t_quote_iteri *iteri, t_single_linked_node *env)
+void	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	char	var[WORD_STR_SIZE];
 	int	v;
@@ -116,7 +115,7 @@ int	is_name(int i, char c)
 		return (1);
 }
 
-void find_var(char *var, char **word, t_quote_iteri *iteri, t_single_linked_node *env)
+void find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	t_single_linked_node	*tmp_node;
 	t_env_var		*tmp_content;

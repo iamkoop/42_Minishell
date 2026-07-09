@@ -33,24 +33,24 @@ int initiate_parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri)
 int	parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
-	int	redir;
+	int	is_redir;
 
 	bzero(&iteri, sizeof(t_token_iteri));
 	while (token_lst[iteri->token].token_type)
 	{
-		redir = 0;
+		is_redir = 0;
 		if (is_redirection(token_lst, iteri))
 		{
 			if (redirect(env, token_lst, iteri, cmd_data))
 				return (1);
-			redir = 1;
+			is_redir = 1;
 		}
 		if (is_syntax_error(token_lst, iteri))
 		{
 			error("syntax error unexpected token");
 			return (1);
 		} 
-		if (!redir)
+		if (!is_redir)
 		{
 			if (word_or_pipe(env, token_lst, iteri, cmd_data))
 				return (1);
@@ -140,17 +140,106 @@ int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 int	word_or_pipe(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
+	char	word[WORD_AMOUNT][WORD_STR_SIZE];
+	
+	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
 	if (token_lst[iteri->token].token_type == WORD)
 	{
-		//var_expansion;
-		//while(array[i])
-		//	adding_word_to_argv;
+		if(quote_rm_var_expan(token_lst[iteri->token].token_str, word, env, false))
+			return (1);
+		if(transfer_word(cmd_data, word))
+		{
+			perror();
+			return (1);
+		}
 	}
 	else if (token_lst[iteri->token].token_type == PIPE)
 	{
 		if(delimit_command(cmd_data))
 			return (1);
 	}
+}
+
+int	transfer_word(t_cmd_data *cmd_data, word[WORD_AMOUNT][WORD_STR_SIZE])
+{
+	int		i;
+	int		j;
+	size_t		argv_i;
+	size_t		argv_j;
+	char		**tmp_argv;
+	t_command	*tmp_cmd;
+	
+	tmp_cmd = (t_command *)cmd_data->tail->content;
+	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(tmp_cmd->argv) + 1, sizeof(char *));
+	if(!tmp_argv)
+		return (1);
+	argv_i = 0;
+	while(tmp_cmd->argv[argv_i])
+	{
+		tmp_argv[argv_i] = calloc(ft_strlen(tmp_cmd->argv[argv_i]), 1);
+		if(!tmp_argv[argv_i])
+			return (1);
+		argv_j = 0;
+		while(tmp_cmd->arg[argv_i][argv_j])
+		{
+			tmp_arv[argv_i][argv_j] = tmp_cmd->arg[argv_i][argv_j];
+			argv_j++;
+		}
+		tmp_arv[argv_i][argv_j] = 0;
+		argv_i++;
+	}
+	i = 0;
+	while(i < WORD_AMOUNT && word[i][0] != 0)
+	{
+		tmp_argv[argv_i + i] = calloc(ft_strlen(word[i], 1));
+		if(!tmp_argv[argv_i + i])
+			return (1);
+		j = 0;
+		while(word[i][j])
+		{
+			tmp_arv[argv_i + i][j] = word[i][j];
+			j++;
+		}
+		tmp_arv[argv_i + i][j] = 0;
+		i++;
+	}
+	tmp_arv[argv_i + i] = NULL;
+	free_strarray(tmp_cmd->argv);
+	tmp_cmd->argv = tmp_argv;
+	return (0);
+}
+
+void	free_strarray(char **array)
+{
+	int i;
+
+	i = 0;
+	while(array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
+size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE])
+{
+	size_t i;
+
+	i = 0;
+	while (i < WORD_AMOUNT && word[i][0] != 0)
+        	i++;
+	return (i);
+}
+
+size_t	ft_strarraylen(char **argv)
+{
+	size_t	i;
+
+	i = 0;
+	while(argv[i])
+		i++;
+	return (i);
 }
 
 int	delimit_command(t_cmd_data *cmd_data)
