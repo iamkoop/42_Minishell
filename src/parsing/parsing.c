@@ -72,23 +72,30 @@ int	is_redirection(t_token_node *token_lst, t_token_iteri *iteri)
 	return (0);
 }
 
-int	redirect(char **env, t_token_node *token_lst, t_token_iteri *iteri,
+int	redirect(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
 	t_redir_list		*curr_redir;
 	t_command		*tmp_cmd;
 	t_single_linked_node	*tmp_redir;
+	char			word[WORD_AMOUNT][WORD_STR_SIZE]
 
 	tmp_cmd = (t_command *)cmd_data->tail->content;
 	curr_redir = calloc(1, sizeof(t_redir_list));
 	if (!curr_redir)
 		return (1);
 	redir_type_assignment(curr_redir, token_lst);
-	curr_redir->filename = calloc(1, ft_strlen(token_lst->token_str) + 1);
+	if(quote_rm_var_expan(token_lst[iteri->token]->token_str, word, env, false))
+		return 1;
+	if(word[1][0] != 0)
+	{
+		error("ambiguous redirect");
+		return (1);
+	}
+	curr_redir->filename = calloc(1, ft_strlen(word[0]) + 1);
 	if (!curr_redir->filename)
 		return (1);
-//	var-expansion_quote-removal;
-	ft_strlcpy(curr_redir->filename, token_lst->token_str, ft_strlen(token_lst->token_str) + 1);
+	ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
 	tmp_redir = ft_single_lstnew(curr_redir);
 	if (!tmp_redir)
 		return (1);
@@ -101,13 +108,13 @@ int	redirect(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 
 void	redir_type_assignment(t_redir_list *curr_redir, t_token_node *token_lst)
 {
-	if (token_lst->token_type == REDIR_IN)
+	if (token_lsti[iteri->token]->token_type == REDIR_IN)
 		curr_redir->redir_type == IN;
-	else if (token_lst->token_type == REDIR_OUT)
+	else if (token_lst[iteri->token]->token_type == REDIR_OUT)
 		curr_redir->redir_type == OUT;
-	else if (token_lst->token_type == REDIR_OUT_A)
+	else if (token_lst[iteri->token]->token_type == REDIR_OUT_A)
 		curr_redir->redir_type == APPEND;
-	else if (token_lst->token_type == HERE_DOC)
+	else if (token_lst[iteri->token]->token_type == HERE_DOC)
 		curr_redir->redir_type == HERE;
 }
 
