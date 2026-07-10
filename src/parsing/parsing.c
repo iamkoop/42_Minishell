@@ -126,13 +126,14 @@ int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 				(token_lst[iteri->token - 1].token_type == REDIR_IN
 				|| token_lst[iteri->token - 1].token_type == REDIR_OUT
 				|| token_lst[iteri->token - 1].token_type == REDIR_OUT_A
-				|| token_lst[iteri->token - 1].token_type == HERE_DOC
-				|| token_lst[iteri->token - 1].token_type == PIPE)
+				|| token_lst[iteri->token - 1].token_type == HERE_DOC)
 				&& (token_lst[iteri->token].token_type == REDIR_IN
 				|| token_lst[iteri->token].token_type == REDIR_OUT
 				|| token_lst[iteri->token].token_type == REDIR_OUT_A
 				|| token_lst[iteri->token].token_type == HERE_DOC
 				|| token_lst[iteri->token].token_type == PIPE))
+		return (1);
+	else if(token_lst[iteri->token].token_type == PIPE && token_lst[iteri->token + 1].token_type == PIPE)
 		return (1);
 	else if ((token_lst[iteri->token].token_type == REDIR_IN
 				|| token_lst[iteri->token].token_type == REDIR_OUT
