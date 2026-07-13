@@ -11,6 +11,17 @@
 /* ************************************************************************** */
 #include  "../../minishell.h"
 
+int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+		t_single_linked_node *env, bool heredoc);
+int	quote_mode(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+		t_quote_iteri *iteri, t_single_linked_node *env);
+int	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+		t_quote_iteri *iteri, t_single_linked_node *env);
+int	is_name(int i, char c);
+int	find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+		t_quote_iteri *iteri, t_single_linked_node *env);
+
+
 int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_single_linked_node *env, bool heredoc)
 {
 	t_quote_iteri	iteri;
@@ -22,10 +33,17 @@ int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_single_
 			if(quote_mode(s, words, &iteri, env))
 				return (1);
 		else if(s[iteri.i] == '$')
-			variable_expansion(s, words, &iteri, env);
+			if(variable_expansion(s, words, &iteri, env))
+				return (1);
 		else
 		{
 			words[iteri.wi][iteri.wj] = s[iteri.i];
+			if(iteri->wj + 1 >= WORD_STR_SIZE)
+			{
+				error("exceeding memory limit: Word length \
+					\nRaise WORD_STR_SIZE in minishell.h");
+				return (1);
+			}
 			iteri.wj++;
 			iteri.i++;
 		}
@@ -53,9 +71,8 @@ int	quote_mode(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *it
 			word[iteri->wi][iteri->wj] = s[iteri->i];
 		if(iteri->wj + 1 >= WORD_STR_SIZE)
 		{
-			error("exceeding memory limit: Word token length \
-                                \nTo use a longer delimiter raise WORD_STR_SIZE \
-                                in minishell.h");
+			error("exceeding memory limit: Word length \
+                                \nRaise WORD_STR_SIZE in minishell.h");
 			return (1);
 		}
 		iteri->wj++;
@@ -67,7 +84,7 @@ int	quote_mode(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *it
 	return (0);
 }
 
-void	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
+int	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	char	var[WORD_STR_SIZE];
 	int	v;
@@ -85,12 +102,19 @@ void	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_
 	if(v != 0)
 	{
 		var[v] = 0;
-		find_var(var, word, iteri, env);
+		if(find_var(var, word, iteri, env))
+			return (1);
 	}
 	else if(s[iteri->i] == '?')
 	{
 		word[iteri->wi][iteri->wj] = '$';
 		word[iteri->wi][++iteri->wj] = '?';
+		if(iteri->wj + 1 >= WORD_STR_SIZE)
+		{
+			error("exceeding memory limit: Word length \
+				\nRaise WORD_STR_SIZE in minishell.h");
+			return (1);
+		}
 		iteri->wj++;
 		iteri->i++;
 //		better to directly get the exit status and put it in!
@@ -99,8 +123,15 @@ void	variable_expansion(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_
 	{
 		assert(v == 0);
 		word[iteri->wi][iteri->wj] = '$';
+		if(iteri->wj + 1 >= WORD_STR_SIZE)
+		{
+			error("exceeding memory limit: Word length \
+				\nRaise WORD_STR_SIZE in minishell.h");
+			return (1);
+		}
 		iteri->wj++;
 	}
+	return (0);
 }
 // no safety net for max v needed cause s is maximum WORD_STR_SIZE so var can't be bigger
 
@@ -115,7 +146,7 @@ int	is_name(int i, char c)
 		return (1);
 }
 
-void find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
+int	find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	t_single_linked_node	*tmp_node;
 	t_env_var		*tmp_content;
@@ -136,11 +167,23 @@ void find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *i
 					if(iteri->wj != 0)
 					{
 						word[iteri->wi][iteri->wj] = 0;
+						if(iteri->wi + 1 >= WORD_AMOUNT)
+						{
+							error("exceeding memory limit: Amount of words \
+								\nRaise WORD_AMOUNT in minishell.h");
+							return (1);
+						}
 						iteri->wi++;
 						iteri->wj = 0;
 					}
 				}
 				word[iteri->wi][iteri->wj] = tmp_content->value[i];
+				if(iteri->wj + 1 >= WORD_STR_SIZE)
+				{
+					error("exceeding memory limit: Word length \
+						\nRaise WORD_STR_SIZE in minishell.h");
+					return (1);
+				}
 				iteri->wj++;
 				i++;
 			}
@@ -148,4 +191,5 @@ void find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE], t_quote_iteri *i
 		}
 		tmp_node = tmp_node->next;
 	}
+	return (0);
 }
