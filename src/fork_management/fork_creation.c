@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:17:36 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/13 21:00:38 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/14 19:09:10 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,37 +21,37 @@
 // prev_pipe and nxt_pipe have the fds that are needed in that child and 
 // therefore shouldnt be closed at the beginning of the child
 
-static void first_child(int	*first_pipe, t_command	*cmd)
+static void first_child(t_minishell *mini)
 {
-	close(first_pipe[0]);
+	close(mini->next_pipe_fds[0]);
+	mini->dupe2 = dup2(mini->next_pipe_fds[1], STDOUT_FILENO);
 	exec_command(NULL, NULL);
 }
-static void middle_children(int	prev_read_fd, int	*next_pipe_fds, t_command	*cmd)
+static void middle_children(t_minishell *mini)
 {
+	mini->dupe1 = dup2(mini->prev_read_fd, STDIN_FILENO);
+	close(mini->prev_read_fd);
+	mini->dupe2 = dup2(mini->next_pipe_fds[1], STDOUT_FILENO);
 	exec_command(NULL, NULL);
 }
 
-static void last_child(int	prev_read_fd, t_command	*cmd)
+static void last_child(t_minishell *mini)
 {
-	close(prev_read_fd);
+	mini->dupe1 = dup2(mini->prev_read_fd, STDIN_FILENO);
 	exec_command(NULL, NULL);
 }
 
-static int parent(t_single_linked_node	*cmd_lst)
+static int parent(t_minishell *mini)
 {
-	int status = 0;
 	int i = 0;
-	int cmd_lst_size = ft_single_lstsize(cmd_lst);
-	int id[cmd_lst_size];
-	int next_pipe_fds[2];
-	int prev_read_fd;
-	t_command	*curr_cmd;
+	int id[mini->cmd_lst_size];
 
-	while(cmd_lst)
+	mini->cmd_lst_size = ft_single_lstsize(mini->cmd_lst);
+	while(mini->cmd_lst)
     {
 		if(i > 0)
-			prev_read_fd = next_pipe_fds[0];
-		if(cmd_lst->next && pipe(next_pipe_fds) == -1)
+			mini->prev_read_fd = mini->next_pipe_fds[0];
+		if(mini->cmd_lst->next && pipe(mini->next_pipe_fds) == -1)
 		{
 			perror("pipe: ");
 			exit(1);
@@ -61,28 +61,28 @@ static int parent(t_single_linked_node	*cmd_lst)
 			perror("fork failed");
         if(id[i] == 0)
 		{
-			curr_cmd = (t_command	*)cmd_lst;
+			mini->curr_cmd = (t_command	*)mini->cmd_lst;
 			if(i == 0)
 			{
-				first_child(next_pipe_fds, curr_cmd);
+				first_child(mini);
 			}
-			else if(!cmd_lst->next)
-				last_child(prev_read_fd, curr_cmd);
+			else if(!mini->cmd_lst->next)
+				last_child(mini);
 			else
-				middle_children(prev_read_fd, next_pipe_fds, curr_cmd);
+				middle_children(mini);
 		}
 		else
 		{
 			if(i > 0)
-				close(prev_read_fd);
+				close(mini->prev_read_fd);
 		}
 		i++;
-		cmd_lst = cmd_lst->next;
+		mini->cmd_lst = mini->cmd_lst->next;
  	}
-	for(int i = 0; i < cmd_lst_size; i++)
-		waitpid(id[i], &status, 0);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
+	for(int i = 0; i < mini->cmd_lst_size; i++)
+		waitpid(id[i], &mini->status, 0);
+	if (WIFEXITED(mini->status))
+		return (WEXITSTATUS(mini->status));
 }
 
 int main()

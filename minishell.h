@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/06 13:00:49 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/07/15 17:14:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,18 @@ typedef struct s_token_node
 
 typedef struct s_token_iteri
 {
-	int	token;
-	int	t;
-	int i;
+	int		token;
+	int		t;
+	int		i;
 }		t_token_iteri;
 
 //Commands for execution:
 enum e_redir_type
 {
-	RE_IN,
-	RE_OUT,
-	RE_APPEND,
+	IN,
+	OUT,
+	APPEND,
+	HERE,
 } ;
 
 typedef struct s_redir_list
@@ -72,16 +73,15 @@ typedef struct s_redir_list
 
 typedef struct s_command
 {
-	char			**argv;
-	int				*expand_var;
-	t_redir_list	*redir;
+	char					**argv;
+	t_single_linked_node	*redir;
 }		t_command;
 
-typedef struct s_cmds_list
+typedef struct	s_cmd_data
 {
-	t_command			*cmd;
-	struct s_cmds_list	*next;
-}		t_cmds_list;
+	t_single_linked_node	*head;
+	t_single_linked_node	*tail;
+}		t_cmd_data;
 
 //vars structs that will need to goo
 typedef struct s_env_var
@@ -133,6 +133,24 @@ typedef struct s_exit_status
 
 }				t_exit_status;
 
+
+typedef struct s_minishell
+{
+	t_single_linked_node	*cmd_lst;
+	t_command				*curr_cmd;
+	int						status;
+	int						cmd_lst_size;
+	int						next_pipe_fds[2];
+	int						prev_read_fd;
+	int						dupe1;
+	int						dupe2;
+	int						in;
+	int						out;
+	int						prev_in; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
+	int						prev_out; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
+}				t_minishell;
+
+
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
@@ -152,18 +170,18 @@ int						is_builtin(char *cmd);
 int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
 //Functions of minishell:
-void	get_commandline_input(char **env);
-int		tokenization(char *input, char **env, t_token_node *token_lst,
+void					get_commandline_input(char **env);
+int						tokenization(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
-void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-void	delimit_token(char *input, char **env, t_token_node *token_lst,
+void					add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
+void					delimit_token(char *input, char **env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-char	*quote_removal(char *delimiter);
-int		here_doc(char *input, char **env, t_token_node *token_lst,
+char					*quote_removal(char *delimiter);
+int						here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
 
 //Testers:
-void	tokenization_testing(t_token_node *token_lst, char **env);
-void	initiate_tokenization(char *input, char **env);
-int		heredoc_filename_creation(char *filename);
+void					tokenization_testing(t_token_node *token_lst, char **env);
+void					initiate_tokenization(char *input, char **env);
+int						heredoc_filename_creation(char *filename);
 
