@@ -15,7 +15,8 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/unset.c
 COMMAND_EXECUTION = src/command_execution/command_execution.c \
 					src/command_execution/get_path.c \
-					src/command_execution/is_builtin.c
+					src/command_execution/is_builtin.c \
+					src/fork_management/redirections.c
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION)
 CFILES = $(EXECFILES)

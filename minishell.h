@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/15 17:14:35 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/16 16:05:05 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ typedef struct s_token_iteri
 }		t_token_iteri;
 
 //Commands for execution:
-enum e_redir_type
+typedef enum e_redir_type
 {
 	IN,
 	OUT,
 	APPEND,
 	HERE,
-} ;
+} 		t_redir_type;
 
 typedef struct s_redir_list
 {
@@ -142,8 +142,8 @@ typedef struct s_minishell
 	int						cmd_lst_size;
 	int						next_pipe_fds[2];
 	int						prev_read_fd;
-	int						dupe1;
-	int						dupe2;
+	int						final_redir_in;
+	int						final_redir_out;
 	int						in;
 	int						out;
 	int						prev_in; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
@@ -169,6 +169,8 @@ int						export(char **input, t_single_linked_node *envp);
 int						is_builtin(char *cmd);
 int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
+
+int						redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 //Functions of minishell:
 void					get_commandline_input(char **env);
 int						tokenization(char *input, char **env, t_token_node *token_lst,
