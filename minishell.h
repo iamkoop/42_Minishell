@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/17 12:33:16 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/17 18:55:31 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,8 +142,8 @@ typedef struct s_minishell
 	int						cmd_lst_size;
 	int						next_pipe_fds[2];
 	int						prev_read_fd;
-	int						final_redir_in;
-	int						final_redir_out;
+	int						redir_in;
+	int						redir_out;
 	int						in;
 	int						out;
 	int						builtin_has_been_redir; // when redirectiing a builtin the programm should redirect the it back to in/out especially when not in a child process

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 14:17:36 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/14 19:09:10 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/17 19:19:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,67 @@
 // prev_pipe and nxt_pipe have the fds that are needed in that child and 
 // therefore shouldnt be closed at the beginning of the child
 
-static void first_child(t_minishell *mini)
+static int final_redir(int	*fd, int	*final_fd, int child, int file_eno)
+{
+	*final_fd = dup2(*fd, file_eno);
+	if(*final_fd == -1)
+	{
+		if(child == 0)
+			perror("dup2 fail in first child: ");
+		else if(child == 1)
+			perror("dup2 fail in middle children: ");
+		else
+			perror("dup2 fail in last child: ");
+		return(0);
+	}
+	close(*fd);
+	*fd = -42;
+	return(1);
+}
+
+static void first_child(t_minishell *mini, t_single_linked_node	*envp)
 {
 	close(mini->next_pipe_fds[0]);
-	mini->dupe2 = dup2(mini->next_pipe_fds[1], STDOUT_FILENO);
-	exec_command(NULL, NULL);
+	if(!redirections(mini->curr_cmd->redir, mini))
+		exit(1);
+	if(mini->out < -1)
+	{
+		if(!final_redir(mini->next_pipe_fds[1], mini->redir_out, 0, 1))
+			exit(1);
+	}
+	exec_command(mini->curr_cmd->argv, NULL);
 }
-static void middle_children(t_minishell *mini)
+static void middle_children(t_minishell *mini, t_single_linked_node	*envp)
 {
-	mini->dupe1 = dup2(mini->prev_read_fd, STDIN_FILENO);
+	if(!redirections(mini->curr_cmd->redir, mini))
+		exit(1);
+	if(mini->in < -1)
+	{
+		if(!final_redir(mini->prev_read_fd, mini->redir_in, 1, 0))
+			exit(1);
+	}
 	close(mini->prev_read_fd);
-	mini->dupe2 = dup2(mini->next_pipe_fds[1], STDOUT_FILENO);
-	exec_command(NULL, NULL);
+	if(mini->out < -1)
+	{
+		if(!final_redir(mini->next_pipe_fds[1], mini->redir_out, 1, 1))
+			exit(1);
+	}
+	exec_command(mini->curr_cmd->argv, NULL);
 }
 
-static void last_child(t_minishell *mini)
+static void last_child(t_minishell *mini, t_single_linked_node	*envp)
 {
-	mini->dupe1 = dup2(mini->prev_read_fd, STDIN_FILENO);
-	exec_command(NULL, NULL);
+	if(!redirections(mini->curr_cmd->redir, mini))
+		exit(1);
+	if(mini->in < -1)
+	{
+		if(!final_redir(mini->prev_read_fd, mini->redir_in, 2, 0))
+			exit(1);
+	}
+	exec_command(mini->curr_cmd->argv, NULL);
 }
 
-static int parent(t_minishell *mini)
+static int parent(t_minishell *mini, t_single_linked_node	*envp)
 {
 	int i = 0;
 	int id[mini->cmd_lst_size];
@@ -64,12 +104,12 @@ static int parent(t_minishell *mini)
 			mini->curr_cmd = (t_command	*)mini->cmd_lst;
 			if(i == 0)
 			{
-				first_child(mini);
+				first_child(mini, envp);
 			}
 			else if(!mini->cmd_lst->next)
-				last_child(mini);
+				last_child(mini, envp);
 			else
-				middle_children(mini);
+				middle_children(mini, envp);
 		}
 		else
 		{
