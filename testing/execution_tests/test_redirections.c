@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 15:57:58 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/16 18:05:50 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/17 14:32:28 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,12 @@ static void free_redir_node(void *content)
 /* Clear helper matching libft list clear signature */
 static void clear_redir_list(t_single_linked_node **lst)
 {
-    t_single_linked_node *curr = *lst;
+    t_single_linked_node *curr;
     t_single_linked_node *next;
 
+    if (!lst || !*lst)
+        return ;
+    curr = *lst;
     while (curr)
     {
         next = curr->next;
@@ -84,7 +87,7 @@ typedef struct s_redir_test
 {
     char                    *test_name;
     t_single_linked_node    *redir_lst;
-    int                     expected_return; // 1 for Success (true), 0 for Failure (false)
+    int                     expected_return;
     void                    (*setup_files)(void);
     void                    (*cleanup_files)(void);
     int                     (*assert_behavior)(t_minishell *mini);
@@ -95,11 +98,17 @@ typedef struct s_redir_test
 static void setup_basic_in_out(void)
 {
     int fd = open("test_infile1.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    write(fd, "first", 5);
-    close(fd);
+    if (fd >= 0)
+    {
+        write(fd, "first", 5);
+        close(fd);
+    }
     fd = open("test_infile2.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    write(fd, "second", 6);
-    close(fd);
+    if (fd >= 0)
+    {
+        write(fd, "second", 6);
+        close(fd);
+    }
     unlink("test_outfile1.txt");
     unlink("test_outfile2.txt");
 }
@@ -115,9 +124,9 @@ static void cleanup_basic_in_out(void)
 static void setup_read_only_err(void)
 {
     setup_basic_in_out();
-    // Create a read-only file to trigger permission issues for writing
     int fd = open("test_readonly.txt", O_CREAT | O_WRONLY, 0444);
-    close(fd);
+    if (fd >= 0)
+        close(fd);
 }
 
 static void cleanup_read_only_err(void)
@@ -128,10 +137,8 @@ static void cleanup_read_only_err(void)
 
 /* --- ASSERTION HELPERS --- */
 
-// Assert that the final out file has the appended content
 static int assert_append(t_minishell *mini)
 {
-    (void)mini;
     int fd = open("test_outfile1.txt", O_RDONLY);
     if (fd < 0) return (0);
     
@@ -143,7 +150,6 @@ static int assert_append(t_minishell *mini)
     return (mini->final_redir_out >= 0);
 }
 
-// Assert that multiple input files were opened, but final_redir_in targets the last one
 static int assert_multiple_inputs(t_minishell *mini)
 {
     if (mini->final_redir_in < 0)
@@ -151,12 +157,14 @@ static int assert_multiple_inputs(t_minishell *mini)
     
     char buf[10];
     memset(buf, 0, 10);
-    read(mini->final_redir_in, buf, 9);
+    
+    // Read directly at offset 0 without altering the pointer stream index
+    if (pread(mini->final_redir_in, buf, 9, 0) < 0)
+        return (0);
     
     return (strcmp(buf, "second") == 0);
 }
 
-// Assert that both output files were touched/created, but only the last one is held open
 static int assert_multiple_outputs(t_minishell *mini)
 {
     int file1_exists = (access("test_outfile1.txt", F_OK) == 0);
@@ -167,17 +175,19 @@ static int assert_multiple_outputs(t_minishell *mini)
 
 /* --- RUN TEST IN CHILD PROCESS --- */
 
-static int run_single_redir_test(t_redir_test test)
+static int run_single_redir_test(t_redir_test *tests, int num_tests, int current_idx)
 {
-    pid_t   pid;
-    int     pipe_fd[2];
+    pid_t           pid;
+    int             pipe_fd[2];
+    t_redir_test    *test = &tests[current_idx];
 
-    if (test.setup_files)
-        test.setup_files();
+    if (test->setup_files)
+        test->setup_files();
 
     if (pipe(pipe_fd) == -1)
     {
         perror("pipe failed");
+        clear_redir_list(&test->redir_lst);
         return (0);
     }
 
@@ -187,6 +197,7 @@ static int run_single_redir_test(t_redir_test test)
         perror("fork failed");
         close(pipe_fd[0]);
         close(pipe_fd[1]);
+        clear_redir_list(&test->redir_lst);
         return (0);
     }
 
@@ -196,23 +207,26 @@ static int run_single_redir_test(t_redir_test test)
         t_minishell mini;
         init_mock_minishell(&mini);
 
-        int ret = redirections(test.redir_lst, &mini);
+        int ret = redirections(test->redir_lst, &mini);
 
-        // Send back the crucial structural results over the pipe
         write(pipe_fd[1], &ret, sizeof(int));
         write(pipe_fd[1], &mini.final_redir_in, sizeof(int));
         write(pipe_fd[1], &mini.final_redir_out, sizeof(int));
         
-        // Assertions that need file checks inside child context
         int assert_res = 1;
-        if (test.assert_behavior)
-            assert_res = test.assert_behavior(&mini);
+        if (test->assert_behavior)
+            assert_res = test->assert_behavior(&mini);
         write(pipe_fd[1], &assert_res, sizeof(int));
 
         close(pipe_fd[1]);
         
-        // Cleanup list in child before exiting
-        clear_redir_list(&test.redir_lst);
+        // Clean up every list allocation copied inside this child's memory space
+        for (int i = 0; i < num_tests; i++)
+        {
+            if (tests[i].redir_lst)
+                clear_redir_list(&tests[i].redir_lst);
+        }
+        
         exit(0);
     }
 
@@ -234,33 +248,30 @@ static int run_single_redir_test(t_redir_test test)
 
     int pass = 1;
 
-    // 1. Check if the function's exit status matches what we expected (0/false or 1/true)
-    if (actual_ret != test.expected_return)
+    if (actual_ret != test->expected_return)
     {
-        printf("❌ FAIL: %s [Return Mismatch]\n", test.test_name);
-        printf("   Expected return: %d, Got: %d\n", test.expected_return, actual_ret);
+        printf("❌ FAIL: %s [Return Mismatch]\n", test->test_name);
+        printf("   Expected return: %d, Got: %d\n", test->expected_return, actual_ret);
         pass = 0;
     }
-    // 2. If it returned a matched failure (0/false), then error handling worked correctly
     else if (actual_ret == 0)
     {
-        pass = 1;
+        pass = 1; 
     }
-    // 3. If it succeeded (1/true), verify that structural integrity/post-conditions pass
-    else if (test.assert_behavior && !behavior_pass)
+    else if (test->assert_behavior && !behavior_pass)
     {
-        printf("❌ FAIL: %s [Behavior Assertions Failed]\n", test.test_name);
+        printf("❌ FAIL: %s [Behavior Assertions Failed]\n", test->test_name);
         printf("   Resulting final_redir_in: %d, final_redir_out: %d\n", final_in, final_out);
         pass = 0;
     }
 
     if (pass)
-        printf("✅ PASS: %s\n", test.test_name);
+        printf("✅ PASS: %s\n", test->test_name);
 
-    if (test.cleanup_files)
-        test.cleanup_files();
+    if (test->cleanup_files)
+        test->cleanup_files();
 
-    clear_redir_list(&test.redir_lst);
+    clear_redir_list(&test->redir_lst);
     return (pass);
 }
 
@@ -269,83 +280,71 @@ int test_redirections_suite(void)
     int success = 1;
     printf("\n--- Running Redirection Engine Tests ---\n");
 
-    /* Test Case 1: Simple input & output redirection */
-    t_single_linked_node *lst1 = create_redir_node("test_infile1.txt", IN);
-    lst1->next = create_redir_node("test_outfile1.txt", OUT);
-    
-    /* Test Case 2: Multiple inputs (Only the last input file descriptor should persist in final_redir_in) */
-    t_single_linked_node *lst2 = create_redir_node("test_infile1.txt", IN);
-    lst2->next = create_redir_node("test_infile2.txt", IN);
+    t_redir_test tests[6];
+    memset(tests, 0, sizeof(tests));
 
-    /* Test Case 3: Multiple outputs (All files created, only last remains open in final_redir_out) */
-    t_single_linked_node *lst3 = create_redir_node("test_outfile1.txt", OUT);
-    lst3->next = create_redir_node("test_outfile2.txt", OUT);
+    /* Test Case 1: Simple input & output redirection */
+    tests[0].test_name = "Simple Redirection (IN + OUT)";
+    tests[0].redir_lst = create_redir_node("test_infile1.txt", IN);
+    if (tests[0].redir_lst) 
+        tests[0].redir_lst->next = create_redir_node("test_outfile1.txt", OUT);
+    tests[0].expected_return = 1;
+    tests[0].setup_files = setup_basic_in_out;
+    tests[0].cleanup_files = cleanup_basic_in_out;
+
+    /* Test Case 2: Multiple inputs */
+    tests[1].test_name = "Multiple Inputs (Last overrides)";
+    tests[1].redir_lst = create_redir_node("test_infile1.txt", IN);
+    if (tests[1].redir_lst)
+        tests[1].redir_lst->next = create_redir_node("test_infile2.txt", IN);
+    tests[1].expected_return = 1;
+    tests[1].setup_files = setup_basic_in_out;
+    tests[1].cleanup_files = cleanup_basic_in_out;
+    tests[1].assert_behavior = assert_multiple_inputs;
+
+    /* Test Case 3: Multiple outputs */
+    tests[2].test_name = "Multiple Outputs (All created, last retained)";
+    tests[2].redir_lst = create_redir_node("test_outfile1.txt", OUT);
+    if (tests[2].redir_lst)
+        tests[2].redir_lst->next = create_redir_node("test_outfile2.txt", OUT);
+    tests[2].expected_return = 1;
+    tests[2].setup_files = setup_basic_in_out;
+    tests[2].cleanup_files = cleanup_basic_in_out;
+    tests[2].assert_behavior = assert_multiple_outputs;
 
     /* Test Case 4: Output Append mode */
-    t_single_linked_node *lst4 = create_redir_node("test_outfile1.txt", APPEND);
+    tests[3].test_name = "Append Mode (APPEND)";
+    tests[3].redir_lst = create_redir_node("test_outfile1.txt", APPEND);
+    tests[3].expected_return = 1;
+    tests[3].setup_files = setup_basic_in_out;
+    tests[3].cleanup_files = cleanup_basic_in_out;
+    tests[3].assert_behavior = assert_append;
 
     /* Test Case 5: Error handling (Input file does not exist) */
-    t_single_linked_node *lst5 = create_redir_node("non_existent_file.txt", IN);
+    tests[4].test_name = "Non-existent Input File Error";
+    tests[4].redir_lst = create_redir_node("non_existent_file.txt", IN);
+    tests[4].expected_return = 0;
 
     /* Test Case 6: Error handling (Permission denied on output) */
-    t_single_linked_node *lst6 = create_redir_node("test_readonly.txt", OUT);
-
-    t_redir_test tests[] = {
-        {
-            .test_name = "Simple Redirection (IN + OUT)",
-            .redir_lst = lst1,
-            .expected_return = 1, // Expect true (1) on success
-            .setup_files = setup_basic_in_out,
-            .cleanup_files = cleanup_basic_in_out,
-            .assert_behavior = NULL
-        },
-        {
-            .test_name = "Multiple Inputs (Last overrides)",
-            .redir_lst = lst2,
-            .expected_return = 1, // Expect true (1) on success
-            .setup_files = setup_basic_in_out,
-            .cleanup_files = cleanup_basic_in_out,
-            .assert_behavior = assert_multiple_inputs
-        },
-        {
-            .test_name = "Multiple Outputs (All created, last retained)",
-            .redir_lst = lst3,
-            .expected_return = 1, // Expect true (1) on success
-            .setup_files = setup_basic_in_out,
-            .cleanup_files = cleanup_basic_in_out,
-            .assert_behavior = assert_multiple_outputs
-        },
-        {
-            .test_name = "Append Mode (APPEND)",
-            .redir_lst = lst4,
-            .expected_return = 1, // Expect true (1) on success
-            .setup_files = setup_basic_in_out,
-            .cleanup_files = cleanup_basic_in_out,
-            .assert_behavior = assert_append
-        },
-        {
-            .test_name = "Non-existent Input File Error",
-            .redir_lst = lst5,
-            .expected_return = 0, // Expect false (0) on failure
-            .setup_files = NULL,
-            .cleanup_files = NULL,
-            .assert_behavior = NULL
-        },
-        {
-            .test_name = "Write Permission Denied Error",
-            .redir_lst = lst6,
-            .expected_return = 0, // Expect false (0) on failure
-            .setup_files = setup_read_only_err,
-            .cleanup_files = cleanup_read_only_err,
-            .assert_behavior = NULL
-        }
-    };
+    tests[5].test_name = "Write Permission Denied Error";
+    tests[5].redir_lst = create_redir_node("test_readonly.txt", OUT);
+    tests[5].expected_return = 0;
+    tests[5].setup_files = setup_read_only_err;
+    tests[5].cleanup_files = cleanup_read_only_err;
 
     int num_tests = sizeof(tests) / sizeof(tests[0]);
     for (int i = 0; i < num_tests; i++)
     {
-        if (!run_single_redir_test(tests[i]))
+        if (!run_single_redir_test(tests, num_tests, i))
             success = 0;
     }
+
+    // Secondary fallback cleanup to catch allocated elements in case of upstream runner panics
+    for (int i = 0; i < num_tests; i++)
+    {
+        if (tests[i].redir_lst)
+            clear_redir_list(&tests[i].redir_lst);
+    }
+
     return (success);
 }

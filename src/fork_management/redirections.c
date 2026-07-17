@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/16 17:16:55 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/17 14:59:09 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 static int input_redir(char	*file, t_redir_type type, t_minishell	*mini)
 {
 	if(mini->in > -1)
-		mini->prev_out = mini->out;
+	{
+		mini->prev_in = mini->in;
+		close(mini->prev_in);
+		mini->prev_in = -42;
+	}
 	if(type == HERE)
 	{
 		mini->in = open(file, O_RDONLY);
@@ -32,7 +36,11 @@ static int input_redir(char	*file, t_redir_type type, t_minishell	*mini)
 static int output_redir(char	*file, t_redir_type type,t_minishell	*mini)
 {
 	if(mini->out > -1)
+	{
 		mini->prev_out = mini->out;
+		close(mini->prev_out);
+		mini->prev_out = -42;
+	}
 	if(type == APPEND)
 	{
 		mini->out = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -77,10 +85,6 @@ int redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 
 	while (redir_lst)
 	{
-		if(mini->prev_in > -1)
-			close(mini->prev_in);
-		if(mini->prev_out > -1)
-			close(mini->prev_out);
 		curr_redir = (t_redir_list	*)redir_lst->content;
 		if(curr_redir->redir_type == IN || curr_redir->redir_type == HERE)
 		{
