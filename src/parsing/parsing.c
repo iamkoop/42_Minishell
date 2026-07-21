@@ -6,12 +6,28 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/08 10:53:35 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:52:59 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-int initiate_parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri)
+int	parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+		t_cmd_data *cmd_data);
+int	is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
+int	redirect(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+		t_cmd_data *cmd_data);
+void	redir_type_assignment(t_redir_list *curr_redir, t_token_node *token_lst,
+			t_token_iteri *iteri);
+int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri);
+int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+		t_cmd_data *cmd_data);
+int	transfer_word(t_cmd_data *cmd_data, char word[WORD_AMOUNT][WORD_STR_SIZE]);
+void	free_strarray(char **array);
+size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_strarraylen(char **argv);
+int	delimit_command(t_cmd_data *cmd_data);
+
+int initiate_parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri)
 {
 	t_cmd_data				cmd_data;
 	t_command				*cmd;
@@ -20,22 +36,22 @@ int initiate_parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri)
 	if(!cmd)
 		return (1);
 	cmd_data.head = ft_single_lstnew(cmd);
-	if(!cmd_data-head)
+	if(!cmd_data.head)
 		return (1);
 	cmd_data.tail = cmd_data.head;
 	assert(token_lst != NULL);
-	assert(cmd_data != NULL);
+	assert(cmd_data.head != NULL);
 	if (parsing(env, token_lst, iteri, &cmd_data))
 		return (1);
 	return(0);
 }
 
-int	parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri,
+int	parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
 	int	is_redir;
 
-	bzero(&iteri, sizeof(t_token_iteri));
+	ft_bzero(iteri, sizeof(t_token_iteri));
 	while (token_lst[iteri->token].token_type)
 	{
 		is_redir = 0;
@@ -57,6 +73,7 @@ int	parsing(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 		}
 		iteri->token++;
 	}
+	printing_struct_content(cmd_data);
 	return (0);
 }
 
@@ -78,14 +95,14 @@ int	redirect(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *
 	t_redir_list		*curr_redir;
 	t_command		*tmp_cmd;
 	t_single_linked_node	*tmp_redir;
-	char			word[WORD_AMOUNT][WORD_STR_SIZE]
+	char			word[WORD_AMOUNT][WORD_STR_SIZE];
 
 	tmp_cmd = (t_command *)cmd_data->tail->content;
 	curr_redir = calloc(1, sizeof(t_redir_list));
 	if (!curr_redir)
 		return (1);
-	redir_type_assignment(curr_redir, token_lst);
-	if(quote_rm_var_expan(token_lst[iteri->token]->token_str, word, env, false))
+	redir_type_assignment(curr_redir, token_lst, iteri);
+	if(quote_rm_var_expan(token_lst[iteri->token].token_str, word, env, false))
 		return 1;
 	if(word[1][0] != 0)
 	{
@@ -106,19 +123,20 @@ int	redirect(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *
 	return (0);
 }
 
-void	redir_type_assignment(t_redir_list *curr_redir, t_token_node *token_lst)
+void	redir_type_assignment(t_redir_list *curr_redir, t_token_node *token_lst,
+			t_token_iteri *iteri)
 {
-	if (token_lsti[iteri->token]->token_type == REDIR_IN)
-		curr_redir->redir_type == IN;
-	else if (token_lst[iteri->token]->token_type == REDIR_OUT)
-		curr_redir->redir_type == OUT;
-	else if (token_lst[iteri->token]->token_type == REDIR_OUT_A)
-		curr_redir->redir_type == APPEND;
-	else if (token_lst[iteri->token]->token_type == HERE_DOC)
-		curr_redir->redir_type == HERE;
+	if (token_lst[iteri->token - 1].token_type == REDIR_IN)
+		curr_redir->redir_type = IN;
+	else if (token_lst[iteri->token - 1].token_type == REDIR_OUT)
+		curr_redir->redir_type = OUT;
+	else if (token_lst[iteri->token - 1].token_type == REDIR_OUT_A)
+		curr_redir->redir_type = APPEND;
+	else if (token_lst[iteri->token - 1].token_type == HERE_DOC)
+		curr_redir->redir_type = HERE;
 }
 
-int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
+int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 {
 	if (token_lst[0].token_type == PIPE)
 		return (1);
@@ -133,7 +151,8 @@ int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 				|| token_lst[iteri->token].token_type == HERE_DOC
 				|| token_lst[iteri->token].token_type == PIPE))
 		return (1);
-	else if(token_lst[iteri->token].token_type == PIPE && token_lst[iteri->token + 1].token_type == PIPE)
+	else if (token_lst[iteri->token].token_type == PIPE
+				&& token_lst[iteri->token + 1].token_type == PIPE)
 		return (1);
 	else if ((token_lst[iteri->token].token_type == REDIR_IN
 				|| token_lst[iteri->token].token_type == REDIR_OUT
@@ -145,7 +164,7 @@ int	syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 	return (0);
 }
 
-int	word_or_pipe(char **env, t_token_node *token_lst, t_token_iteri *iteri,
+int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
 		t_cmd_data *cmd_data)
 {
 	char	word[WORD_AMOUNT][WORD_STR_SIZE];
@@ -157,7 +176,7 @@ int	word_or_pipe(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 			return (1);
 		if(transfer_word(cmd_data, word))
 		{
-			perror();
+			perror("minishell: Malloc for words in parsing failed");
 			return (1);
 		}
 	}
@@ -166,54 +185,58 @@ int	word_or_pipe(char **env, t_token_node *token_lst, t_token_iteri *iteri,
 		if(delimit_command(cmd_data))
 			return (1);
 	}
+	return (0);
 }
 
-int	transfer_word(t_cmd_data *cmd_data, word[WORD_AMOUNT][WORD_STR_SIZE])
+int	transfer_word(t_cmd_data *cmd_data, char word[WORD_AMOUNT][WORD_STR_SIZE])
 {
 	int		i;
 	int		j;
 	size_t		argv_i;
 	size_t		argv_j;
 	char		**tmp_argv;
-	t_command	*tmp_cmd;
+	t_command	*curr_cmd;
 	
-	tmp_cmd = (t_command *)cmd_data->tail->content;
-	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(tmp_cmd->argv) + 1, sizeof(char *));
+	curr_cmd = (t_command *)cmd_data->tail->content;
+	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(curr_cmd->argv) + 1, sizeof(char *));
 	if(!tmp_argv)
 		return (1);
 	argv_i = 0;
-	while(tmp_cmd->argv[argv_i])
+	while(curr_cmd->argv && curr_cmd->argv[argv_i])
 	{
-		tmp_argv[argv_i] = calloc(ft_strlen(tmp_cmd->argv[argv_i]), 1);
+		tmp_argv[argv_i] = calloc(ft_strlen(curr_cmd->argv[argv_i] + 1), 1);
 		if(!tmp_argv[argv_i])
-			return (1);
-		argv_j = 0;
-		while(tmp_cmd->arg[argv_i][argv_j])
 		{
-			tmp_arv[argv_i][argv_j] = tmp_cmd->arg[argv_i][argv_j];
+			free_strarray(tmp_argv);
+			return (1);
+		}
+		argv_j = 0;
+		while(curr_cmd->argv[argv_i][argv_j])
+		{
+			tmp_argv[argv_i][argv_j] = curr_cmd->argv[argv_i][argv_j];
 			argv_j++;
 		}
-		tmp_arv[argv_i][argv_j] = 0;
+		tmp_argv[argv_i][argv_j] = 0;
 		argv_i++;
 	}
 	i = 0;
 	while(i < WORD_AMOUNT && word[i][0] != 0)
 	{
-		tmp_argv[argv_i + i] = calloc(ft_strlen(word[i], 1));
+		tmp_argv[argv_i + i] = calloc(ft_strlen(word[i]) + 1, 1);
 		if(!tmp_argv[argv_i + i])
 			return (1);
 		j = 0;
 		while(word[i][j])
 		{
-			tmp_arv[argv_i + i][j] = word[i][j];
+			tmp_argv[argv_i + i][j] = word[i][j];
 			j++;
 		}
-		tmp_arv[argv_i + i][j] = 0;
+		tmp_argv[argv_i + i][j] = 0;
 		i++;
 	}
-	tmp_arv[argv_i + i] = NULL;
-	free_strarray(tmp_cmd->argv);
-	tmp_cmd->argv = tmp_argv;
+	tmp_argv[argv_i + i] = NULL;
+	free_strarray(curr_cmd->argv);
+	curr_cmd->argv = tmp_argv;
 	return (0);
 }
 
@@ -221,6 +244,8 @@ void	free_strarray(char **array)
 {
 	int i;
 
+	if(!array)
+		return ;
 	i = 0;
 	while(array[i])
 	{
@@ -244,6 +269,8 @@ size_t	ft_strarraylen(char **argv)
 {
 	size_t	i;
 
+	if(!argv)
+		return (0);
 	i = 0;
 	while(argv[i])
 		i++;
@@ -253,13 +280,13 @@ size_t	ft_strarraylen(char **argv)
 int	delimit_command(t_cmd_data *cmd_data)
 {
 	t_command		*new_cmd;
-	t_single_linked_node	new_node_ptr;
+	t_single_linked_node	*new_node_ptr;
 
 	new_cmd = calloc(1, sizeof(t_command));
 	if(!new_cmd)
 		return (1);
 	new_node_ptr = ft_single_lstnew(new_cmd);
-	if(!tmp_node_ptr)
+	if(!new_node_ptr)
 		return (1);
 	ft_lstadd_back_single_linked(&cmd_data->head, new_node_ptr);
 	cmd_data->tail = new_node_ptr;

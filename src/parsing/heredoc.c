@@ -6,17 +6,18 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/03 16:58:18 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/21 14:10:11 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-int			here_doc(char *input, char **env, t_token_node *token_lst,
+int			here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
 static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
 				t_token_iteri *iteri, bool *expansion);
 static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
-static int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter);
+static char *adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+				t_single_linked_node *env);
 static int	write_check(ssize_t c_written, size_t len);
 
 int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
@@ -28,7 +29,6 @@ int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 	bool	expansion;
 	int		fd;
 
-	env = NULL;	
 	expansion = false;
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
 	if (prepare_delimiter(delimiter, token_lst, iteri, &expansion))
@@ -45,6 +45,8 @@ int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 	if(buffer)
 	{
 		free(buffer);
+		close(fd);
+//		delete_hd_files();
 		return (1);
 	}
 	close(fd);
@@ -61,16 +63,14 @@ static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
 	if (len >= HD_DELIMITER_LEN)
 	{
 		error("exceeding memory limit: Heredoc delimiter \
-				\nTo use a longer delimiter raise HD_DELIMITER_LEN \
-				in minishell.h");
+				\nRaise HD_DELIMITER_LEN in minishell.h");
 		return (1);
 	}
 	ft_strlcpy(delimiter, token_lst[iteri->token - 1].token_str, len +1);
 	if (strchr(delimiter, '\"') || strchr(delimiter, '\''))
-	{
-		*expansion = true;
 		quote_removal(delimiter);
-	}
+	else
+		*expansion = true;
 	return (0);
 }
 
@@ -99,7 +99,8 @@ static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri 
 	return (0);
 }
 
-static char	*adding_heredoc_into_file(int fd, bool expansion, char *delimiter, t_single_linked_node *env)
+static char	*adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+				t_single_linked_node *env)
 {
 	char	*heredoc_input;
 	ssize_t	c_written;
@@ -111,11 +112,10 @@ static char	*adding_heredoc_into_file(int fd, bool expansion, char *delimiter, t
 	{
 		heredoc_input = readline("> ");
 		if (!ft_strncmp(delimiter, heredoc_input, HD_DELIMITER_LEN))
-			break ;
-		quote_rm_var_expan(heredoc_input, word, t_single_linked_node *env, true)
+			return (free(heredoc_input), NULL);
 		if(expansion)
 		{
-			if(quote_rm_var_expan(heredoc_input, word, t_single_linked_node *env, true))
+			if(quote_rm_var_expan(heredoc_input, word, env, true))
 				return (heredoc_input);
 			assert(word[1][0] == 0);
 			tmp_heredoc_input = calloc(1, ft_strlen(word[0]) + 1);
@@ -126,7 +126,7 @@ static char	*adding_heredoc_into_file(int fd, bool expansion, char *delimiter, t
 			heredoc_input = tmp_heredoc_input;
 		}
 		c_written = write(fd, heredoc_input, ft_strlen(heredoc_input));
-		if (write_check(c_written, len))
+		if (write_check(c_written, ft_strlen(heredoc_input)))
 			return (heredoc_input);
 		c_written = write(fd, "\n", 1);
 		if (write_check(c_written, 1))

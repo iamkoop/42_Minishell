@@ -6,23 +6,23 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/05 17:04:20 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/21 17:00:01 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-int			tokenization(char *input, char **env, t_token_node *token_lst,
+int			tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-static void	here_or_append(char *input, char **env, t_token_node *token_lst,
+static void	here_or_append(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-static void	operators(char *input, char **env, t_token_node *token_lst,
+static void	operators(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-static int	quotation_mode(char *input, char **env, t_token_node *token_lst,
+static int	quotation_mode(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-static void	space_or_word(char *input, char **env, t_token_node *token_lst,
+static void	space_or_word(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
 
-int	tokenization(char *input, char **env, t_token_node *token_lst,
+int	tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		t_token_iteri *iteri)
 {
 	int	status;
@@ -30,8 +30,8 @@ int	tokenization(char *input, char **env, t_token_node *token_lst,
 	status = 0;
 	while (input[iteri->i])
 	{
-		if (iteri->i != 0 && (input[iteri->i - 1] == '>' || input[iteri->i - 1] == '<')
-				&& (input[iteri->i] == '>' || input[iteri->i] == '<'))
+		if (iteri->i != 0 && ((input[iteri->i - 1] == '>' && input[iteri->i] == '>')
+				|| (input[iteri->i - 1] == '<' && input[iteri->i] == '<')))
 			here_or_append(input, env, token_lst, iteri);
 		else if (input[iteri->i] == '<' || input[iteri->i] == '>' || input[iteri->i] == '|')
 			operators(input, env, token_lst, iteri);
@@ -47,12 +47,15 @@ int	tokenization(char *input, char **env, t_token_node *token_lst,
 		iteri->i++;
 	}
 	delimit_token(input, env, token_lst, iteri);
-	tokenization_testing(token_lst, env);
-//	parsing(env, token_lst, iteri);
+//	tokenization_testing(token_lst, env);
+	#ifndef SKIP_PARSING
+	if(!initiate_parsing(env, token_lst, iteri))
+		return (1);
+	#endif
 	return (0);
 }
 
-static void	here_or_append(char *input, char **env, t_token_node *token_lst,
+static void	here_or_append(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		t_token_iteri *iteri)
 {
 	if (input[iteri->i - 1] == '>' && input[iteri->i] == '>')
@@ -69,7 +72,7 @@ static void	here_or_append(char *input, char **env, t_token_node *token_lst,
 	}
 }
 
-static void	operators(char *input, char **env, t_token_node *token_lst,
+static void	operators(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		t_token_iteri *iteri)
 {
 	if (input[iteri->i] == '<')
@@ -94,7 +97,7 @@ static void	operators(char *input, char **env, t_token_node *token_lst,
 	}
 }
 
-static int	quotation_mode(char *input, char **env, t_token_node *token_lst,
+static int	quotation_mode(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		t_token_iteri *iteri)
 {
 	char	c;
@@ -122,7 +125,7 @@ static int	quotation_mode(char *input, char **env, t_token_node *token_lst,
 	}
 }
 
-static void	space_or_word(char *input, char **env, t_token_node *token_lst,
+static void	space_or_word(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		t_token_iteri *iteri)
 {
 	if (input[iteri->i] == ' ' || input[iteri->i] == '\t' || input[iteri->i] == '\v')

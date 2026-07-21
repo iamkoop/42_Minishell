@@ -6,15 +6,15 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/04 18:12:14 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/21 17:56:26 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-void	ft_get_commandline_input(char **env);
-void	initiate_tokenization(char *input, char **env);
+void	ft_get_commandline_input(t_single_linked_node *env);
+void	initiate_tokenization(char *input, t_single_linked_node *env);
 
-void	get_commandline_input(char **env)
+void	get_commandline_input(t_single_linked_node *env)
 {
 	char	*input;
 
@@ -31,13 +31,13 @@ void	get_commandline_input(char **env)
 	}
 }
 
-void	initiate_tokenization(char *input, char **env)
+void	initiate_tokenization(char *input, t_single_linked_node *env)
 {
 	t_token_node	token_lst[TOKEN_AMOUNT];
 	t_token_iteri	iteri;
 
-	bzero(token_lst, sizeof(t_token_node) * TOKEN_AMOUNT);
-	bzero(&iteri, sizeof(t_token_iteri));
+	ft_bzero(token_lst, sizeof(t_token_node) * TOKEN_AMOUNT);
+	ft_bzero(&iteri, sizeof(t_token_iteri));
 	if (tokenization(input, env, token_lst, &iteri))
 		delete_hd_files();
 }

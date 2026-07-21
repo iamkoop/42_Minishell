@@ -21,6 +21,8 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/quote_removal.c \
 		  src/parsing/error.c \
 		  src/parsing/delete_heredocs.c \
+		  src/parsing/parsing.c \
+		  src/parsing/quote_removal_var_expansion.c \
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(PARSING)
 CFILES = $(EXECFILES)
@@ -70,6 +72,7 @@ TEST_SRCS   = $(shell find testing -name "*.c")
 TEST_OFILES = $(TEST_SRCS:.c=.o)
 
 # 2. UNIVERSAL RULE: Compiles ANY .o file located anywhere inside the testing/ tree.
+# (21.6.2026 Barbara removed $(HEADER) to make the testing.h file work)
 $(TEST_OFILES): %.o: %.c testing/testing.h $(HEADER)
 	$(CC) $(CFLAGS) $(TEST_FLAGS) -c $< -o $@
 

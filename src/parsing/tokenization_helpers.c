@@ -6,25 +6,37 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 10:56:18 by bastalze          #+#    #+#             */
-/*   Updated: 2026/06/01 10:29:35 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/21 12:55:20 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
 
-void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-void	delimit_token(char *input, char **env, t_token_node *token_lst,
-				t_token_iteri *iteri);
+int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
+int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+		t_token_iteri *iteri);
 
-void	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri)
+int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri)
 {
 	token_lst[iteri->token].token_str[iteri->t] = c;
+	if(iteri->t >= TOKEN_STR_SIZE)
+	{
+		error("exceeding memory limit: Token length \
+			   	\nRaise TOKEN_STR_SIZE in minishell.h");
+		return (1);
+	}
 	iteri->t++;
+	return (0);
 }
 
-void	delimit_token(char *input, char **env, t_token_node *token_lst,
+int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri)
 {
-	env = NULL;
+	if(iteri->token >= TOKEN_AMOUNT)
+	{
+		error("exceeding memory limit: Amount of tokens \
+			   	\nRaise TOKEN_AMOUNT in minishell.h");
+		return (1);
+	}
 	iteri->token++;
 	iteri->t = 0;
 	if (iteri->token >= 2
@@ -34,4 +46,5 @@ void	delimit_token(char *input, char **env, t_token_node *token_lst,
 		printf("Heredoc entered\n");
 		here_doc(input, env, token_lst, iteri);
 	}
+	return (0);
 }
