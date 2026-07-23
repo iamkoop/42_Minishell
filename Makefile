@@ -16,6 +16,7 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 
 PARSING = src/parsing/readline.c \
 		  src/parsing/tokenization.c \
+		  src/parsing/tokenization_operators.c \
 		  src/parsing/tokenization_helpers.c \
 		  src/parsing/heredoc.c \
 		  src/parsing/quote_removal.c \

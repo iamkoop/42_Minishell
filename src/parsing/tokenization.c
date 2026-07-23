@@ -13,13 +13,11 @@
 
 int			tokenization(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
-static int	here_or_append(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
-static int	operators(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
 static int	quotation_mode(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
 static int	space_or_word(char *input, t_single_linked_node *env,
+				t_token_node *token_lst, t_token_iteri *iteri);
+static int	word(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
 
 int	tokenization(char *input, t_single_linked_node *env,
@@ -27,17 +25,10 @@ int	tokenization(char *input, t_single_linked_node *env,
 {
 	while (input[iteri->i])
 	{
-		if (iteri->i != 0 && ((input[iteri->i - 1] == '>'
-					&& input[iteri->i] == '>')
-				|| (input[iteri->i - 1] == '<' && input[iteri->i] == '<')))
-		{
-			if (here_or_append(input, env, token_lst, iteri))
-				return (1);
-		}
-		else if (input[iteri->i] == '<' || input[iteri->i] == '>'
+		if (input[iteri->i] == '<' || input[iteri->i] == '>'
 			|| input[iteri->i] == '|')
 		{
-			if (operators(input, env, token_lst, iteri))
+			if (operators1(input, env, token_lst, iteri))
 				return (1);
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
@@ -57,60 +48,6 @@ int	tokenization(char *input, t_single_linked_node *env,
 //	tokenization_testing(token_lst, env);
 //	if(!initiate_parsing(env, token_lst, iteri))
 //		return (1);
-	return (0);
-}
-
-static int	here_or_append(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
-{
-	if (input[iteri->i - 1] == '>' && input[iteri->i] == '>')
-	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
-			return (1);
-		token_lst[iteri->token].token_type = REDIR_OUT_A;
-		if (delimit_token(input, env, token_lst, iteri))
-			return (1);
-	}
-	else if (input[iteri->i - 1] == '<' && input[iteri->i] == '<')
-	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
-			return (1);
-		token_lst[iteri->token].token_type = HERE_DOC;
-		if (delimit_token(input, env, token_lst, iteri))
-			return (1);
-	}
-	return (0);
-}
-
-static int	operators(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
-{
-	if (add_to_token(input[iteri->i], token_lst, iteri))
-		return (1);
-	if (input[iteri->i] == '<')
-	{
-		token_lst[iteri->token].token_type = REDIR_IN;
-		if (input[iteri->i + 1] != '<')
-		{
-			if (delimit_token(input, env, token_lst, iteri))
-				return (1);
-		}
-	}
-	else if (input[iteri->i] == '>')
-	{
-		token_lst[iteri->token].token_type = REDIR_OUT;
-		if (input[iteri->i + 1] != '>')
-		{
-			if (delimit_token(input, env, token_lst, iteri))
-				return (1);
-		}
-	}
-	else if (input[iteri->i] == '|')
-	{
-		token_lst[iteri->token].token_type = PIPE;
-		if (delimit_token(input, env, token_lst, iteri))
-			return (1);
-	}
 	return (0);
 }
 
@@ -138,11 +75,7 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 		return (0);
 	}
 	else
-	{
-		error("Quotation not closed");
-		return (1);
-	}
-	return (0);
+		return (error("Quotation not closed"), 1);
 }
 
 static int	space_or_word(char *input, t_single_linked_node *env,
@@ -157,7 +90,18 @@ static int	space_or_word(char *input, t_single_linked_node *env,
 				return (1);
 		}
 	}
-	else if (iteri->t != 0)
+	else
+	{
+		if (word(input, env, token_lst, iteri))
+			return (1);
+	}
+	return (0);
+}
+
+int	word(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri)
+{
+	if (iteri->t != 0)
 	{
 		if (add_to_token(input[iteri->i], token_lst, iteri))
 			return (1);
