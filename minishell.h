@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/21 14:49:36 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/23 19:48:02 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -24,13 +24,11 @@
 # include <stdbool.h>
 # include <dirent.h>
 
-//Delete after integrating libft!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# include <strings.h>
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include <assert.h>
 
-# define TOKEN_AMOUNT 50
-# define TOKEN_STR_SIZE 50
+# define TOKEN_AMOUNT 10
+# define TOKEN_STR_SIZE 10
 # define HD_DELIMITER_LEN 50 
 # define WORD_AMOUNT 40
 # define WORD_STR_SIZE 50
@@ -60,7 +58,7 @@ typedef struct s_token_iteri
 	int		i;
 }		t_token_iteri;
 
-//Commands for execution:
+//Parsing:
 enum e_redir_type
 {
 	IN,
@@ -113,20 +111,33 @@ char					**env_to_char_arr(t_single_linked_node	*lst);
 //builtins
 void					env(t_single_linked_node	*envp);
 void					echo(char	**input);
-//parsing
+//PARSING PART
 void	get_commandline_input(t_single_linked_node *env);
-int		tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
-			t_token_iteri *iteri);
-int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-int		delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
-				t_token_iteri *iteri);
+//tokenization
+int	tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
+		t_token_iteri *iteri);
+/*int	here_or_append(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri);
+int	operators1(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri);
+int	operators2(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri);
+int	redirections(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri);*/
+int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
+int	delimit_token(char *input, t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri);
+//heredoc
 char	*quote_removal(char *delimiter);
 int		here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+//error and exit functions
 void	error(char *message);
 void	delete_hd_files();
+// parsing
 int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+//quote removal and variable expansion
 int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 			t_single_linked_node *env, bool heredoc);
 

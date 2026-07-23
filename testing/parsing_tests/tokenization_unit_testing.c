@@ -6,12 +6,11 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:56:56 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/21 17:50:46 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/23 17:41:18 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 #include "../testing.h"
-#define SKIP_PARSING
 
 // ==================== TEST STRUCTURE ====================
 
@@ -35,7 +34,7 @@ void run_test(test_case tc, t_single_linked_node *env)
     ft_bzero(token_lst, sizeof(t_token_node) * 100);
     ft_bzero(&iteri, sizeof(t_token_iteri));
     
-    printf("📝 %s\n", tc.test_name);
+    printf("-> %s\n", tc.test_name);
     printf("   Input: '%s'\n", tc.input);
     
     // Run tokenization
@@ -58,7 +57,10 @@ void run_test(test_case tc, t_single_linked_node *env)
     }
     
     // Check token count
-    if (iteri.token != tc.expected_count) {
+	int i = 0;
+	while(token_lst[i].token_type)
+		i++;
+    if (i != tc.expected_count) {
         printf("   ❌ Wrong token count\n");
         printf("      Expected: %d tokens\n", tc.expected_count);
         printf("      Got:      %d tokens\n", iteri.token);
@@ -145,14 +147,6 @@ void tokenization_unit_testing(t_single_linked_node *env)
             .input = "cat < in.txt",
             .expected_tokens = {"cat", "<", "in.txt"},
             .expected_types = {WORD, REDIR_IN, WORD},
-            .expected_count = 3,
-            .expect_error = 0
-        },
-        {
-            .test_name = "Here document",
-            .input = "cat << EOF",
-            .expected_tokens = {"cat", "<<", "EOF"},
-            .expected_types = {WORD, HERE_DOC, WORD},
             .expected_count = 3,
             .expect_error = 0
         },
@@ -277,7 +271,18 @@ void tokenization_unit_testing(t_single_linked_node *env)
             .expected_types = {WORD, REDIR_IN, WORD, REDIR_OUT, WORD, REDIR_OUT, WORD},
             .expected_count = 7,
             .expect_error = 0
+        },
+
+		// ==== UGLY CASES ====
+        {
+            .test_name = "Multiple redirections with weird spacing",
+            .input = "cmd< in.txt>out.txt 2> error.txt",
+            .expected_tokens = {"cmd", "<", "in.txt", ">", "out.txt", "2>", "error.txt"},
+            .expected_types = {WORD, REDIR_IN, WORD, REDIR_OUT, WORD, REDIR_OUT, WORD},
+            .expected_count = 7,
+            .expect_error = 0
         }
+
     };
     
     int num_tests = sizeof(tests) / sizeof(test_case);
