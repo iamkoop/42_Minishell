@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/21 17:56:26 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:42:10 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -26,7 +26,7 @@ void	get_commandline_input(t_single_linked_node *env)
 			add_history(input);
 			initiate_tokenization(input, env);
 			free(input);
-			delete_hd_files();
+//			delete_hd_files();
 		}
 	}
 }

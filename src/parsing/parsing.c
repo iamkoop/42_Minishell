@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/20 09:52:59 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:06:31 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -102,17 +102,19 @@ int	redirect(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *
 	if (!curr_redir)
 		return (1);
 	redir_type_assignment(curr_redir, token_lst, iteri);
-	if(quote_rm_var_expan(token_lst[iteri->token].token_str, word, env, false))
-		return 1;
-	if(word[1][0] != 0)
+	if (token_lst[iteri->token - 1].token_type == HERE_DOC)
+		curr_redir->fd = ft_atoi(token_lst[iteri->token].token_str);
+	else
 	{
-		error("ambiguous redirect");
-		return (1);
+		if (quote_rm_var_expan(token_lst[iteri->token].token_str, word, env, false))
+			return 1;
+		if (word[1][0] != 0)
+			return (error("ambiguous redirect"), 1);
+		curr_redir->filename = calloc(1, ft_strlen(word[0]) + 1);
+		if (!curr_redir->filename)
+			return (1);
+		ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
 	}
-	curr_redir->filename = calloc(1, ft_strlen(word[0]) + 1);
-	if (!curr_redir->filename)
-		return (1);
-	ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
 	tmp_redir = ft_single_lstnew(curr_redir);
 	if (!tmp_redir)
 		return (1);

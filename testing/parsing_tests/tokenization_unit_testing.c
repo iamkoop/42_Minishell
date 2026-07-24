@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:56:56 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/23 17:41:18 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/24 13:58:07 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -280,6 +280,22 @@ void tokenization_unit_testing(t_single_linked_node *env)
             .expected_tokens = {"cmd", "<", "in.txt", ">", "out.txt", "2>", "error.txt"},
             .expected_types = {WORD, REDIR_IN, WORD, REDIR_OUT, WORD, REDIR_OUT, WORD},
             .expected_count = 7,
+            .expect_error = 0
+        },
+        {
+            .test_name = "Multiple redirections with weird spacing",
+            .input = "cmd< in.txt>out.txt >error.txt",
+            .expected_tokens = {"cmd", "<", "in.txt", ">", "out.txt", ">", "error.txt"},
+            .expected_types = {WORD, REDIR_IN, WORD, REDIR_OUT, WORD, REDIR_OUT, WORD},
+            .expected_count = 7,
+            .expect_error = 0
+        },
+        {
+            .test_name = "Multiple pipes with weird spacing",
+            .input = "cat file.txt|<ubi.c ls|echo",
+            .expected_tokens = {"cat", "file.txt", "|", "<", "ubi.c", "ls", "|", "echo"},
+            .expected_types = {WORD, WORD, PIPE, REDIR_IN, WORD, WORD, PIPE, WORD},
+            .expected_count = 8,
             .expect_error = 0
         }
 

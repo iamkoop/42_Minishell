@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 14:31:41 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/16 16:43:05 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:36:35 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -14,9 +14,9 @@
 
 void	printing_struct_content(t_cmd_data *cmd_data)
 {
-	t_command				*tmp_cmd;
 	t_single_linked_node	*curr_cmd_node;
-	t_single_linked_node	*tmp_redir;
+	t_command				*tmp_cmd;
+	t_single_linked_node	*curr_redir;
 	t_redir_list			*tmp_redir_struct;
 	const char				*redir_types[] = {"IN", "OUT", "APPEND", "HERE"};
 	int 					i = 0;
@@ -45,16 +45,19 @@ void	printing_struct_content(t_cmd_data *cmd_data)
 		}
 		if(tmp_cmd->redir)
 		{
-			tmp_redir = tmp_cmd->redir;
+			curr_redir = tmp_cmd->redir;
 			printf("REDIRECTIONS\n");
 			i = 1;
-			while(tmp_redir)
+			while(curr_redir)
 			{
-				tmp_redir_struct = (t_redir_list *)tmp_redir->content;
+				tmp_redir_struct = (t_redir_list *)curr_redir->content;
 				printf("Redirection %d\n", i);
 				printf("- Redirection type: %s\n", redir_types[tmp_redir_struct->redir_type]);
 				printf("- Filename: %s\n", tmp_redir_struct->filename);
-				tmp_redir = tmp_redir->next;
+				printf("- fd: %d", tmp_redir_struct->fd);
+				if (tmp_redir_struct->fd)
+					close (tmp_redir_struct->fd);
+				curr_redir = curr_redir->next;
 				i++;
 				printf("\n");
 			}
