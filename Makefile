@@ -19,6 +19,7 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/tokenization_operators.c \
 		  src/parsing/tokenization_helpers.c \
 		  src/parsing/heredoc.c \
+		  src/parsing/heredoc_reading+writing.c \
 		  src/parsing/quote_removal.c \
 		  src/parsing/error.c \
 		  src/parsing/delete_heredocs.c \

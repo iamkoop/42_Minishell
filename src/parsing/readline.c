@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/24 14:42:10 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/27 11:53:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -21,6 +21,8 @@ void	get_commandline_input(t_single_linked_node *env)
 	while (42)
 	{
 		input = readline("Minishell> ");
+		if (!input)
+			return (error("EOF is encountered"));
 		if (input[0])
 		{
 			add_history(input);
@@ -38,6 +40,5 @@ void	initiate_tokenization(char *input, t_single_linked_node *env)
 
 	ft_bzero(token_lst, sizeof(t_token_node) * TOKEN_AMOUNT);
 	ft_bzero(&iteri, sizeof(t_token_iteri));
-	if (tokenization(input, env, token_lst, &iteri))
-		delete_hd_files();
+	tokenization(input, env, token_lst, &iteri);
 }

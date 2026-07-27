@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/24 14:20:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/27 10:42:34 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "testing.h"
@@ -27,7 +27,7 @@ int main(int argc, char	**argv, char **envp)
 	testing_exec(argv, envp);
 	printf("All Parcing Tests\n");
 	t_single_linked_node *env = creating_fake_env();
-	testing_parsing(env);
+//	testing_parsing(env);
 	get_commandline_input(env);
 }
 

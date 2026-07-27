@@ -6,12 +6,12 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/24 17:10:01 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/27 12:32:26 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-int			tokenization(char *input, t_single_linked_node *env,
+int		tokenization(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
 static int	quotation_mode(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
