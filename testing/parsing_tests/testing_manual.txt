@@ -6,7 +6,7 @@
 #    By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/27 09:42:09 by bastalze          #+#    #+#              #
-#    Updated: 2026/07/27 12:55:52 by bastalze         ###   ########.fr        #
+#    Updated: 2026/07/27 17:51:16 by bastalze         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 #General information:
@@ -21,6 +21,12 @@
 1. File heredoc.c is in src/parsing/
 2. In testing/parsing_tests/ is the scrip heredoc.testskript.sh it's not really necessary to run it but a little reminder of what has to be done.
 3. In the heredoc.c comment out line 50 `unlink(filename);`so the file can be cated into for testing
-4. Recommendation: main() - get_commandline_input(env); | get_commandline_input() - everything normal | parsing() - printing_struct_content(cmd_data); in end of function | comment out execution
+4. Recommendation: main() - get_commandline_input(env); | parsing() - printing_struct_content(cmd_data); in end of function & comment out execution
 
+# Quote removal, variable expansion
 
+This function is called in three different instances: Heredoc, parsing a word that is part of a command and parsing the filename for redirection.
+
+1. The file quote_removal_var_expansion.c is in src/parsing/
+2. The testfile qrve_unit_testing.c is in testing/parsing_tests/
+3. Recommendation: main() - testing_parsing() | testing_parsing() - only call qrva_unit_tester()

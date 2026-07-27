@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:45:00 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/24 17:12:27 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/27 17:39:42 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -113,5 +113,6 @@ void	testing_parsing(t_single_linked_node *env)
 //	test_heredoc_creation();
 //	get_commandline_input(env);
 //	initiate_tokenization(input}
-	tokenization_unit_testing(env);
+//	tokenization_unit_testing(env);
+	qrve_unit_testing(env);
 }
