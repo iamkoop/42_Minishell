@@ -25,6 +25,8 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/delete_heredocs.c \
 		  src/parsing/parsing.c \
 		  src/parsing/quote_removal_var_expansion.c \
+		  src/parsing/var_expansion_dollar_found.c \
+		  src/parsing/find_var_and_expand.c \
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(PARSING)
 CFILES = $(EXECFILES)

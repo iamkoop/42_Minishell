@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/24 16:22:46 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/28 17:41:03 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -45,6 +45,10 @@ int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 //	unlink(filename);
 	return (0);
 }
+
+//There is a separate read fd because the file offset of the write fd would be
+//where the last thing is written and then read would continue reading there.
+//This way with the read fd you start reading from the beginning of the file.
 
 static int	creating_read_fd(char *filename, t_token_node *token_lst,
 				t_token_iteri *iteri)

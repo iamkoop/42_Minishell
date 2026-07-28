@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 20:49:46 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/27 18:18:28 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/28 11:06:26 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -131,6 +131,33 @@ void    qrve_unit_testing(t_single_linked_node *env)
             .expected_return = 0,
             .expect_error = false,
             .description = "Invalid variable should be replaced with empty string",
+			.heredoc = false
+        },
+        // Test 4.1: Dollar with no name after
+        {
+            .input = "$...",
+            .expected_words = {"$..."},
+            .expected_return = 0,
+            .expect_error = false,
+            .description = "Dollar with no name after",
+			.heredoc = false
+        },
+        // Test 4.2: Dollar with no name after 2
+        {
+            .input = "$9VAR",
+            .expected_words = {"$9VAR"},
+            .expected_return = 0,
+            .expect_error = false,
+            .description = "Dollar with no name after 2",
+			.heredoc = false
+        },
+        // Test 4.2: Only dollar
+        {
+            .input = "$",
+            .expected_words = {"$"},
+            .expected_return = 0,
+            .expect_error = false,
+            .description = "Only dollar",
 			.heredoc = false
         },
         // Test 5: Empty input

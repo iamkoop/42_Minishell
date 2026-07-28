@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/27 14:27:16 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/28 12:48:11 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -142,6 +142,10 @@ int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
 //quote removal and variable expansion
 int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 			t_single_linked_node *env, bool heredoc);
+int		dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+			t_quote_iteri *iteri, t_single_linked_node *env);
+int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+			t_quote_iteri *iteri, t_single_linked_node *env);
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
