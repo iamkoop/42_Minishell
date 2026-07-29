@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/17 14:59:09 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/29 14:39:54 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ static int execute_redirections(t_minishell	*mini)
 {
 	if(mini->in > -1)
 	{
-		mini->final_redir_in = dup2(mini->in, STDIN_FILENO);
-		if(mini->final_redir_in == -1)
+		mini->redir_in = dup2(mini->in, STDIN_FILENO);
+		if(mini->redir_in == -1)
 		{
 			perror("final in redirection");
 			return(0);
@@ -68,8 +68,8 @@ static int execute_redirections(t_minishell	*mini)
 	}
 	if(mini->out > -1)
 	{
-		mini->final_redir_out = dup2(mini->out, STDOUT_FILENO);
-		if(mini->final_redir_out == -1)
+		mini->redir_out = dup2(mini->out, STDOUT_FILENO);
+		if(mini->redir_out == -1)
 		{
 			perror("final out redirection");
 			return(0);

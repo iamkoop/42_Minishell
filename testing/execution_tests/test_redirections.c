@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 15:57:58 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/17 14:32:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/29 14:40:59 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ static void clear_redir_list(t_single_linked_node **lst)
 static void init_mock_minishell(t_minishell *mini)
 {
     memset(mini, 0, sizeof(t_minishell));
-    mini->final_redir_in = -42;
-    mini->final_redir_out = -42;
+    mini->redir_in = -42;
+    mini->redir_out = -42;
     mini->prev_in = -42;
     mini->prev_out = -42;
     mini->in = -42;
@@ -147,19 +147,19 @@ static int assert_append(t_minishell *mini)
     read(fd, buf, sizeof(buf) - 1);
     close(fd);
     
-    return (mini->final_redir_out >= 0);
+    return (mini->redir_out >= 0);
 }
 
 static int assert_multiple_inputs(t_minishell *mini)
 {
-    if (mini->final_redir_in < 0)
+    if (mini->redir_in < 0)
         return (0);
     
     char buf[10];
     memset(buf, 0, 10);
     
     // Read directly at offset 0 without altering the pointer stream index
-    if (pread(mini->final_redir_in, buf, 9, 0) < 0)
+    if (pread(mini->redir_in, buf, 9, 0) < 0)
         return (0);
     
     return (strcmp(buf, "second") == 0);
@@ -170,7 +170,7 @@ static int assert_multiple_outputs(t_minishell *mini)
     int file1_exists = (access("test_outfile1.txt", F_OK) == 0);
     int file2_exists = (access("test_outfile2.txt", F_OK) == 0);
     
-    return (file1_exists && file2_exists && mini->final_redir_out >= 0);
+    return (file1_exists && file2_exists && mini->redir_out >= 0);
 }
 
 /* --- RUN TEST IN CHILD PROCESS --- */
@@ -210,8 +210,8 @@ static int run_single_redir_test(t_redir_test *tests, int num_tests, int current
         int ret = redirections(test->redir_lst, &mini);
 
         write(pipe_fd[1], &ret, sizeof(int));
-        write(pipe_fd[1], &mini.final_redir_in, sizeof(int));
-        write(pipe_fd[1], &mini.final_redir_out, sizeof(int));
+        write(pipe_fd[1], &mini.redir_in, sizeof(int));
+        write(pipe_fd[1], &mini.redir_out, sizeof(int));
         
         int assert_res = 1;
         if (test->assert_behavior)
