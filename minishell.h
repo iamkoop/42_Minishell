@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/17 18:55:31 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/29 19:41:12 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ typedef struct s_minishell
 {
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd;
-	int						status;
+	int						exit_status;
 	int						cmd_lst_size;
 	int						next_pipe_fds[2];
 	int						prev_read_fd;
@@ -172,6 +172,8 @@ int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
 
 int						redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
+void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);
+int						parent(t_minishell *mini, t_single_linked_node	*envp);
 //Functions of minishell:
 void					get_commandline_input(char **env);
 int						tokenization(char *input, char **env, t_token_node *token_lst,
