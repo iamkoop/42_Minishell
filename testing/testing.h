@@ -28,5 +28,6 @@ void	initiate_tokenization(char *input, t_single_linked_node *env);
 int		heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 void	tokenization_unit_testing(t_single_linked_node *env);
 void    qrve_unit_testing(t_single_linked_node *env);
+int		parsing_unit_testing();
 
 # endif

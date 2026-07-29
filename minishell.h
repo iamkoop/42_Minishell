@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/29 10:23:02 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/29 17:49:09 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -141,6 +141,9 @@ void    free_command_struct(t_cmd_data *cmd_data);
 // parsing
 int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+int		parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+			t_cmd_data *cmd_data);
+
 //quote removal and variable expansion
 int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 			t_single_linked_node *env, bool heredoc);

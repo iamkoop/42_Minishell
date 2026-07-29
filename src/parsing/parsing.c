@@ -73,7 +73,7 @@ int	parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *i
 		}
 		iteri->token++;
 	}
-	printing_struct_content(cmd_data);
+//	printing_struct_content(cmd_data);
 	return (0);
 }
 

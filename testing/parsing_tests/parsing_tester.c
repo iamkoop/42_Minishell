@@ -115,4 +115,5 @@ void	testing_parsing(t_single_linked_node *env)
 //	initiate_tokenization(input}
 //	tokenization_unit_testing(env);
 	qrve_unit_testing(env);
+	parsing_unit_testing();
 }
