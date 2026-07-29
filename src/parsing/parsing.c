@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/24 17:06:31 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/29 10:26:56 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -42,8 +42,8 @@ int initiate_parsing(t_single_linked_node *env, t_token_node *token_lst, t_token
 	assert(token_lst != NULL);
 	assert(cmd_data.head != NULL);
 	if (parsing(env, token_lst, iteri, &cmd_data))
-		return (1);
-	return(0);
+		return (free_command_struct(&cmd_data), 1);
+	return(free_command_struct(&cmd_data), 0);
 }
 
 int	parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,

@@ -23,6 +23,7 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/heredoc_quote_removal.c \
 		  src/parsing/error.c \
 		  src/parsing/delete_heredocs.c \
+		  src/parsing/free_command_struct.c \
 		  src/parsing/parsing.c \
 		  src/parsing/quote_removal_var_expansion.c \
 		  src/parsing/var_expansion_dollar_found.c \
