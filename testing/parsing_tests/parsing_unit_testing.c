@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 11:13:01 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/29 12:56:45 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/30 14:28:23 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -182,7 +182,7 @@ int run_single_command_test(t_test_case *tc)
     // Build token list from test case
     build_token_list(tc->tokens, tc->token_types, token_lst);
     
-	printf("Testcase \"%s\":\n", tc->test_case_name);
+	printf("Test \"%s\":\n", tc->test_case_name);
 
     // Initialize cmd_data
     if (init_cmd_data(&cmd_data))
@@ -296,6 +296,54 @@ int parsing_unit_testing()
 			.expected_return = 0,
 			.expected_redirection_count = 1,
 			.test_case_name = "Heredoc"
+		},
+		// Test 8: Error case - double redirection < >
+		{
+			.tokens = (char *[]){"ls", "<", ">", NULL},
+			.token_types = (enum e_token_type[]){WORD, REDIR_IN, REDIR_OUT},
+			.expected_argv = (char *[]){NULL},
+			.expected_filenames = (char *[]){NULL},
+			.expected_fds = (int []){0},
+			.expected_redir_types = (enum e_redir_type[]){0},
+			.expected_return = 1,
+			.expected_redirection_count = 0,
+			.test_case_name = "Error case - double redirection < >"
+		},
+		// Test 9: Error case - double redirection > <
+		{
+			.tokens = (char *[]){"ls", ">", "<", NULL},
+			.token_types = (enum e_token_type[]){WORD, REDIR_OUT, REDIR_IN},
+			.expected_argv = (char *[]){NULL},
+			.expected_filenames = (char *[]){NULL},
+			.expected_fds = (int []){0},
+			.expected_redir_types = (enum e_redir_type[]){0},
+			.expected_return = 1,
+			.expected_redirection_count = 0,
+			.test_case_name = "Error case - double redirection > <"
+		},
+		// Test 10: Error case - double redirection << <
+		{
+			.tokens = (char *[]){"ls", "<<", "<", NULL},
+			.token_types = (enum e_token_type[]){WORD, HERE_DOC, REDIR_IN},
+			.expected_argv = (char *[]){NULL},
+			.expected_filenames = (char *[]){NULL},
+			.expected_fds = (int []){0},
+			.expected_redir_types = (enum e_redir_type[]){0},
+			.expected_return = 1,
+			.expected_redirection_count = 0,
+			.test_case_name = "Error case - double redirection << <"
+		},
+		// Test 11: Input only quotes
+		{
+			.tokens = (char *[]){"\"\"", NULL},
+			.token_types = (enum e_token_type[]){WORD},
+			.expected_argv = (char *[]){NULL},
+			.expected_filenames = (char *[]){NULL},
+			.expected_fds = (int []){0},
+			.expected_redir_types = (enum e_redir_type[]){0},
+			.expected_return = 0,
+			.expected_redirection_count = 0,
+			.test_case_name = "Input only quotes"
 		}
 	};
 
@@ -304,9 +352,11 @@ int parsing_unit_testing()
     int test_count = sizeof(tests) / sizeof(tests[0]);
     int i;
     
+	printf("================= UNIT TESTS FOR PARSING =================\n");
+
     for (i = 0; i < test_count; i++)
     {
-        printf("\n--- Running test %d ---\n", i + 1);
+        printf("\n%d. ", i + 1);
         errors = run_single_command_test(&tests[i]);
 		if (errors == 0)
 			printf("\033[32mPASSED\033[0m\n");

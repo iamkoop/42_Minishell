@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/29 17:49:09 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/30 16:43:36 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -23,6 +23,7 @@
 # include <errno.h>
 # include <stdbool.h>
 # include <dirent.h>
+# include <signal.h>
 
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include <assert.h>
@@ -86,6 +87,15 @@ typedef struct	s_cmd_data
 	t_single_linked_node	*tail;
 }		t_cmd_data;
 
+//Adding word to command struct
+typedef struct s_word_iteri
+{
+	int 	i;
+	int 	j;
+	size_t	argv_i;
+	size_t	argv_j;
+}		t_word_iteri;
+
 //Quote_removal_variable_expansion
 typedef struct s_quote_iteri
 {
@@ -143,6 +153,14 @@ int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
 int		parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
 			t_cmd_data *cmd_data);
+int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
+int		redirect(t_single_linked_node *env, t_token_node *token_lst,
+			t_token_iteri *iteri, t_cmd_data *cmd_data);
+int		add_word_to_struct(t_cmd_data *cmd_data,
+				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+void	free_strarray(char **array);
+size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_strarraylen(char **argv);
 
 //quote removal and variable expansion
 int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],

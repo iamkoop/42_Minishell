@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/27 17:46:37 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/07/30 14:33:45 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "testing.h"
@@ -23,12 +23,17 @@ int main(int argc, char	**argv, char **envp)
 		return(1);	
 	printf("Testing Minishell\n");
 	printf("---------------------------\n");
-	printf("All Exectution Tests\n");
+	printf("========================================\n");
+	printf("|          ALL EXECUTION TEST          |\n");
+	printf("========================================\n");
 	testing_exec(argv, envp);
-	printf("All Parcing Tests\n");
+	printf("\n");
+	printf("========================================\n");
+	printf("|          ALL PARSING TESTS           |\n");
+	printf("========================================\n");
 	t_single_linked_node *env = creating_fake_env();
-	testing_parsing(env);
-//	get_commandline_input(env);
+//	testing_parsing(env);
+	get_commandline_input(env);
 }
 
 t_single_linked_node *creating_fake_env()
