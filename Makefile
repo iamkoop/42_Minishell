@@ -20,7 +20,8 @@ FORK_MANAGEMENT = src/fork_management/redirections.c \
 				  src/fork_management/parent.c \
 				  src/fork_management/child_processes.c \
 
-EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) exec_main.c
+EXEC_MAIN = src/exec_main.c
+EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN)
 CFILES = $(EXECFILES)
 OFILES = $(CFILES:.c=.o)
 

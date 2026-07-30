@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/29 19:41:17 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/30 13:56:16 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,45 +22,60 @@ static int	*create_id_array(int size)
 	return(id_arr);
 }
 
-int parent(t_minishell *mini, t_single_linked_node	*envp)
+static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 {
-	int i = 0;
+	int i;
+
+	i = 0;
+	while (i < size)
+	{
+		waitpid(fork_id[i], &mini->exit_status, 0);
+		i++;
+	}
+	if(mini->exit_status != -1337)
+		mini->exit_status = 1;
+}
+
+void parent(t_minishell *mini, t_single_linked_node	*envp)
+{
+	int size = 0;
 	int *fork_id;
 
 	mini->cmd_lst_size = ft_single_lstsize(mini->cmd_lst);
 	fork_id = create_id_array(mini->cmd_lst_size);
 	while(mini->cmd_lst)
-    {
-		if(i > 0)
+	{
+		if(size > 0)
 			mini->prev_read_fd = mini->next_pipe_fds[0];
 		if(mini->cmd_lst->next && pipe(mini->next_pipe_fds) == -1)
 		{
 			perror("pipe: ");
 			exit(1);
 		}
-		fork_id[i] = fork();
-		if(fork_id[i] == -1)
-			perror("fork failed");
-        if(fork_id[i] == 0)
+		fork_id[size] = fork();
+		if(fork_id[size] == -1)
+		{
+			mini->exit_status = -1337;
+			perror("fork in parent failed");
+			break ;
+		}
+		if(fork_id[size] == 0)
 		{
 			mini->curr_cmd = (t_command	*)mini->cmd_lst;
-			if(i == 0)
-				first_child(mini, envp);
+			if(size == 0)
+				child_process(mini, envp, 1, 0);
 			else if(!mini->cmd_lst->next)
-				last_child(mini, envp);
+				child_process(mini, envp, 0, 1);
 			else
-				middle_children(mini, envp);
+				child_process(mini, envp, 0, 2);
 		}
 		else
 		{
-			if(i > 0)
+			if(size > 0)
 				close(mini->prev_read_fd);
 		}
-		i++;
 		mini->cmd_lst = mini->cmd_lst->next;
+		size++;
  	}
-	for(int i = 0; i < mini->cmd_lst_size; i++)
-		waitpid(fork_id[i], &mini->exit_status, 0);
-	if (WIFEXITED(mini->exit_status))
-		return (WEXITSTATUS(mini->exit_status));
+	wait_for_children(mini, fork_id, size);
 }

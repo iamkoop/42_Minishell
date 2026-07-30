@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/29 14:39:54 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/07/30 17:44:01 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,4 +99,28 @@ int redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 		redir_lst = redir_lst->next;
 	}
 	return(execute_redirections(mini));
+}
+
+int builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp)
+{
+	int		ret;
+	int		saved_in;
+	int		saved_out;
+
+	saved_in = dup(STDIN_FILENO);
+	if(saved_in == -1)
+		return(perror("dup failed in builtin edge_case"), 0);
+	saved_out = dup(STDOUT_FILENO);
+	if(saved_out == -1)
+		return(perror("dup failed in builtin edge_case"), close(saved_in), 0);
+	if(!redirections(mini->curr_cmd->redir, mini))
+				return(close(saved_in),close(saved_out), 0);
+	mini->exit_status = exec_command(mini->curr_cmd->argv, envp);
+	if(dup2(saved_in, STDIN_FILENO) == -1)
+		perror("dup failed in builtin edge_case");
+	close(saved_in);
+	if(dup2(saved_out, STDOUT_FILENO) == -1)
+		perror("dup failed in builtin edge_case");
+	close(saved_out);
+	return(1);
 }
