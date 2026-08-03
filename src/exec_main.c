@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:56:59 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/30 15:05:06 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/03 13:49:52 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp)
 {
-	t_command	*cmd;
 	mini->cmd_lst = cmd_lst;
 	if(!mini->cmd_lst)
 		return ;
@@ -24,7 +23,7 @@ void exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked
 	else if(mini->cmd_lst_size == 1)
 	{
 		mini->curr_cmd = (t_command	*)cmd_lst->content;
-		if(is_builtin(cmd->argv[0]))
+		if(is_builtin(mini->curr_cmd->argv[0]))
 		{
 			
 		}

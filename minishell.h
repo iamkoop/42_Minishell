@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 15:06:44 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/03 19:27:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ int						export(char **input, t_single_linked_node *envp);
 int						is_builtin(char *cmd);
 int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
+void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp);
 
 int						redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);

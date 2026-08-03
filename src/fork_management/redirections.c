@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/30 17:44:01 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/03 18:49:32 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ int redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 
 int builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp)
 {
-	int		ret;
 	int		saved_in;
 	int		saved_out;
 

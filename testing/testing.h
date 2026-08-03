@@ -28,5 +28,6 @@ int test_unset(char **envp);
 int test_export(char **envp);
 int test_exec_command(char **envp);
 int test_redirections_suite(void);
+int test_general_cmd_exec(void);
 
 # endif
