@@ -49,3 +49,8 @@ Posix (Here-Document) "If no part of word is quoted, all lines of the here-docum
 Ctrl+C - SIGINT
 Ctrl+\ - SIGQUIT
 
+### ctrl backslash
+signal SIGQUIT ignored with signal() in main.c
+
+### ctrl d
+as in bash: when pressed on empty line in interactive mode it exits, in heredoc it delimits and prints a warning because it wasn't delimited correctly but command runs

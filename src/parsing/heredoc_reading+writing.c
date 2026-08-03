@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/27 12:24:37 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/03 17:52:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -29,8 +29,9 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 	while (42)
 	{
 		heredoc_input = readline("> ");
-//		if (!heredoc_input)
-//			return (1);
+		if (!heredoc_input)
+			return (error("warning: here-document delimited by end-of-file "
+						"instead of delimiter"), 0);
 		if (!ft_strncmp(delimiter, heredoc_input, HD_DELIMITER_LEN))
 			return (free(heredoc_input), 0);
 		if (expansion)

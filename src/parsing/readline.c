@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/27 11:53:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/03 17:37:43 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -22,7 +22,10 @@ void	get_commandline_input(t_single_linked_node *env)
 	{
 		input = readline("Minishell> ");
 		if (!input)
-			return (error("EOF is encountered"));
+		{
+			write(2, "exit\n", 5);
+			return ;
+		}
 		if (input[0])
 		{
 			add_history(input);

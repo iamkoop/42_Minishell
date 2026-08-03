@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 16:43:36 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/03 17:22:07 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef MINISHELL_H
@@ -33,6 +33,8 @@
 # define HD_DELIMITER_LEN 50 
 # define WORD_AMOUNT 40
 # define WORD_STR_SIZE 50
+
+extern int signal_code;
 
 //Tokenization:
 enum e_token_type
