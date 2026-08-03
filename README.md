@@ -43,3 +43,9 @@ Posix (Here-Document) "If no part of word is quoted, all lines of the here-docum
 - testing if the entire parsing works
 - function to free the entire struct
 - where are testfiles and quote removal and delete heredoc
+
+## Signals
+
+Ctrl+C - SIGINT
+Ctrl+\ - SIGQUIT
+

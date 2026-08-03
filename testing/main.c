@@ -6,15 +6,42 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/30 14:33:45 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/03 15:14:49 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "testing.h"
 t_single_linked_node *creating_fake_env();
 
+/*
+static void	handler_c()
+{
+
+}
+*/
+
+void	signal_ctrl_baslash()
+{
+	__sighandler_t	sig_return;
+
+	sig_return = signal(SIGQUIT, SIG_IGN);
+	if (sig_return == SIG_ERR)
+		perror("minishell: error in signal when ignoring ctrl+\\");
+}
 
 int main(int argc, char	**argv, char **envp)
 {
+/*
+	struct sigaction	c;
+	struct sigaction	d;
+	struct sigaction	backslash;
+
+	c.sa_handler = handler_c;
+	sigemptyset(&c.sa_mask);
+	if (sigaction(SIGINT, &c, NULL);
+		return (perror("minishell: SIGINT failed"), 1);
+*/
+	signal_ctrl_baslash();
+
 	if(argc == -1)
 		return(-1);
 	if(!argv || !*argv)
@@ -45,3 +72,4 @@ t_single_linked_node *creating_fake_env()
     env_struct->value = strdup("Hamster cage");
 	return (ft_single_lstnew(env_struct));
 }
+
