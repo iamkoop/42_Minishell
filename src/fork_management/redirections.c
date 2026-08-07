@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/03 18:49:32 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/07 20:46:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ static int input_redir(char	*file, t_redir_type type, t_minishell	*mini)
 	if(mini->in > -1)
 	{
 		mini->prev_in = mini->in;
-		close(mini->prev_in);
-		mini->prev_in = -42;
+		close_fd(&mini->prev_in);
 	}
 	if(type == HERE)
 	{
@@ -38,8 +37,7 @@ static int output_redir(char	*file, t_redir_type type,t_minishell	*mini)
 	if(mini->out > -1)
 	{
 		mini->prev_out = mini->out;
-		close(mini->prev_out);
-		mini->prev_out = -42;
+		close_fd(&mini->prev_out);
 	}
 	if(type == APPEND)
 	{
@@ -64,7 +62,7 @@ static int execute_redirections(t_minishell	*mini)
 			perror("final in redirection");
 			return(0);
 		}
-		close(mini->in);
+		close_fd(&mini->in);
 	}
 	if(mini->out > -1)
 	{
@@ -74,7 +72,7 @@ static int execute_redirections(t_minishell	*mini)
 			perror("final out redirection");
 			return(0);
 		}
-		close(mini->out);
+		close_fd(&mini->out);
 	}
 	return(1);
 }

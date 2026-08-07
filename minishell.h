@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/03 19:27:30 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/07 20:34:15 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ int						is_builtin(char *cmd);
 int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
 void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp);
+int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp);
 
 int						redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);
@@ -185,6 +186,10 @@ void					delimit_token(char *input, char **env, t_token_node *token_lst,
 char					*quote_removal(char *delimiter);
 int						here_doc(char *input, char **env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+
+// Cleanup functions
+
+void					close_fd(int	*fd);
 
 //Testers:
 void					tokenization_testing(t_token_node *token_lst, char **env);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/06 17:21:59 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/06 20:59:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,14 @@ static char	*check_if_its_a_path(char *cmd, t_exit_status *mini, int *iterate)
 	if (ft_strchr(cmd, '/'))
 	{
 		if (check_access(cmd, mini, 1))
-		{
-			*iterate = 1;
 			return (cmd);
-		}
 		else
+		{
 			*iterate = 0;
+			return(NULL);
+		}
 	}
+	*iterate = 1;
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/30 13:56:16 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/07 22:43:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,18 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 		}
 		if(fork_id[size] == 0)
 		{
-			mini->curr_cmd = (t_command	*)mini->cmd_lst;
+			mini->curr_cmd = (t_command	*)mini->cmd_lst->content;
 			if(size == 0)
 				child_process(mini, envp, 1, 0);
 			else if(!mini->cmd_lst->next)
-				child_process(mini, envp, 0, 1);
-			else
 				child_process(mini, envp, 0, 2);
+			else
+				child_process(mini, envp, 0, 1);
 		}
 		else
 		{
 			if(size > 0)
-				close(mini->prev_read_fd);
+				close_fd(&mini->prev_read_fd);
 		}
 		mini->cmd_lst = mini->cmd_lst->next;
 		size++;
