@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/29 10:26:56 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/04 14:46:21 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -64,7 +64,7 @@ int	parsing(t_single_linked_node *env, t_token_node *token_lst,
 		}
 		iteri->token++;
 	}
-//	printing_struct_content(cmd_data);
+	printing_struct_content(cmd_data);
 	return (0);
 }
 

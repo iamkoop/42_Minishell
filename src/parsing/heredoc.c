@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/28 17:41:03 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/06 09:58:14 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -34,7 +34,7 @@ int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 		return (1);
 	if (heredoc_filename_creation(filename, input, iteri))
 		return (1);
-	write_fd = open((const char *) filename, O_WRONLY | O_EXCL | O_CREAT, 0600);
+	write_fd = open((const char *) filename, O_WRONLY | O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (write_fd == -1)
 		return (perror(NULL), 1);
 	if (adding_heredoc_into_file(write_fd, expansion, delimiter, env))

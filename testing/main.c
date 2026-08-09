@@ -6,20 +6,21 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/03 15:14:49 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/04 18:24:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "testing.h"
+
+volatile sig_atomic_t	signal_code = 0;
+
 t_single_linked_node *creating_fake_env();
 
-/*
-static void	handler_c()
+static void	handler_c(int signo)
 {
-
+	signal_code = signo;
 }
-*/
 
-void	signal_ctrl_baslash()
+void	signal_ctrl_backslash()
 {
 	__sighandler_t	sig_return;
 
@@ -28,19 +29,28 @@ void	signal_ctrl_baslash()
 		perror("minishell: error in signal when ignoring ctrl+\\");
 }
 
+static int signal_ctrl_c()
+{
+//  need to set exit code to 130
+	signal_code = 0;
+	rl_on_new_line();
+	rl_replace_line (NULL, 1);
+	rl_redisplay();
+	return (0);
+}
+
+
 int main(int argc, char	**argv, char **envp)
 {
-/*
 	struct sigaction	c;
-	struct sigaction	d;
-	struct sigaction	backslash;
 
-	c.sa_handler = handler_c;
+	c.sa_handler = &handler_c;
 	sigemptyset(&c.sa_mask);
-	if (sigaction(SIGINT, &c, NULL);
+	if (sigaction(SIGINT, &c, NULL))
 		return (perror("minishell: SIGINT failed"), 1);
-*/
-	signal_ctrl_baslash();
+	rl_signal_event_hook = &signal_ctrl_c;
+
+	signal_ctrl_backslash();
 
 	if(argc == -1)
 		return(-1);
@@ -61,6 +71,7 @@ int main(int argc, char	**argv, char **envp)
 	t_single_linked_node *env = creating_fake_env();
 //	testing_parsing(env);
 	get_commandline_input(env);
+	rl_clear_history();
 }
 
 t_single_linked_node *creating_fake_env()

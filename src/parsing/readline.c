@@ -6,13 +6,13 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/03 17:37:43 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/04 18:21:23 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-void	ft_get_commandline_input(t_single_linked_node *env);
-void	initiate_tokenization(char *input, t_single_linked_node *env);
+void		ft_get_commandline_input(t_single_linked_node *env);
+static void	initiate_tokenization(char *input, t_single_linked_node *env);
 
 void	get_commandline_input(t_single_linked_node *env)
 {
@@ -26,7 +26,7 @@ void	get_commandline_input(t_single_linked_node *env)
 			write(2, "exit\n", 5);
 			return ;
 		}
-		if (input[0])
+		else if (input[0])
 		{
 			add_history(input);
 			initiate_tokenization(input, env);
@@ -36,7 +36,7 @@ void	get_commandline_input(t_single_linked_node *env)
 	}
 }
 
-void	initiate_tokenization(char *input, t_single_linked_node *env)
+static void	initiate_tokenization(char *input, t_single_linked_node *env)
 {
 	t_token_node	token_lst[TOKEN_AMOUNT];
 	t_token_iteri	iteri;

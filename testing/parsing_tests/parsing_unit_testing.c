@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 11:13:01 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 14:28:23 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/04 14:41:17 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -231,7 +231,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, DEFAULT},
 			.expected_argv = (char *[]){"ls", NULL},
 			.expected_filenames = (char *[]){"file.txt", NULL},
-			.expected_fds = (int []){0},
+			.expected_fds = (int []){-1},
 			.expected_redir_types = (enum e_redir_type[]){IN},
 			.expected_return = 0,
 			.expected_redirection_count = 1,
@@ -243,7 +243,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, REDIR_OUT, WORD, DEFAULT},
 			.expected_argv = (char *[]){"ls", NULL},
 			.expected_filenames = (char *[]){"infile", "outfile", NULL},
-			.expected_fds = (int []){0, 0},
+			.expected_fds = (int []){-1, -1},
 			.expected_redir_types = (enum e_redir_type[]){IN, OUT},
 			.expected_return = 0,
 			.expected_redirection_count = 2,
@@ -255,7 +255,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, REDIR_OUT_A, WORD, DEFAULT},
 			.expected_argv = (char *[]){"cat", NULL},
 			.expected_filenames = (char *[]){"infile", "outfile", NULL},
-			.expected_fds = (int []){0, 0},
+			.expected_fds = (int []){-1, -1},
 			.expected_redir_types = (enum e_redir_type[]){IN, APPEND},
 			.expected_return = 0,
 			.expected_redirection_count = 2,
@@ -267,7 +267,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, DEFAULT},
 			.expected_argv = (char *[]){NULL},
 			.expected_filenames = (char *[]){NULL},
-			.expected_fds = (int []){0},
+			.expected_fds = (int []){-1},
 			.expected_redir_types = (enum e_redir_type[]){0},
 			.expected_return = 1,  // Expect some error code
 			.expected_redirection_count = 0,
@@ -279,7 +279,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, WORD},
 			.expected_argv = (char *[]){"ls", "-l", NULL},
 			.expected_filenames = (char *[]){"infile"},
-			.expected_fds = (int []){0},
+			.expected_fds = (int []){-1},
 			.expected_redir_types = (enum e_redir_type[]){IN},
 			.expected_return = 0,
 			.expected_redirection_count = 1,

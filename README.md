@@ -54,3 +54,12 @@ signal SIGQUIT ignored with signal() in main.c
 
 ### ctrl d
 as in bash: when pressed on empty line in interactive mode it exits, in heredoc it delimits and prints a warning because it wasn't delimited correctly but command runs
+
+### ctrl c
+sig_atomic_t: An integer type which can be accessed as an atomic entity even in the presence of asynchronous interrupts made by signals.
+An int might require two separate CPU instructions that can be interrupted by a signal.
+The volatile keyword is used to inform the compiler that the value of a variable may change at any time, so it should read the value from memory every time it is used.
+
+Variable: rl_hook_func_t * rl_signal_event_hook
+
+    If non-zero, this is the address of a function to call if a read system call is interrupted by a signal when Readline is reading terminal input. 

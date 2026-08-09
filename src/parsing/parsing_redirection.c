@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 10:55:45 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 10:55:48 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/04 14:35:03 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -87,6 +87,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		if (!curr_redir->filename)
 			return (1);
 		ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
+		curr_redir->fd = -1;
 	}
 	return (0);
 }
