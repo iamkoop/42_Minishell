@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   child_processes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 16:39:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/07 23:29:14 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/09 19:47:23 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,6 @@ static int final_redir(int	*fd, int	*final_fd, int child, int file_eno)
 	3 : normal cmd that was forked (no final redirections)
 */
 
-static void print_open_fds(const char *label) {
-    printf("=== Open FDs [%s] (PID %d) ===\n", label, getpid());
-    fflush(stdout);
-    
-    char command[128];
-    snprintf(command, sizeof(command), "ls -l /proc/%d/fd", getpid());
-    system(command);
-    printf("=================================\n");
-}
-
 void child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type)
 {
 	if(close_read)
@@ -68,7 +58,7 @@ void child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read
 		if(!final_redir(&mini->next_pipe_fds[1], &mini->redir_out, child_type, STDOUT_FILENO))
 			exit(1);
 	}
-	print_open_fds("before exec");
+	close_fd(&mini->next_pipe_fds[1]);
 	exec_command(mini->curr_cmd->argv, envp);
 	exit(mini->exit_status);
 }

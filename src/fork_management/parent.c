@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parent.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/07 22:43:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/09 19:51:36 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,12 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 			else if(!mini->cmd_lst->next)
 				child_process(mini, envp, 0, 2);
 			else
-				child_process(mini, envp, 0, 1);
+				child_process(mini, envp, 1, 1);
 		}
 		else
 		{
+			if(mini->cmd_lst->next)
+				close_fd(&mini->next_pipe_fds[1]);
 			if(size > 0)
 				close_fd(&mini->prev_read_fd);
 		}
