@@ -1,37 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   readline.c                                         :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/10 15:37:14 by bastalze         ###   ########.fr       */
+/*   Created: 2026/05/31 16:27:55 by bastalze          #+#    #+#             */
+/*   Updated: 2026/05/31 17:21:49 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include  "../../minishell.h"
 
-void	ft_get_commandline_input(char **env)
+void	error(char *message)
 {
-	char	*input;
+	size_t	len;
 
-	while (42)
-	{
-		input = readline("Minishell> ");
-		if (input[0])
-		{
-			add_history(input);
-			ft_parsing(input, env);
-			free(input);
-		}
-	}
-}
-
-int	main(char **env)
-{
-	ft_get_commandline_input(env);
+	len = ft_strlen(message);
+	write(STDERR_FILENO, "minishell: ", 11);
+	write(STDERR_FILENO, message, len);
+	write(STDERR_FILENO, "\n", 1);
 }
