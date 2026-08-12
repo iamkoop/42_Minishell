@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/07 20:46:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:41:41 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int input_redir(char	*file, t_redir_type type, t_minishell	*mini)
+static int input_redir(char	*file, enum e_redir_type type, t_minishell	*mini)
 {
 	if(mini->in > -1)
 	{
@@ -32,7 +32,7 @@ static int input_redir(char	*file, t_redir_type type, t_minishell	*mini)
 	return(1);
 }
 
-static int output_redir(char	*file, t_redir_type type,t_minishell	*mini)
+static int output_redir(char	*file, enum e_redir_type type,t_minishell	*mini)
 {
 	if(mini->out > -1)
 	{
@@ -77,7 +77,7 @@ static int execute_redirections(t_minishell	*mini)
 	return(1);
 }
 
-int redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
+int exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 {
 	t_redir_list	*curr_redir;
 
@@ -110,9 +110,9 @@ int builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp)
 	saved_out = dup(STDOUT_FILENO);
 	if(saved_out == -1)
 		return(perror("dup failed in builtin edge_case"), close(saved_in), 0);
-	if(!redirections(mini->curr_cmd->redir, mini))
+	if(!exec_redirections(mini->curr_cmd->redir, mini))
 				return(close(saved_in),close(saved_out), 0);
-	mini->exit_status = exec_command(mini->curr_cmd->argv, envp);
+	exec_command(mini->curr_cmd->argv, envp, mini);
 	if(dup2(saved_in, STDIN_FILENO) == -1)
 		perror("dup failed in builtin edge_case");
 	close(saved_in);

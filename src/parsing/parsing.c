@@ -1,0 +1,139 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
+/*   Updated: 2026/08/12 15:16:48 by nilsdruon        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+int			initiate_parsing(t_single_linked_node *env,
+				t_token_node *token_lst, t_token_iteri *iteri);
+int			parsing(t_single_linked_node *env, t_token_node *token_lst,
+				t_token_iteri *iteri, t_cmd_data *cmd_data);
+static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri);
+static int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst,
+				t_token_iteri *iteri, t_cmd_data *cmd_data);
+static int	delimit_command(t_cmd_data *cmd_data);
+
+int	initiate_parsing(t_single_linked_node *env,
+		t_token_node *token_lst, t_token_iteri *iteri)
+{
+	t_cmd_data				cmd_data;
+	t_command				*cmd;
+
+	cmd = ft_calloc(1, sizeof(t_command));
+	if (!cmd)
+		return (1);
+	cmd_data.head = ft_single_lstnew(cmd);
+	if (!cmd_data.head)
+		return (1);
+	cmd_data.tail = cmd_data.head;
+	assert(token_lst != NULL);
+	assert(cmd_data.head != NULL);
+	if (parsing(env, token_lst, iteri, &cmd_data))
+		return (free_command_struct(&cmd_data), 1);
+	return (free_command_struct(&cmd_data), 0);
+}
+
+int	parsing(t_single_linked_node *env, t_token_node *token_lst,
+		t_token_iteri *iteri, t_cmd_data *cmd_data)
+{
+	int	is_redir;
+
+	ft_bzero(iteri, sizeof(t_token_iteri));
+	while (token_lst[iteri->token].token_type)
+	{
+		is_redir = 0;
+		if (is_redirection(token_lst, iteri))
+		{
+			if (redirect(env, token_lst, iteri, cmd_data))
+				return (1);
+			is_redir = 1;
+		}
+		if (is_syntax_error(token_lst, iteri))
+			return (error("syntax error unexpected token"), 1);
+		if (!is_redir)
+		{
+			if (word_or_pipe(env, token_lst, iteri, cmd_data))
+				return (1);
+		}
+		iteri->token++;
+	}
+//	printing_struct_content(cmd_data);
+	return (0);
+}
+
+static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
+{
+	if (token_lst[0].token_type == PIPE)
+		return (1);
+	else if (iteri->token != 0
+		&& (token_lst[iteri->token - 1].token_type == REDIR_IN
+			|| token_lst[iteri->token - 1].token_type == REDIR_OUT
+			|| token_lst[iteri->token - 1].token_type == REDIR_OUT_A
+			|| token_lst[iteri->token - 1].token_type == HERE_DOC)
+		&& (token_lst[iteri->token].token_type == REDIR_IN
+			|| token_lst[iteri->token].token_type == REDIR_OUT
+			|| token_lst[iteri->token].token_type == REDIR_OUT_A
+			|| token_lst[iteri->token].token_type == HERE_DOC
+			|| token_lst[iteri->token].token_type == PIPE))
+		return (1);
+	else if (token_lst[iteri->token].token_type == PIPE
+		&& token_lst[iteri->token + 1].token_type == PIPE)
+		return (1);
+	else if ((token_lst[iteri->token].token_type == REDIR_IN
+			|| token_lst[iteri->token].token_type == REDIR_OUT
+			|| token_lst[iteri->token].token_type == REDIR_OUT_A
+			|| token_lst[iteri->token].token_type == HERE_DOC
+			|| token_lst[iteri->token].token_type == PIPE)
+		&& token_lst[iteri->token + 1].token_type == 0)
+		return (1);
+	return (0);
+}
+
+static int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst,
+				t_token_iteri *iteri, t_cmd_data *cmd_data)
+{
+	char	word[WORD_AMOUNT][WORD_STR_SIZE];
+
+	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
+	if (token_lst[iteri->token].token_type == WORD)
+	{
+		if (quote_rm_var_expan(token_lst[iteri->token].token_str, word, env,
+				false))
+			return (1);
+		if (add_word_to_struct(cmd_data, word))
+		{
+			perror("minishell: Malloc for words in parsing failed");
+			return (1);
+		}
+	}
+	else if (token_lst[iteri->token].token_type == PIPE)
+	{
+		if (delimit_command(cmd_data))
+			return (1);
+	}
+	return (0);
+}
+
+static int	delimit_command(t_cmd_data *cmd_data)
+{
+	t_command				*new_cmd;
+	t_single_linked_node	*new_node_ptr;
+
+	new_cmd = calloc(1, sizeof(t_command));
+	if (!new_cmd)
+		return (1);
+	new_node_ptr = ft_single_lstnew(new_cmd);
+	if (!new_node_ptr)
+		return (1);
+	ft_lstadd_back_single_linked(&cmd_data->head, new_node_ptr);
+	cmd_data->tail = new_node_ptr;
+	return (0);
+}

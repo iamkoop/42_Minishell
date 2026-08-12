@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:46:00 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/06 17:23:46 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 13:44:22 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ typedef struct s_exec_test
 
 static int run_single_exec_test(t_exec_test test, char **original_envp)
 {
-    int     out_pipe[2];
-    pid_t   pid;
+    int         out_pipe[2];
+    pid_t       pid;
+    t_minishell mini;
 
     t_single_linked_node *env_lst = env_to_lst(original_envp);
 
@@ -55,11 +56,16 @@ static int run_single_exec_test(t_exec_test test, char **original_envp)
         close(out_pipe[0]);
         dup2(out_pipe[1], STDOUT_FILENO);
         close(out_pipe[1]);
+        
+        memset(&mini, 0, sizeof(t_minishell));
+        mini.prev_in = -42;
+        mini.prev_out = -42;
 
-        int ret = exec_command(test.input, env_lst);
+        /* exec_command does not return; it replaces process image or exits */
+        exec_command(test.input, env_lst, &mini);
         
         ft_single_lstclear(&env_lst, del_env_node_content);
-        exit(ret);
+        exit(1);
     }
 
     close(out_pipe[1]);

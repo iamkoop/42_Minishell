@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_general_cmd_exec.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 19:55:38 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/06 20:32:50 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/11 17:31:20 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /* --- NODE CREATION HELPERS --- */
 
-static t_single_linked_node *create_redir_node(char *filename, t_redir_type type)
+static t_single_linked_node *create_redir_node(char *filename, enum e_redir_type type)
 {
     t_single_linked_node *node;
     t_redir_list *content;

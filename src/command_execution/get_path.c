@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/06 20:59:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/12 14:10:18 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void print_error(char	*cmd)
 	perror(cmd);
 }
 
-static char	*check_access(char	*cmd, t_exit_status	*mini, int send_perror)
+static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 {
 	int	access_valid;
 
@@ -44,7 +44,7 @@ static char	*check_access(char	*cmd, t_exit_status	*mini, int send_perror)
 	return (NULL);
 }
 
-static char	*colon_edge_case(char *env, t_exit_status	*mini)
+static char	*colon_edge_case(char *env, t_minishell	*mini)
 {
 	int		i;
 	int		len;
@@ -75,7 +75,7 @@ static char	*colon_edge_case(char *env, t_exit_status	*mini)
 	return (NULL);
 }
 
-static char	*find_exacutable(char *cmd, char *env, t_exit_status	*mini)
+static char	*find_exacutable(char *cmd, char *env, t_minishell	*mini)
 {
 	char	*command;
 	char	**splitted;
@@ -97,13 +97,14 @@ static char	*find_exacutable(char *cmd, char *env, t_exit_status	*mini)
 		if (check_access(command, mini, 0))
 			return (ft_free_the_split(splitted), command);
 		free(command);
+		/*if(mini->exit_status == 126 || mini->exit_status == 127)
+			break;*/
 		i++;
 	}
-	ft_free_the_split(splitted);
-	return (print_error(cmd), NULL);
+	return (ft_free_the_split(splitted), print_error(cmd), NULL);
 }
 
-static char	*check_if_its_a_path(char *cmd, t_exit_status *mini, int *iterate)
+static char	*check_if_its_a_path(char *cmd, t_minishell *mini, int *iterate)
 {
 	if (ft_strchr(cmd, '/'))
 	{
@@ -119,7 +120,7 @@ static char	*check_if_its_a_path(char *cmd, t_exit_status *mini, int *iterate)
 	return (NULL);
 }
 
-char	*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini)
+char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 {
 	t_env_var	*content;
 	char		*path;
@@ -139,7 +140,7 @@ char	*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini)
 		{
 			path = find_exacutable(cmd, content->value, mini);
 			if (!path || !*path)
-				return (NULL);
+				break;
 			return (path);
 		}
 		envp = envp->next;

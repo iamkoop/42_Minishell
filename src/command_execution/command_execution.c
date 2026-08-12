@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/06 15:25:40 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 13:57:46 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,25 +28,27 @@ static int execute_builtin(char   **cmd_and_args, t_single_linked_node  *envp)
 		return (pwd(cmd_and_args));
     if (ft_strncmp(cmd_and_args[0], "unset", ft_get_biggest_s(cmd_and_args[0], "unset")) == 0)
 		return (unset(cmd_and_args, &envp));
-	return (0);
+	return (1);
 }
 
-int exec_command(char   **cmd_and_args, t_single_linked_node    *envp)
+void exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minishell *mini)
 {
-    t_exit_status   mini;
     char            **converted_envp;
 
-    mini.exit_status = 1;
+    mini->exit_status = 1;
     char    *path;
     if(is_builtin(cmd_and_args[0]))
-        return(execute_builtin(cmd_and_args, envp));
-    path = get_path(cmd_and_args[0], envp, &mini);
+    {
+      mini->exit_status = execute_builtin(cmd_and_args, envp);
+      return ;
+    }
+    path = get_path(cmd_and_args[0], envp, mini);
     if(!path)
-		return (mini.exit_status);
+        return ;
     converted_envp = env_to_char_arr(envp);
     if(!converted_envp)
         ft_putendl_fd("minishell: exec_command: conversion failed", 2);
     else
         execve(path, cmd_and_args, converted_envp);
-    return(1);
+    mini->exit_status = 1;
 }

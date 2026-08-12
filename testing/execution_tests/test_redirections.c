@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_redirections.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 15:57:58 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/29 14:40:59 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/11 17:34:09 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-static t_single_linked_node *create_redir_node(char *filename, t_redir_type type)
+static t_single_linked_node *create_redir_node(char *filename, enum e_redir_type type)
 {
     t_single_linked_node *node = malloc(sizeof(t_single_linked_node));
     t_redir_list *content = malloc(sizeof(t_redir_list));
@@ -207,7 +207,7 @@ static int run_single_redir_test(t_redir_test *tests, int num_tests, int current
         t_minishell mini;
         init_mock_minishell(&mini);
 
-        int ret = redirections(test->redir_lst, &mini);
+        int ret = exec_redirections(test->redir_lst, &mini);
 
         write(pipe_fd[1], &ret, sizeof(int));
         write(pipe_fd[1], &mini.redir_in, sizeof(int));

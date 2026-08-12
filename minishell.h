@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/07 20:34:15 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:39:59 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# ifndef MINISHELL_H
 # define MINISHELL_H
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -21,13 +22,20 @@
 # include <fcntl.h>
 # include "42_Libft/libft.h"
 # include <errno.h>
+# include <stdbool.h>
+# include <dirent.h>
+# include <signal.h>
 
-//Delete after integrating libft!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# include <strings.h>
+//Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#include <assert.h>
 
+# define TOKEN_AMOUNT 10
 # define TOKEN_STR_SIZE 50
-# define TOKEN_AMOUNT 50
 # define HD_DELIMITER_LEN 50 
+# define WORD_AMOUNT 40
+# define WORD_STR_SIZE 50
+
+extern volatile sig_atomic_t signal_code;
 
 //Tokenization:
 enum e_token_type
@@ -54,21 +62,20 @@ typedef struct s_token_iteri
 	int		i;
 }		t_token_iteri;
 
-//Commands for execution:
-typedef enum e_redir_type
+//Parsing:
+enum e_redir_type
 {
 	IN,
 	OUT,
 	APPEND,
 	HERE,
-} 		t_redir_type;
+} ;
 
 typedef struct s_redir_list
 {
 	char				*filename;
 	int					fd;
 	enum e_redir_type	redir_type;
-
 }		t_redir_list;
 
 typedef struct s_command
@@ -82,6 +89,25 @@ typedef struct	s_cmd_data
 	t_single_linked_node	*head;
 	t_single_linked_node	*tail;
 }		t_cmd_data;
+
+//Adding word to command struct
+typedef struct s_word_iteri
+{
+	int 	i;
+	int 	j;
+	size_t	argv_i;
+	size_t	argv_j;
+}		t_word_iteri;
+
+//Quote_removal_variable_expansion
+typedef struct s_quote_iteri
+{
+	int		i;
+	int		wi;
+	int		wj;
+	bool	quoted;
+	bool	heredoc;
+}		t_quote_iteri;
 
 //vars structs that will need to goo
 typedef struct s_env_var
@@ -127,12 +153,6 @@ typedef struct s_export_vars
 
 }				t_export_vars;
 
-typedef struct s_exit_status
-{
-	int exit_status;
-
-}				t_exit_status;
-
 
 typedef struct s_minishell
 {
@@ -168,31 +188,69 @@ int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node *envp);
 
 int						is_builtin(char *cmd);
-int						exec_command(char   **cmd_and_args, t_single_linked_node    *envp);
-char					*get_path(char *cmd, t_single_linked_node   *envp, t_exit_status *mini);
+void					exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minishell *mini);
+char					*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini);
 void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp);
 int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp);
 
-int						redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
+int						exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);
 void					parent(t_minishell *mini, t_single_linked_node	*envp);
-//Functions of minishell:
-void					get_commandline_input(char **env);
-int						tokenization(char *input, char **env, t_token_node *token_lst,
+
+//PARSING PART
+void	get_commandline_input(t_single_linked_node *env);
+//tokenization
+int		tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
-void					add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-void					delimit_token(char *input, char **env, t_token_node *token_lst,
+int		here_or_append(char *input, t_single_linked_node *env,
+			t_token_node *token_lst, t_token_iteri *iteri);
+int		operators1(char *input, t_single_linked_node *env,
+			t_token_node *token_lst, t_token_iteri *iteri);
+int		operators2(char *input, t_single_linked_node *env,
+			t_token_node *token_lst, t_token_iteri *iteri);
+int		redirections(char *input, t_single_linked_node *env,
+			t_token_node *token_lst, t_token_iteri *iteri);
+int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
+int		delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
 				t_token_iteri *iteri);
-char					*quote_removal(char *delimiter);
-int						here_doc(char *input, char **env, t_token_node *token_lst,
+
+//here_doc
+char	*quote_removal(char *delimiter);
+int		here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
+int		adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+				t_single_linked_node *env);
+//error and exit functions
+void	error(char *message);
+void	delete_hd_files();
+void    free_command_struct(t_cmd_data *cmd_data);
+void	close_fd(int	*fd);
 
-// Cleanup functions
+// parsing
+int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
+			t_token_iteri *iteri);
+int		parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+			t_cmd_data *cmd_data);
+int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
+int		redirect(t_single_linked_node *env, t_token_node *token_lst,
+			t_token_iteri *iteri, t_cmd_data *cmd_data);
+int		add_word_to_struct(t_cmd_data *cmd_data,
+				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+void	free_strarray(char **array);
+size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_strarraylen(char **argv);
 
-void					close_fd(int	*fd);
+//quote removal and variable expansion
+int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+			t_single_linked_node *env, bool heredoc);
+int		dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+			t_quote_iteri *iteri, t_single_linked_node *env);
+int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+			t_quote_iteri *iteri, t_single_linked_node *env);
 
-//Testers:
-void					tokenization_testing(t_token_node *token_lst, char **env);
-void					initiate_tokenization(char *input, char **env);
-int						heredoc_filename_creation(char *filename);
+//TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
+void    printing_struct_content(t_cmd_data *cmd_data);
+//static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
+#endif
