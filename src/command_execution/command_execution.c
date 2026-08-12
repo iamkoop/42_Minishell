@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/12 13:57:46 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 16:54:44 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int execute_builtin(char   **cmd_and_args, t_single_linked_node  *envp)
 		return (unset(cmd_and_args, &envp));
 	return (1);
 }
+
+// TODO: copy argv and free then the whole cmdlst!!!!
 
 void exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minishell *mini)
 {

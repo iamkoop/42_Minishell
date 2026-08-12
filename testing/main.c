@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 15:14:57 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 16:15:18 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ int main(int argc, char	**argv, char **envp)
 	printf("|          ALL EXECUTION TEST          |\n");
 	printf("========================================\n");
 	testing_exec(argv, envp);
-	printf("\n");
+/*	printf("\n");
 	printf("========================================\n");
 	printf("|          ALL PARSING TESTS           |\n");
 	printf("========================================\n");
 	t_single_linked_node *env = creating_fake_env();
-	testing_parsing(env);
+	testing_parsing(env);*/
 //	get_commandline_input(env);
 //	rl_clear_history();
 }
