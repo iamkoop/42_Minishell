@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_redirection.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 10:55:45 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/04 14:35:03 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/12 15:17:56 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
@@ -74,6 +75,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 {
 	char	word[WORD_AMOUNT][WORD_STR_SIZE];
 
+	ft_bzero(word, WORD_AMOUNT * WORD_STR_SIZE);
 	if (token_lst[iteri->token - 1].token_type == HERE_DOC)
 		curr_redir->fd = ft_atoi(token_lst[iteri->token].token_str);
 	else

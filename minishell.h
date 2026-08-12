@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/04 18:20:05 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:39:59 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef MINISHELL_H
+
+# ifndef MINISHELL_H
 # define MINISHELL_H
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -108,21 +109,94 @@ typedef struct s_quote_iteri
 	bool	heredoc;
 }		t_quote_iteri;
 
-//env_var_struct
+//vars structs that will need to goo
 typedef struct s_env_var
 {
 	char				*key;
 	char				*value;
 }					t_env_var;
 
-//FUNCTIONS
-//environment conversion
+typedef struct s_create_env_node_vars
+{
+	size_t			key_len;
+	size_t			str_len;
+	int				no_equals;
+}					t_create_env_node_vars;
+
+
+typedef struct s_pwds_vars
+{
+	char				old_pwd[4096];
+	char				new_pwd[4096];
+	int					is_dash;
+}					t_pwds_vars;
+
+typedef struct s_pwd_and_key_len
+{
+	size_t 		pwd_l;
+	size_t		key_l;
+}				t_pwd_and_key_len;
+
+typedef struct s_print_sorted_env_vars
+{
+	t_single_linked_node    *tmp_lst;
+    t_env_var               *tmp_env_var;
+    t_single_linked_node    *curr_smllst_alpha;
+	t_single_linked_node	*prev_smllst_alpha;
+	int						lst_len;
+	int						curr_cnt;
+}				t_print_sorted_env_vars;
+
+typedef struct s_export_vars
+{
+	t_single_linked_node    *node;
+
+}				t_export_vars;
+
+
+typedef struct s_minishell
+{
+	t_single_linked_node	*cmd_lst;
+	t_command				*curr_cmd;
+	int						exit_status;
+	int						cmd_lst_size;
+	int						next_pipe_fds[2];
+	int						prev_read_fd;
+	int						redir_in;
+	int						redir_out;
+	int						in;
+	int						out;
+	int						builtin_has_been_redir; // when redirectiing a builtin the programm should redirect the it back to in/out especially when not in a child process
+	int						prev_in; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
+	int						prev_out; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
+}				t_minishell;
+
+
+//environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
 char					**env_to_char_arr(t_single_linked_node	*lst);
+t_single_linked_node	*get_env_from_lst(char	*to_find, t_single_linked_node	*envp);
+
 //builtins
-void					env(t_single_linked_node	*envp);
-void					echo(char	**input);
+int						env(char	**input, t_single_linked_node	*envp);
+int						echo(char	**input);
+void					builtin_exit(char	**input);
+int						pwd(char	**input);
+int						cd(char **input, t_single_linked_node	*envp);
+int						unset(char	**input, t_single_linked_node	**envp);
+int						export(char **input, t_single_linked_node *envp);
+
+int						is_builtin(char *cmd);
+void					exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minishell *mini);
+char					*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini);
+void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp);
+int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp);
+
+int						exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
+void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);
+void					parent(t_minishell *mini, t_single_linked_node	*envp);
+
 //PARSING PART
 void	get_commandline_input(t_single_linked_node *env);
 //tokenization
@@ -137,9 +211,10 @@ int		operators2(char *input, t_single_linked_node *env,
 int		redirections(char *input, t_single_linked_node *env,
 			t_token_node *token_lst, t_token_iteri *iteri);
 int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-int		delimit_token(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
-//heredoc
+int		delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+				t_token_iteri *iteri);
+
+//here_doc
 char	*quote_removal(char *delimiter);
 int		here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 			t_token_iteri *iteri);
@@ -149,6 +224,7 @@ int		adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 void	error(char *message);
 void	delete_hd_files();
 void    free_command_struct(t_cmd_data *cmd_data);
+void	close_fd(int	*fd);
 
 // parsing
 int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,

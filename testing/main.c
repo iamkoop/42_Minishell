@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/04 18:24:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/12 15:14:57 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "testing.h"
 
 volatile sig_atomic_t	signal_code = 0;
@@ -69,9 +70,9 @@ int main(int argc, char	**argv, char **envp)
 	printf("|          ALL PARSING TESTS           |\n");
 	printf("========================================\n");
 	t_single_linked_node *env = creating_fake_env();
-//	testing_parsing(env);
-	get_commandline_input(env);
-	rl_clear_history();
+	testing_parsing(env);
+//	get_commandline_input(env);
+//	rl_clear_history();
 }
 
 t_single_linked_node *creating_fake_env()

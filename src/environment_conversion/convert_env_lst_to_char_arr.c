@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 19:54:45 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/26 15:35:36 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/06/11 21:08:06 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ char	**env_to_char_arr(t_single_linked_node	*lst)
 	while (lst)
 	{
 		tmp = (t_env_var	*)lst->content;
-		env[i] = ft_strjoin_three(tmp->key, "=", tmp->value);
+		if(!tmp->value || tmp->value[0] == '\0')
+			env[i] = ft_strdup(tmp->key);
+		else
+			env[i] = ft_strjoin_three(tmp->key, "=", tmp->value);
 		if(!env[i])
 			return(ft_free_unfished_array_of_strings(env, i));
 		i++;

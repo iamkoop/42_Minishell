@@ -4,7 +4,8 @@ LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
 						 src/environment_conversion/del_env_node_content.c \
-						 src/environment_conversion/convert_env_lst_to_char_arr.c
+						 src/environment_conversion/convert_env_lst_to_char_arr.c \
+						 src/environment_conversion/get_env_from_lst.c
 
 BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/echo.c \
@@ -13,6 +14,19 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/export.c \
 					src/builtin_functions/pwd.c \
 					src/builtin_functions/unset.c
+
+COMMAND_EXECUTION = src/command_execution/command_execution.c \
+					src/command_execution/get_path.c \
+					src/command_execution/is_builtin.c
+ 
+FORK_MANAGEMENT = src/fork_management/redirections.c \
+				  src/fork_management/parent.c \
+				  src/fork_management/child_processes.c
+
+CLEANUP_FUNCS = src/cleanup_funcs/close.c
+
+EXEC_MAIN = src/exec_main.c
+EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)
 
 PARSING = src/parsing/readline.c \
 		  src/parsing/tokenization.c \
@@ -30,10 +44,9 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/parsing_helpers.c \
 		  src/parsing/quote_removal_var_expansion.c \
 		  src/parsing/var_expansion_dollar_found.c \
-		  src/parsing/find_var_and_expand.c \
+		  src/parsing/find_var_and_expand.c
 
-EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(PARSING)
-CFILES = $(EXECFILES)
+CFILES = $(EXECFILES) $(PARSING)
 OFILES = $(CFILES:.c=.o)
 
 
@@ -54,7 +67,7 @@ all: $(NAME)
 
 $(NAME): $(OFILES)
 	make -C $(LIBFT)
-	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(FDFFLAGS) $(LDFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
 fclean: clean test_fclean
 	$(REMOVE) $(NAME)

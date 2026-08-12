@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion_dollar_found.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:24:32 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/28 12:24:36 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/11 17:29:47 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
@@ -92,7 +93,8 @@ static int	no_variable(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 static int	dollar_questionmark(char word[WORD_AMOUNT][WORD_STR_SIZE],
 				t_quote_iteri *iteri, t_single_linked_node *env)
 {
-	env = NULL;
+	if(env)
+		env = NULL;
 	// ATTENTION ENV SET TO NULL!!!!!!!!!!!!!!!!!!!!
 	word[iteri->wi][iteri->wj] = '$';
 	word[iteri->wi][++iteri->wj] = '?';
