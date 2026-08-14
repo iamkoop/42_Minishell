@@ -12,7 +12,7 @@
 #include "../../minishell.h"
 
 int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
-		t_single_linked_node *env, bool heredoc);
+		t_single_linked_node *env, t_quote_iteri *iteri);
 int	quote_mode(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 		t_quote_iteri *iteri, t_single_linked_node *env);
 int	var_ex_add_char(char word[WORD_AMOUNT][WORD_STR_SIZE], char *s,
@@ -21,27 +21,22 @@ int	add_char(char word[WORD_AMOUNT][WORD_STR_SIZE], char *s,
 		t_quote_iteri *iteri);
 
 int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
-		t_single_linked_node *env, bool heredoc)
+		t_single_linked_node *env, t_quote_iteri *iteri)
 {
-	t_quote_iteri	iteri;
-
-	ft_bzero(&iteri, sizeof(t_quote_iteri));
-	if (heredoc == true)
-		iteri.heredoc = true;
-	while (s[iteri.i])
+	while (s[iteri->i])
 	{
-		if ((s[iteri.i] == '\'' || s[iteri.i] == '\"') && heredoc == false)
+		if ((s[iteri->i] == '\'' || s[iteri->i] == '\"') && iteri->heredoc == false)
 		{
-			if (quote_mode(s, word, &iteri, env))
+			if (quote_mode(s, word, iteri, env))
 				return (1);
 		}
 		else
 		{
-			if (var_ex_add_char(word, s, env, &iteri))
+			if (var_ex_add_char(word, s, env, iteri))
 				return (1);
 		}
 	}
-	word[iteri.wi][iteri.wj] = 0;
+	word[iteri->wi][iteri->wj] = 0;
 	return (0);
 }
 

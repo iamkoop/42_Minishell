@@ -170,17 +170,17 @@ static int	init_cmd_data(t_cmd_data *cmd_data)
 
 int run_single_command_test(t_test_case *tc)
 {
-    int				result;
-    int				errors = 0;
-    t_token_iteri	iteri;
-    t_cmd_data		cmd_data;
-	t_token_node	token_lst[TOKEN_AMOUNT];
+	int				result;
+	int				errors = 0;
+	t_token_iteri	iteri;
+	t_cmd_data		cmd_data;
+	t_minishell	mini;
 
-	ft_bzero(token_lst, sizeof(t_token_node) * TOKEN_AMOUNT);
+	ft_bzero(&mini, sizeof(t_minishell));
 	ft_bzero(&iteri, sizeof(t_token_iteri));
     
     // Build token list from test case
-    build_token_list(tc->tokens, tc->token_types, token_lst);
+    build_token_list(tc->tokens, tc->token_types, mini.token_lst);
     
 	printf("Test \"%s\":\n", tc->test_case_name);
 
@@ -189,7 +189,7 @@ int run_single_command_test(t_test_case *tc)
 		return (1);
     
     // Call parsing
-    result = parsing(NULL, token_lst, &iteri, &cmd_data);
+    result = parsing(NULL, &mini, &iteri, &cmd_data);
     
     // Check return value
     if (result != tc->expected_return)

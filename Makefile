@@ -23,7 +23,8 @@ FORK_MANAGEMENT = src/fork_management/redirections.c \
 				  src/fork_management/parent.c \
 				  src/fork_management/child_processes.c
 
-CLEANUP_FUNCS = src/cleanup_funcs/close.c
+CLEANUP_FUNCS = src/cleanup_funcs/close.c \
+				src/cleanup_funcs/free_env_lst.c
 
 EXEC_MAIN = src/exec_main.c
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)

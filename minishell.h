@@ -107,6 +107,7 @@ typedef struct s_quote_iteri
 	int		wj;
 	bool	quoted;
 	bool	heredoc;
+	int	exit_status;
 }		t_quote_iteri;
 
 //vars structs that will need to goo
@@ -156,16 +157,17 @@ typedef struct s_export_vars
 
 typedef struct s_minishell
 {
-	t_single_linked_node	*cmd_lst;
-	t_command				*curr_cmd;
+	t_token_node			 	token_lst[TOKEN_AMOUNT];
+	t_single_linked_node			*cmd_lst;
+	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
-	int						cmd_lst_size;
-	int						next_pipe_fds[2];
-	int						prev_read_fd;
-	int						redir_in;
-	int						redir_out;
-	int						in;
-	int						out;
+	int						cmd_lst_size; //initialzed to -42
+	int						next_pipe_fds[2]; //initialzed to -42
+	int						prev_read_fd; //initialzed to -42
+	int						redir_in; //initialzed to -42
+	int						redir_out; //initialzed to -42
+	int						in;//initialzed to -42
+	int						out;//initialzed to -42
 	int						builtin_has_been_redir; // when redirectiing a builtin the programm should redirect the it back to in/out especially when not in a child process
 	int						prev_in; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
 	int						prev_out; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
@@ -177,6 +179,7 @@ t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
 char					**env_to_char_arr(t_single_linked_node	*lst);
 t_single_linked_node	*get_env_from_lst(char	*to_find, t_single_linked_node	*envp);
+void		free_env_lst(t_single_linked_node *env);
 
 //builtins
 int						env(char	**input, t_single_linked_node	*envp);
@@ -198,9 +201,9 @@ void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_
 void					parent(t_minishell *mini, t_single_linked_node	*envp);
 
 //PARSING PART
-void	get_commandline_input(t_single_linked_node *env);
+void	get_commandline_input(t_single_linked_node *env, t_minishell *mini);
 //tokenization
-int		tokenization(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int		tokenization(char *input, t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		here_or_append(char *input, t_single_linked_node *env,
 			t_token_node *token_lst, t_token_iteri *iteri);
@@ -227,9 +230,9 @@ void    free_command_struct(t_cmd_data *cmd_data);
 void	close_fd(int	*fd);
 
 // parsing
-int		initiate_parsing(t_single_linked_node *env, t_token_node *token_lst,
+int		initiate_parsing(t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri);
-int		parsing(t_single_linked_node *env, t_token_node *token_lst, t_token_iteri *iteri,
+int		parsing(t_single_linked_node *env, t_minishell *mini, t_token_iteri *iteri,
 			t_cmd_data *cmd_data);
 int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
 int		redirect(t_single_linked_node *env, t_token_node *token_lst,
@@ -242,7 +245,7 @@ size_t	ft_strarraylen(char **argv);
 
 //quote removal and variable expansion
 int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
-			t_single_linked_node *env, bool heredoc);
+			t_single_linked_node *env, t_quote_iteri *iteri);
 int		dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 			t_quote_iteri *iteri, t_single_linked_node *env);
 int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],

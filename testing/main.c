@@ -12,9 +12,12 @@
 
 #include "testing.h"
 
+static int      initializing_minishell(char **envp);
+t_single_linked_node *creating_fake_env();
+
+
 volatile sig_atomic_t	signal_code = 0;
 
-t_single_linked_node *creating_fake_env();
 
 static void	handler_c(int signo)
 {
@@ -53,12 +56,17 @@ int main(int argc, char	**argv, char **envp)
 
 	signal_ctrl_backslash();
 
-	if(argc == -1)
-		return(-1);
-	if(!argv || !*argv)
+	if (argc != 1)
+		return (write(2, "minishell: program takes no arguments", 37), 1);
+	/*
+	if (!*envp)
+	{
+		if (default_environment())
+			return (1);
+	}
+	*/	
+	if (initializing_minishell(envp))
 		return(1);
-	if(!envp || !*envp)
-		return(1);	
 	printf("Testing Minishell\n");
 	printf("---------------------------\n");
 	printf("========================================\n");
@@ -69,10 +77,24 @@ int main(int argc, char	**argv, char **envp)
 	printf("========================================\n");
 	printf("|          ALL PARSING TESTS           |\n");
 	printf("========================================\n");
-	t_single_linked_node *env = creating_fake_env();
-	testing_parsing(env);
-//	get_commandline_input(env);
+//	t_single_linked_node *env = creating_fake_env();
+//	testing_parsing(env);
 //	rl_clear_history();
+}
+
+static int	initializing_minishell(char **envp)
+{
+	t_single_linked_node	*env;
+	t_minishell		mini;
+
+	ft_bzero(&mini, sizeof(t_minishell));
+	env = env_to_lst(envp);
+	if (!env)
+		return (1);
+	testing_parsing(env);
+	get_commandline_input(env, &mini);
+	free_env_lst(env);
+	return (0);
 }
 
 t_single_linked_node *creating_fake_env()

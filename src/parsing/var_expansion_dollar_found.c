@@ -16,9 +16,9 @@ int			dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 				t_quote_iteri *iteri, t_single_linked_node *env);
 static int	is_name(int i, char c);
 static int	no_variable(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
-				t_quote_iteri *iteri, t_single_linked_node *env);
+				t_quote_iteri *iteri);
 static int	dollar_questionmark(char word[WORD_AMOUNT][WORD_STR_SIZE],
-				t_quote_iteri *iteri, t_single_linked_node *env);
+				t_quote_iteri *iteri);
 static int	dollar_no_var(char word[WORD_AMOUNT][WORD_STR_SIZE],
 				t_quote_iteri *iteri);
 
@@ -47,7 +47,7 @@ int	dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 	else
 	{
 		assert(v == 0);
-		if (no_variable(s, word, iteri, env))
+		if (no_variable(s, word, iteri))
 			return (1);
 	}
 	return (0);
@@ -75,11 +75,11 @@ static int	is_name(int i, char c)
 }
 
 static int	no_variable(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
-				t_quote_iteri *iteri, t_single_linked_node *env)
+				t_quote_iteri *iteri)
 {
 	if (s[iteri->i] == '?')
 	{
-		if (dollar_questionmark(word, iteri, env))
+		if (dollar_questionmark(word, iteri))
 			return (1);
 	}
 	else
@@ -91,23 +91,29 @@ static int	no_variable(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 }
 
 static int	dollar_questionmark(char word[WORD_AMOUNT][WORD_STR_SIZE],
-				t_quote_iteri *iteri, t_single_linked_node *env)
+				t_quote_iteri *iteri)
 {
-	if(env)
-		env = NULL;
-	// ATTENTION ENV SET TO NULL!!!!!!!!!!!!!!!!!!!!
-	word[iteri->wi][iteri->wj] = '$';
-	word[iteri->wi][++iteri->wj] = '?';
-	if (iteri->wj + 1 >= WORD_STR_SIZE)
+	char	*exit_status_word;
+	int	i;
+
+	exit_status_word = ft_itoa(iteri->exit_status);
+	if (!exit_status_word)
+		return (perror("minishell: malloc for exit status failed"), 1);
+	while (exit_status_word[i])
 	{
-		error("exceeding memory limit: Word length \
-			\nRaise WORD_STR_SIZE in minishell.h");
-		return (1);
+		word[iteri->wi][iteri->wj] = exit_status_word[i];
+		if (iteri->wj + 1 >= WORD_STR_SIZE)
+		{
+			error("exceeding memory limit: Word length \
+				\nRaise WORD_STR_SIZE in minishell.h");
+			return (1);
+		}
+		iteri->wj++;
+		i++;
 	}
-	iteri->wj++;
+	free(exit_status_word);
 	iteri->i++;
 	return (0);
-//		better to directly get the exit status and put it in!
 }
 
 static int	dollar_no_var(char word[WORD_AMOUNT][WORD_STR_SIZE],

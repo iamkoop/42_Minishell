@@ -74,14 +74,16 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		t_token_node *token_lst, t_token_iteri *iteri, t_redir_list *curr_redir)
 {
 	char	word[WORD_AMOUNT][WORD_STR_SIZE];
+	t_quote_iteri   exv;
 
+        ft_bzero(&exv, sizeof(t_quote_iteri));
 	ft_bzero(word, WORD_AMOUNT * WORD_STR_SIZE);
 	if (token_lst[iteri->token - 1].token_type == HERE_DOC)
 		curr_redir->fd = ft_atoi(token_lst[iteri->token].token_str);
 	else
 	{
 		if (quote_rm_var_expan(token_lst[iteri->token].token_str, word, env,
-				false))
+			&exv))
 			return (1);
 		if (word[1][0] != 0)
 			return (error("ambiguous redirect"), 1);

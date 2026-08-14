@@ -26,6 +26,7 @@
 # Quote removal, variable expansion
 
 This function is called in three different instances: Heredoc, parsing a word that is part of a command and parsing the filename for redirection.
+The test will only work correctly with the "fake env" since it tests this specific expansion.
 
 1. The file quote_removal_var_expansion.c is in src/parsing/
 2. The testfile qrve_unit_testing.c is in testing/parsing_tests/
