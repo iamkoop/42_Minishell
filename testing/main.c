@@ -91,7 +91,7 @@ static int	initializing_minishell(char **envp)
 	env = env_to_lst(envp);
 	if (!env)
 		return (1);
-	testing_parsing(env);
+//	testing_parsing(env);
 	get_commandline_input(env, &mini);
 	free_env_lst(env);
 	return (0);

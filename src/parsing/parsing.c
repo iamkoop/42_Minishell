@@ -66,6 +66,7 @@ int	parsing(t_single_linked_node *env, t_minishell *mini,
 		iteri->token++;
 	}
 //	printing_struct_content(cmd_data);
+	exec_main(mini, cmd_data->head, env);
 	return (0);
 }
 
