@@ -157,8 +157,8 @@ typedef struct s_export_vars
 
 typedef struct s_minishell
 {
-	t_token_node			 	token_lst[TOKEN_AMOUNT];
-	t_single_linked_node			*cmd_lst;
+	t_token_node			 token_lst[TOKEN_AMOUNT];
+	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
 	int						cmd_lst_size; //initialzed to -42
@@ -173,6 +173,9 @@ typedef struct s_minishell
 	int						prev_out; //initialze to -42 ! cuz 0 could be a valid fd and -1 is error num
 }				t_minishell;
 
+//beginning of minishell
+int						initializing_minishell(char **envp);
+void					get_commandline_input(t_single_linked_node *env, t_minishell *mini);
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
@@ -203,7 +206,6 @@ void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_
 void					parent(t_minishell *mini, t_single_linked_node	*envp);
 
 //PARSING PART
-void	get_commandline_input(t_single_linked_node *env, t_minishell *mini);
 //tokenization
 int		tokenization(char *input, t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri);

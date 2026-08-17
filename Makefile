@@ -30,8 +30,10 @@ CLEANUP_FUNCS = src/cleanup_funcs/close.c \
 EXEC_MAIN = src/exec_main.c
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)
 
-PARSING = src/parsing/readline.c \
-		  src/parsing/tokenization.c \
+START = src/minishell_start/inializing_minishell.c \
+		src/parsing/readline.c
+
+PARSING = src/parsing/tokenization.c \
 		  src/parsing/tokenization_operators.c \
 		  src/parsing/tokenization_helpers.c \
 		  src/parsing/heredoc.c \
@@ -47,10 +49,8 @@ PARSING = src/parsing/readline.c \
 		  src/parsing/quote_removal_var_expansion.c \
 		  src/parsing/var_expansion_dollar_found.c \
 		  src/parsing/find_var_and_expand.c
-
-CFILES = $(EXECFILES) $(PARSING)
+CFILES = $(START) $(EXECFILES) $(PARSING)
 OFILES = $(CFILES:.c=.o)
-
 
 NAME = minishell
 

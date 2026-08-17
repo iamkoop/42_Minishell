@@ -6,25 +6,20 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/17 12:23:47 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/17 14:54:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-static int      initializing_minishell(char **envp);
-t_single_linked_node *creating_fake_env();
-
-
-volatile sig_atomic_t	signal_code = 0;
-
+volatile sig_atomic_t	g_signal_code = 0;
 
 static void	handler_c(int signo)
 {
-	signal_code = signo;
+	g_signal_code = signo;
 }
 
-void	signal_ctrl_backslash()
+void	signal_ctrl_backslash(void)
 {
 	__sighandler_t	sig_return;
 
@@ -33,18 +28,17 @@ void	signal_ctrl_backslash()
 		perror("minishell: error in signal when ignoring ctrl+\\");
 }
 
-static int signal_ctrl_c()
+static int	signal_ctrl_c(void)
 {
 //  need to set exit code to 130
-	signal_code = 0;
+	g_signal_code = 0;
 	rl_on_new_line();
 	rl_replace_line (NULL, 1);
 	rl_redisplay();
 	return (0);
 }
 
-
-int main(int argc, char	**argv, char **envp)
+int	main(int argc, char	**argv, char **envp)
 {
 	struct sigaction	c;
 
@@ -53,9 +47,7 @@ int main(int argc, char	**argv, char **envp)
 	if (sigaction(SIGINT, &c, NULL))
 		return (perror("minishell: SIGINT failed"), 1);
 	rl_signal_event_hook = &signal_ctrl_c;
-
 	signal_ctrl_backslash();
-
 	if (argc != 1)
 		return (write(2, "minishell: program takes no arguments", 37), 1);
 	/*
@@ -66,7 +58,7 @@ int main(int argc, char	**argv, char **envp)
 	}
 	*/	
 	if (initializing_minishell(envp))
-		return(1);
+		return (1);
 	printf("Testing Minishell\n");
 	printf("---------------------------\n");
 	printf("========================================\n");
@@ -81,32 +73,3 @@ int main(int argc, char	**argv, char **envp)
 //	testing_parsing(env);
 //	rl_clear_history();
 }
-
-static int	initializing_minishell(char **envp)
-{
-	t_single_linked_node	*env;
-	t_minishell		mini;
-
-	ft_bzero(&mini, sizeof(t_minishell));
-	if (!envp || !envp[0])
-		env = default_env();
-	else
-		env = env_to_lst(envp);
-	if (!env)
-		return (1);
-//	testing_parsing(env);
-	get_commandline_input(env, &mini);
-	free_env_lst(env);
-	return (0);
-}
-
-t_single_linked_node *creating_fake_env()
-{
-	t_env_var				*env_struct;
-
-	env_struct = malloc(sizeof(t_env_var));
-	env_struct->key = strdup("VAR");
-    env_struct->value = strdup("Hamster cage");
-	return (ft_single_lstnew(env_struct));
-}
-
