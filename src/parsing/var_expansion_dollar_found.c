@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:24:32 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/11 17:29:47 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/17 12:48:41 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ static int	dollar_questionmark(char word[WORD_AMOUNT][WORD_STR_SIZE],
 	exit_status_word = ft_itoa(iteri->exit_status);
 	if (!exit_status_word)
 		return (perror("minishell: malloc for exit status failed"), 1);
+	i = 0;
 	while (exit_status_word[i])
 	{
 		word[iteri->wi][iteri->wj] = exit_status_word[i];

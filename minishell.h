@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/12 13:39:59 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/17 12:22:21 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,9 @@ t_single_linked_node	*env_to_lst(char	**envp);
 void					del_env_node_content(void	*content);
 char					**env_to_char_arr(t_single_linked_node	*lst);
 t_single_linked_node	*get_env_from_lst(char	*to_find, t_single_linked_node	*envp);
-void		free_env_lst(t_single_linked_node *env);
+void					free_env_lst(t_single_linked_node *env);
+t_env_var				*create_env_node(char   *str);
+t_single_linked_node	*default_env();
 
 //builtins
 int						env(char	**input, t_single_linked_node	*envp);

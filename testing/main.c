@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 15:14:57 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/17 12:23:47 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,10 @@ static int	initializing_minishell(char **envp)
 	t_minishell		mini;
 
 	ft_bzero(&mini, sizeof(t_minishell));
-	env = env_to_lst(envp);
+	if (!envp || !envp[0])
+		env = default_env();
+	else
+		env = env_to_lst(envp);
 	if (!env)
 		return (1);
 //	testing_parsing(env);

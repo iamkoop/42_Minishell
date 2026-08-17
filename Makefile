@@ -5,7 +5,8 @@ LDFLAGS = -lreadline
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
 						 src/environment_conversion/del_env_node_content.c \
 						 src/environment_conversion/convert_env_lst_to_char_arr.c \
-						 src/environment_conversion/get_env_from_lst.c
+						 src/environment_conversion/get_env_from_lst.c \
+						 src/environment_conversion/default_env.c
 
 BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/echo.c \

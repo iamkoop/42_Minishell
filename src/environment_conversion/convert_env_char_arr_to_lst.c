@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 17:47:02 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/17 12:24:59 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static t_env_var	*create_node_and_key(t_create_env_node_vars	*vars, char *s)
 	return(node);
 }
 
-static t_env_var	*create_env_node(char	*str)
+t_env_var	*create_env_node(char	*str)
 {
 	t_env_var	*node;
 	t_create_env_node_vars	vars;
