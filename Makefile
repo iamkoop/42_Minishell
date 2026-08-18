@@ -54,6 +54,7 @@ PARSING = src/parsing/tokenization.c \
 		  src/parsing/find_var_and_expand.c
 CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING)
 OFILES = $(CFILES:.c=.o)
+DFILES = $(CFILES:.c=.d)
 
 NAME = minishell
 
@@ -80,6 +81,7 @@ fclean: clean test_fclean
 
 clean: test_clean
 	$(REMOVE) $(OFILES)
+	$(REMOVE) $(DFILES)
 	@make -C $(LIBFT) clean
 
 re: fclean all
