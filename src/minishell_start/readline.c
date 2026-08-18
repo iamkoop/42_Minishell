@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 #include "../../minishell.h"
 
-void		ft_get_commandline_input(t_single_linked_node *env, t_minishell *mini);
+int		ft_get_commandline_input(t_single_linked_node *env, t_minishell *mini);
 static void	initiate_tokenization(char *input, t_single_linked_node *env, t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
-void	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
+int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 {
 	char	*input;
 
@@ -25,7 +25,7 @@ void	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		if (!input)
 		{
 			write(2, "exit\n", 5);
-			return ;
+			return (0);
 		}
 		else if (input[0])
 		{

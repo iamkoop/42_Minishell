@@ -1,4 +1,5 @@
 *.o
 *.swp
+*.d
 minishell
 test
