@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 19:55:38 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/11 17:31:20 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 18:00:28 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,47 @@ static int assert_pipeline(t_minishell *mini)
     return (ft_strncmp(buf, "hello pipe\n", 11) == 0 && mini->exit_status == 0);
 }
 
+static int assert_multi_pipe_wc(t_minishell *mini)
+{
+    int fd = open("exec_out1.txt", O_RDONLY);
+    if (fd < 0) return (0);
+
+    char buf[64];
+    ft_bzero(buf, sizeof(buf));
+    read(fd, buf, sizeof(buf) - 1);
+    close(fd);
+
+    /* "hello pipe\n" filtered through grep "hello" produces 1 line */
+    return (ft_atoi(buf) == 1 && mini->exit_status == 0);
+}
+
+static int assert_multi_pipe_rev(t_minishell *mini)
+{
+    int fd = open("exec_out1.txt", O_RDONLY);
+    if (fd < 0) return (0);
+
+    char buf[64];
+    ft_bzero(buf, sizeof(buf));
+    read(fd, buf, sizeof(buf) - 1);
+    close(fd);
+
+    /* "hello pipe\n" -> grep "hello" -> tr lower-to-upper -> "HELLO PIPE\n" -> rev -> "EPIP OLLEH\n" */
+    return (ft_strncmp(buf, "EPIP OLLEH\n", 11) == 0 && mini->exit_status == 0);
+}
+
+static int assert_mid_cmd_failure(t_minishell *mini)
+{
+    int fd = open("exec_out1.txt", O_RDONLY);
+    if (fd < 0) return (0);
+
+    char buf[64];
+    ft_bzero(buf, sizeof(buf));
+    read(fd, buf, sizeof(buf) - 1);
+    close(fd);
+
+    return (ft_strncmp(buf, "pipeline finished\n", 18) == 0 && mini->exit_status == 0);
+}
+
 /* --- RUNNER ENGINE --- */
 
 static int run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
@@ -271,10 +312,10 @@ static int run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
         /* Clone list into mini so exec_main operates on isolated memory */
         mini.cmd_lst = clone_cmd_list(test->cmd_lst);
 
-        t_single_linked_node *curr_cmd_node = mini.cmd_lst;
+        /*  t_single_linked_node *curr_cmd_node = mini.cmd_lst;
         int cmd_idx = 0;
 
-        while (curr_cmd_node)
+      while (curr_cmd_node)
         {
             t_command *cmd = (t_command *)curr_cmd_node->content;
             printf("--- [DEBUG TEST] Command %d: '%s' ---\n", cmd_idx++, cmd->argv[0]);
@@ -298,7 +339,8 @@ static int run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
             curr_cmd_node = curr_cmd_node->next;
         }
         printf("----------------------------------------\n");
-        
+*/        
+        printf("----------------------------------------------------------------------------------------------------------\n");
         exec_main(&mini, mini.cmd_lst, envp);
 
         write(pipe_fd[1], &mini.exit_status, sizeof(int));
@@ -462,6 +504,129 @@ int test_general_cmd_exec(void)
         if (!run_single_exec_test(&t5, envp))
             success = 0;
         clear_cmd_list(&t5.cmd_lst);
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Test Case 6: Multi-Pipe Chain (cat | grep | wc -l > file)            */
+    /* --------------------------------------------------------------------- */
+    {
+        static char *cat_argv6[] = {"cat", "exec_in1.txt", NULL};
+        static char *grep_argv6[] = {"grep", "hello", NULL};
+        static char *wc_argv6[] = {"wc", "-l", NULL};
+        t_single_linked_node *r6_out = create_redir_node("exec_out1.txt", OUT);
+
+        t_single_linked_node *cmd6_1 = create_cmd_node(cat_argv6, NULL);
+        t_single_linked_node *cmd6_2 = create_cmd_node(grep_argv6, NULL);
+        t_single_linked_node *cmd6_3 = create_cmd_node(wc_argv6, r6_out);
+
+        cmd6_1->next = cmd6_2;
+        cmd6_2->next = cmd6_3;
+
+        t_exec_test t6 = {
+            .test_name = "6. Multi-Pipe Chain (cat file | grep hello | wc -l > out)",
+            .cmd_lst = cmd6_1,
+            .expected_exit_status = 0,
+            .setup_files = setup_pipe_input,
+            .cleanup_files = cleanup_all_files,
+            .assert_behavior = assert_multi_pipe_wc
+        };
+        if (!run_single_exec_test(&t6, envp))
+            success = 0;
+        clear_cmd_list(&t6.cmd_lst);
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Test Case 7: 4-Stage Pipeline with Input/Output Redirection          */
+    /* (cat < in | grep hello | tr a-z A-Z | rev > out)                     */
+    /* --------------------------------------------------------------------- */
+    {
+        static char *cat_argv7[] = {"cat", NULL};
+        static char *grep_argv7[] = {"grep", "hello", NULL};
+        static char *tr_argv7[] = {"tr", "a-z", "A-Z", NULL};
+        static char *rev_argv7[] = {"rev", NULL};
+
+        t_single_linked_node *r7_in = create_redir_node("exec_in1.txt", IN);
+        t_single_linked_node *r7_out = create_redir_node("exec_out1.txt", OUT);
+
+        t_single_linked_node *cmd7_1 = create_cmd_node(cat_argv7, r7_in);
+        t_single_linked_node *cmd7_2 = create_cmd_node(grep_argv7, NULL);
+        t_single_linked_node *cmd7_3 = create_cmd_node(tr_argv7, NULL);
+        t_single_linked_node *cmd7_4 = create_cmd_node(rev_argv7, r7_out);
+
+        cmd7_1->next = cmd7_2;
+        cmd7_2->next = cmd7_3;
+        cmd7_3->next = cmd7_4;
+
+        t_exec_test t7 = {
+            .test_name = "7. 4-Stage Pipe (cat < in | grep | tr | rev > out)",
+            .cmd_lst = cmd7_1,
+            .expected_exit_status = 0,
+            .setup_files = setup_pipe_input,
+            .cleanup_files = cleanup_all_files,
+            .assert_behavior = assert_multi_pipe_rev
+        };
+        if (!run_single_exec_test(&t7, envp))
+            success = 0;
+        clear_cmd_list(&t7.cmd_lst);
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Test Case 8: Multi-Pipe with Mid-Pipeline Failure Exit Status        */
+    /* (cat in | invalid_cmd | grep hello) -> expected status 0             */
+    /* --------------------------------------------------------------------- */
+    {
+        static char *cat_argv8[] = {"cat", "exec_in1.txt", NULL};
+        static char *invalid_argv8[] = {"non_existent_command_12345", NULL};
+        static char *grep_argv8[] = {"grep", "hello", NULL};
+
+        t_single_linked_node *cmd8_1 = create_cmd_node(cat_argv8, NULL);
+        t_single_linked_node *cmd8_2 = create_cmd_node(invalid_argv8, NULL);
+        t_single_linked_node *cmd8_3 = create_cmd_node(grep_argv8, NULL);
+
+        cmd8_1->next = cmd8_2;
+        cmd8_2->next = cmd8_3;
+
+        t_exec_test t8 = {
+            .test_name = "8. Multi-Pipe Failure propagation (cat | invalid_cmd | grep)",
+            .cmd_lst = cmd8_1,
+            .expected_exit_status = 1,
+            .setup_files = setup_pipe_input,
+            .cleanup_files = cleanup_all_files,
+            .assert_behavior = NULL
+        };
+        if (!run_single_exec_test(&t8, envp))
+            success = 0;
+        clear_cmd_list(&t8.cmd_lst);
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Test Case 9: Middle Command Failure (cmd1 | invalid_cmd | cmd3)        */
+    /* Pipeline status must reflect the LAST command (cmd3 = 0).            */
+    /* --------------------------------------------------------------------- */
+    {
+        static char *cat_argv9[] = {"cat", "exec_in1.txt", NULL};
+        static char *invalid_argv9[] = {"non_existent_command_999", NULL};
+        static char *echo_argv9[] = {"echo", "pipeline finished", NULL};
+        t_single_linked_node *r9_out = create_redir_node("exec_out1.txt", OUT);
+
+        t_single_linked_node *cmd9_1 = create_cmd_node(cat_argv9, NULL);
+        t_single_linked_node *cmd9_2 = create_cmd_node(invalid_argv9, NULL);
+        t_single_linked_node *cmd9_3 = create_cmd_node(echo_argv9, r9_out);
+
+        cmd9_1->next = cmd9_2;
+        cmd9_2->next = cmd9_3;
+
+        t_exec_test t9 = {
+            .test_name = "9. Middle Command Failure (cat | invalid_cmd | echo > out)",
+            .cmd_lst = cmd9_1,
+            .expected_exit_status = 0,
+            .setup_files = setup_pipe_input,
+            .cleanup_files = cleanup_all_files,
+            .assert_behavior = assert_mid_cmd_failure
+        };
+        if (!run_single_exec_test(&t9, envp))
+            success = 0;
+        clear_cmd_list(&t9.cmd_lst);
     }
 
     ft_single_lstclear(&envp, del_env_node_content);

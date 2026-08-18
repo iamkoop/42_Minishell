@@ -65,10 +65,10 @@ int	main(int argc, char	**argv, char **envp)
 	printf("|          ALL EXECUTION TEST          |\n");
 	printf("========================================\n");
 	testing_exec(argv, envp);
-	printf("\n");
+/*	printf("\n");
 	printf("========================================\n");
 	printf("|          ALL PARSING TESTS           |\n");
-	printf("========================================\n");
+	printf("========================================\n"); */
 //	t_single_linked_node *env = creating_fake_env();
 //	testing_parsing(env);
 //	rl_clear_history();

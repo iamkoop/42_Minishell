@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/09 19:51:36 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/12 17:28:48 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 	while (i < size)
 	{
 		waitpid(fork_id[i], &mini->exit_status, 0);
+		if (WIFEXITED(mini->exit_status))
+			mini->exit_status = WEXITSTATUS(mini->exit_status);
 		i++;
 	}
-	if(mini->exit_status != -1337)
-		mini->exit_status = 1;
 }
 
 void parent(t_minishell *mini, t_single_linked_node	*envp)
@@ -62,6 +62,8 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 		if(fork_id[size] == 0)
 		{
 			mini->curr_cmd = (t_command	*)mini->cmd_lst->content;
+			if(mini->cmd_lst_size == 1)
+				child_process(mini, envp, 0, 3);
 			if(size == 0)
 				child_process(mini, envp, 1, 0);
 			else if(!mini->cmd_lst->next)
