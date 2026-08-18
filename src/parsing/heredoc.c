@@ -42,7 +42,7 @@ int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
 	if (creating_read_fd(filename, token_lst, iteri))
 		return (close(write_fd), 1);
 	close(write_fd);
-//	unlink(filename);
+	unlink(filename);
 	return (0);
 }
 

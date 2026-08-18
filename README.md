@@ -1,5 +1,8 @@
 # 42_Minishell
 
+## Start of minishell
+The program takes no arguments.
+
 ## Names in data structure for the parsed data
 cmd_data - struct of type t_cmd_data, holds the pointers to the "head" and the "tail" of the parsing data structure
 cmd_data.head - points to head of linked list made of nodes of the type t_slingle_lined_node from libft (which contains a pointer to content and a pointer to the next node)

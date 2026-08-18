@@ -27,18 +27,18 @@ typedef struct {
 
 void run_test(test_case tc, t_single_linked_node *env) 
 {
-    t_token_node token_lst[100];
+    t_minishell	mini;;
     t_token_iteri iteri;
     
     // Initialize
-    ft_bzero(token_lst, sizeof(t_token_node) * 100);
+    ft_bzero(&mini, sizeof(t_minishell));
     ft_bzero(&iteri, sizeof(t_token_iteri));
     
     printf("-> %s\n", tc.test_name);
     printf("   Input: '%s'\n", tc.input);
     
     // Run tokenization
-    int result = tokenization(tc.input, env, token_lst, &iteri);
+    int result = tokenization(tc.input, env, &mini, &iteri);
     
     // Check if we expected an error
     if (tc.expect_error) {
@@ -58,7 +58,7 @@ void run_test(test_case tc, t_single_linked_node *env)
     
     // Check token count
 	int i = 0;
-	while(token_lst[i].token_type)
+	while(mini.token_lst[i].token_type)
 		i++;
     if (i != tc.expected_count) {
         printf("   ❌ Wrong token count\n");
@@ -70,17 +70,17 @@ void run_test(test_case tc, t_single_linked_node *env)
     
     // Check each token
     for (int i = 0; i < tc.expected_count; i++) {
-        if (strcmp(token_lst[i].token_str, tc.expected_tokens[i]) != 0) {
+        if (strcmp(mini.token_lst[i].token_str, tc.expected_tokens[i]) != 0) {
             printf("   ❌ Token %d mismatch\n", i);
             printf("      Expected: '%s'\n", tc.expected_tokens[i]);
-            printf("      Got:      '%s'\n", token_lst[i].token_str);
+            printf("      Got:      '%s'\n", mini.token_lst[i].token_str);
             printf("\n");
             return;
         }
-        if (token_lst[i].token_type != tc.expected_types[i]) {
+        if (mini.token_lst[i].token_type != tc.expected_types[i]) {
             printf("   ❌ Token %d type mismatch\n", i);
             printf("      Expected type: %d\n", tc.expected_types[i]);
-            printf("      Got type:      %d\n", token_lst[i].token_type);
+            printf("      Got type:      %d\n", mini.token_lst[i].token_type);
             printf("\n");
             return;
         }

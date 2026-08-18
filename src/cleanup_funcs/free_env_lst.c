@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   del_env_node_content.c                             :+:      :+:    :+:   */
+/*   free_env_lst.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nildruon <bastalze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/25 19:01:33 by nildruon         ###   ########.fr       */
+/*   Created: 2026/05/25 17:50:42 by bastalze          #+#    #+#             */
+/*   Updated: 2026/05/25 19:01:33 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void del_env_node_content(void	*content)
+void    free_env_lst(t_single_linked_node *env)
 {
-	t_env_var *node;
+	t_single_linked_node	*curr_node;
 
-	node = (t_env_var	*)content;
-	if(!content)
-		return	;
-	free(node->key);
-	free(node->value);
-	free(node);
+	curr_node = env;
+	while(curr_node)
+	{
+		del_env_node_content(curr_node);
+		curr_node = curr_node->next;
+	}
 }

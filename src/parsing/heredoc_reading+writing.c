@@ -50,9 +50,12 @@ static int	var_expansion(char **heredoc_input,
 				char word[WORD_AMOUNT][WORD_STR_SIZE],
 				t_single_linked_node *env)
 {
-	char	*tmp_heredoc_input;
+	char		*tmp_heredoc_input;
+	t_quote_iteri   exv;
 
-	if (quote_rm_var_expan(*heredoc_input, word, env, true))
+	ft_bzero(&exv, sizeof(t_quote_iteri));
+	exv.heredoc = true;
+	if (quote_rm_var_expan(*heredoc_input, word, env, &exv))
 		return (1);
 	assert(word[1][0] == 0);
 	tmp_heredoc_input = calloc(1, ft_strlen(word[0]) + 1);

@@ -13,16 +13,16 @@
 #include "../minishell.h"
 
 int			initiate_parsing(t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
-int			parsing(t_single_linked_node *env, t_token_node *token_lst,
+				t_minishell *mini, t_token_iteri *iteri);
+int			parsing(t_single_linked_node *env, t_minishell *mini,
 				t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri);
-static int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst,
-				t_token_iteri *iteri, t_cmd_data *cmd_data);
+static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
+			t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	delimit_command(t_cmd_data *cmd_data);
 
 int	initiate_parsing(t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
+		t_minishell *mini, t_token_iteri *iteri)
 {
 	t_cmd_data				cmd_data;
 	t_command				*cmd;
@@ -34,38 +34,39 @@ int	initiate_parsing(t_single_linked_node *env,
 	if (!cmd_data.head)
 		return (1);
 	cmd_data.tail = cmd_data.head;
-	assert(token_lst != NULL);
+	assert(mini->token_lst != NULL);
 	assert(cmd_data.head != NULL);
-	if (parsing(env, token_lst, iteri, &cmd_data))
+	if (parsing(env, mini, iteri, &cmd_data))
 		return (free_command_struct(&cmd_data), 1);
 	return (free_command_struct(&cmd_data), 0);
 }
 
-int	parsing(t_single_linked_node *env, t_token_node *token_lst,
+int	parsing(t_single_linked_node *env, t_minishell *mini,
 		t_token_iteri *iteri, t_cmd_data *cmd_data)
 {
 	int	is_redir;
 
 	ft_bzero(iteri, sizeof(t_token_iteri));
-	while (token_lst[iteri->token].token_type)
+	while (mini->token_lst[iteri->token].token_type)
 	{
 		is_redir = 0;
-		if (is_redirection(token_lst, iteri))
+		if (is_redirection(mini->token_lst, iteri))
 		{
-			if (redirect(env, token_lst, iteri, cmd_data))
+			if (redirect(env, mini->token_lst, iteri, cmd_data))
 				return (1);
 			is_redir = 1;
 		}
-		if (is_syntax_error(token_lst, iteri))
+		if (is_syntax_error(mini->token_lst, iteri))
 			return (error("syntax error unexpected token"), 1);
 		if (!is_redir)
 		{
-			if (word_or_pipe(env, token_lst, iteri, cmd_data))
+			if (word_or_pipe(env, mini, iteri, cmd_data))
 				return (1);
 		}
 		iteri->token++;
 	}
 //	printing_struct_content(cmd_data);
+	exec_main(mini, cmd_data->head, env);
 	return (0);
 }
 
@@ -97,24 +98,27 @@ static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
 	return (0);
 }
 
-static int	word_or_pipe(t_single_linked_node *env, t_token_node *token_lst,
-				t_token_iteri *iteri, t_cmd_data *cmd_data)
+static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
+			t_token_iteri *iteri, t_cmd_data *cmd_data)
 {
-	char	word[WORD_AMOUNT][WORD_STR_SIZE];
+	char		word[WORD_AMOUNT][WORD_STR_SIZE];
+	t_quote_iteri	exv;
 
 	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
-	if (token_lst[iteri->token].token_type == WORD)
+	ft_bzero(&exv, sizeof(t_quote_iteri));
+	exv.exit_status = mini->exit_status;
+	if (mini->token_lst[iteri->token].token_type == WORD)
 	{
-		if (quote_rm_var_expan(token_lst[iteri->token].token_str, word, env,
-				false))
+		if (quote_rm_var_expan(mini->token_lst[iteri->token].token_str, word, env,
+				&exv))
 			return (1);
 		if (add_word_to_struct(cmd_data, word))
 		{
-			perror("minishell: Malloc for words in parsing failed");
+			perror("minishell: Malloc for argv in parsing failed");
 			return (1);
 		}
 	}
-	else if (token_lst[iteri->token].token_type == PIPE)
+	else if (mini->token_lst[iteri->token].token_type == PIPE)
 	{
 		if (delimit_command(cmd_data))
 			return (1);

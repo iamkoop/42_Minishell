@@ -236,8 +236,12 @@ void    qrve_unit_testing(t_single_linked_node *env)
         printf("Test \"%s\": ", test->description);
         total++;
 
+	t_quote_iteri   exv;
+	ft_bzero(&exv, sizeof(t_quote_iteri));
+	exv.heredoc = test->heredoc;
+
         // Call function
-        int return_value = quote_rm_var_expan(test->input, actual_words, env, test->heredoc);
+        int return_value = quote_rm_var_expan(test->input, actual_words, env, &exv);
 
         bool error_expected = test->expect_error;
         bool got_error = (return_value != 0);

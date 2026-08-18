@@ -12,7 +12,7 @@
 #include "../../minishell.h"
 
 int		tokenization(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
+				t_minishell *mini, t_token_iteri *iteri);
 static int	quotation_mode(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
 static int	space_or_word(char *input, t_single_linked_node *env,
@@ -21,32 +21,32 @@ static int	word(char *input, t_single_linked_node *env,
 				t_token_node *token_lst, t_token_iteri *iteri);
 
 int	tokenization(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
+		t_minishell *mini, t_token_iteri *iteri)
 {
 	while (input[iteri->i])
 	{
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
 			|| input[iteri->i] == '|')
 		{
-			if (operators1(input, env, token_lst, iteri))
+			if (operators1(input, env, mini->token_lst, iteri))
 				return (1);
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
 		{
-			token_lst[iteri->token].token_type = WORD;
-			if (quotation_mode(input, env, token_lst, iteri))
+			mini->token_lst[iteri->token].token_type = WORD;
+			if (quotation_mode(input, env, mini->token_lst, iteri))
 				return (1);
 		}
 		else
 		{
-			if (space_or_word(input, env, token_lst, iteri))
+			if (space_or_word(input, env, mini->token_lst, iteri))
 				return (1);
 		}
 		iteri->i++;
 	}
-	delimit_token(input, env, token_lst, iteri);
+	delimit_token(input, env, mini->token_lst, iteri);
 //	tokenization_testing(token_lst, env);
-	if(initiate_parsing(env, token_lst, iteri))
+	if(initiate_parsing(env, mini, iteri))
 		return (1);
 	return (0);
 }
