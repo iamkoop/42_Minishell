@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/12 14:10:18 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/17 19:23:26 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,6 @@ static char	*find_exacutable(char *cmd, char *env, t_minishell	*mini)
 		if (check_access(command, mini, 0))
 			return (ft_free_the_split(splitted), command);
 		free(command);
-		/*if(mini->exit_status == 126 || mini->exit_status == 127)
-			break;*/
 		i++;
 	}
 	return (ft_free_the_split(splitted), print_error(cmd), NULL);
@@ -126,11 +124,9 @@ char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 	char		*path;
 	int			iterate_envp;
 	
-    if (!cmd || !*cmd)
-    {
-		mini->exit_status = 127;
-		ft_putstr_fd("Minishell: command not found\n", 2);
-	}
+    mini->exit_status = 127;
+	if (!cmd || !*cmd)
+		return(ft_putstr_fd("Minishell: command not found\n", 2), NULL);
 	if(check_if_its_a_path(cmd, mini, &iterate_envp))
 		return(ft_strdup(cmd));
 	while (envp && iterate_envp)
@@ -145,6 +141,5 @@ char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 		}
 		envp = envp->next;
 	}
-	mini->exit_status = 127;
 	return (NULL);
 }

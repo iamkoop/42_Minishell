@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:46:00 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/12 13:44:22 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/17 19:02:26 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int run_single_exec_test(t_exec_test test, char **original_envp)
         exec_command(test.input, env_lst, &mini);
         
         ft_single_lstclear(&env_lst, del_env_node_content);
-        exit(1);
+        exit(mini.exit_status);
     }
 
     close(out_pipe[1]);

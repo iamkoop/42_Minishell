@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/12 16:54:44 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/18 13:42:45 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minish
     char            **converted_envp;
 
     mini->exit_status = 1;
-    char    *path;
+	char    *path;
     if(is_builtin(cmd_and_args[0]))
     {
       mini->exit_status = execute_builtin(cmd_and_args, envp);
@@ -46,7 +46,9 @@ void exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minish
     }
     path = get_path(cmd_and_args[0], envp, mini);
     if(!path)
-        return ;
+    {
+		return ;
+	}
     converted_envp = env_to_char_arr(envp);
     if(!converted_envp)
         ft_putendl_fd("minishell: exec_command: conversion failed", 2);
