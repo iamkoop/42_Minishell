@@ -6,11 +6,11 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/17 14:54:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:52:18 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "testing.h"
+#include "minishell.h"
 
 volatile sig_atomic_t	g_signal_code = 0;
 
@@ -50,26 +50,10 @@ int	main(int argc, char	**argv, char **envp)
 	signal_ctrl_backslash();
 	if (argc != 1)
 		return (write(2, "minishell: program takes no arguments", 37), 1);
-	/*
-	if (!*envp)
-	{
-		if (default_environment())
-			return (1);
-	}
-	*/	
+	if (argv[0])
+		argv = NULL;
+//	test_main(argv, envp);
 	if (initializing_minishell(envp))
 		return (1);
-	printf("Testing Minishell\n");
-	printf("---------------------------\n");
-	printf("========================================\n");
-	printf("|          ALL EXECUTION TEST          |\n");
-	printf("========================================\n");
-	testing_exec(argv, envp);
-/*	printf("\n");
-	printf("========================================\n");
-	printf("|          ALL PARSING TESTS           |\n");
-	printf("========================================\n"); */
-//	t_single_linked_node *env = creating_fake_env();
-//	testing_parsing(env);
-//	rl_clear_history();
+	rl_clear_history();
 }

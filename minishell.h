@@ -175,7 +175,7 @@ typedef struct s_minishell
 
 //beginning of minishell
 int						initializing_minishell(char **envp);
-void					get_commandline_input(t_single_linked_node *env, t_minishell *mini);
+int						get_commandline_input(t_single_linked_node *env, t_minishell *mini);
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
