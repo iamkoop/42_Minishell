@@ -91,7 +91,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		if (!curr_redir->filename)
 			return (1);
 		ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
-		curr_redir->fd = -1;
+		curr_redir->fd = -42;
 	}
 	return (0);
 }
