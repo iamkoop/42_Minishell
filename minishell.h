@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/17 12:22:21 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 16:46:30 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ typedef struct s_quote_iteri
 	int		wj;
 	bool	quoted;
 	bool	heredoc;
-	int	exit_status;
+	int		exit_status;
+	size_t	word_count;
 }		t_quote_iteri;
 
 //vars structs that will need to goo
@@ -258,6 +259,9 @@ int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
 void    printing_struct_content(t_cmd_data *cmd_data);
+void    main_testing(char **argv, char **env);
+void    testing_parsing(t_single_linked_node *env);
+
 //static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
 #endif
