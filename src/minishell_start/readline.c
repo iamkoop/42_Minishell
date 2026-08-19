@@ -24,11 +24,11 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		input = readline("Minishell> ");
 		if (!input)
 		{
-//			if (isatty(STDIN_FILENO))
-//				write(2, "exit\n", 5);
-//			return (0);
-			write(2, "exit\n", 5);
+			if (isatty(STDIN_FILENO))
+				write(2, "exit\n", 5);
 			return (0);
+//			write(2, "exit\n", 5);
+//			return (0);
 		}
 		else if (input[0])
 		{

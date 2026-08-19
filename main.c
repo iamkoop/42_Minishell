@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/18 14:52:18 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 11:36:34 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ static int	signal_ctrl_c(void)
 int	main(int argc, char	**argv, char **envp)
 {
 	struct sigaction	c;
+	int					ret;
 
+	ft_bzero(&c, sizeof(struct sigaction));
 	c.sa_handler = &handler_c;
 	sigemptyset(&c.sa_mask);
 	if (sigaction(SIGINT, &c, NULL))
@@ -53,7 +55,7 @@ int	main(int argc, char	**argv, char **envp)
 	if (argv[0])
 		argv = NULL;
 //	test_main(argv, envp);
-	if (initializing_minishell(envp))
-		return (1);
+	ret = initializing_minishell(envp);
 	rl_clear_history();
+	return (ret);
 }

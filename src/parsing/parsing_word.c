@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 12:20:37 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 12:20:40 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 11:31:21 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -68,8 +68,8 @@ static int	transfer_existing_word(t_command *curr_cmd, char **tmp_argv,
 	w->argv_i = 0;
 	while (curr_cmd->argv && curr_cmd->argv[w->argv_i])
 	{
-		tmp_argv[w->argv_i] = calloc(ft_strlen(curr_cmd->argv[w->argv_i]
-					+ 1), 1);
+		tmp_argv[w->argv_i] = calloc(ft_strlen(curr_cmd->argv[w->argv_i])
+					+ 1, 1);
 		if (!tmp_argv[w->argv_i])
 		{
 			free_strarray(tmp_argv);

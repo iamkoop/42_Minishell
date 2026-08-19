@@ -33,7 +33,7 @@
 # define TOKEN_STR_SIZE 50
 # define HD_DELIMITER_LEN 50 
 # define WORD_AMOUNT 40
-# define WORD_STR_SIZE 50
+# define WORD_STR_SIZE 100
 
 extern volatile sig_atomic_t signal_code;
 
