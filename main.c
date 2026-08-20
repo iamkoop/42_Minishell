@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 21:35:08 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/20 22:00:17 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ int	main(int argc, char	**argv, char **envp)
 		return (write(2, "minishell: program takes no arguments", 37), 1);
 	if (argv[0])
 		argv = NULL;
-	main_testing(argv, envp);
-	/*if (initializing_minishell(envp))
-		return (1);*/
+	//main_testing(argv, envp);
+	if (initializing_minishell(envp))
+		return (1);
 	rl_clear_history();
 }
