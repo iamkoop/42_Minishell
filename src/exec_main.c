@@ -24,7 +24,8 @@ void exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked
 	if(!mini->cmd_lst_size)
 		return ;
 	mini->curr_cmd = (t_command	*)cmd_lst->content;
-	if(mini->cmd_lst_size == 1 && is_builtin(mini->curr_cmd->argv[0]))
+	if(mini->cmd_lst_size == 1 && mini->curr_cmd->argv
+		&& is_builtin(mini->curr_cmd->argv[0]))
 			builtin_redir_special_case(mini, envp);
 	else
 		parent(mini, envp);
