@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/04 18:21:23 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 12:39:34 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -22,13 +22,19 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 	while (42)
 	{
 		input = readline("Minishell> ");
-		if (!input)
+		if (g_signal_code == SIGINT)
+		{
+			mini->exit_status = 130;
+			g_signal_code = 0;
+			if (input)
+                free(input);
+			continue ;
+		}
+		else if (!input)
 		{
 			if (isatty(STDIN_FILENO))
 				write(2, "exit\n", 5);
 			return (0);
-//			write(2, "exit\n", 5);
-//			return (0);
 		}
 		else if (input[0])
 		{
