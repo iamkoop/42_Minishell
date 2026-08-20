@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/04 18:21:23 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 20:58:20 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int		ft_get_commandline_input(t_single_linked_node *env, t_minishell *mini);
-static void	initiate_tokenization(char *input, t_single_linked_node *env, t_minishell *mini);
+static void	initiate_tokenization(char *input, t_single_linked_node **env, t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
 int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
@@ -30,14 +31,14 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		else if (input[0])
 		{
 			add_history(input);
-			initiate_tokenization(input, env, mini);
+			initiate_tokenization(input, &env, mini);
 			free(input);
 //			delete_hd_files();
 		}
 	}
 }
 
-static void	initiate_tokenization(char *input, t_single_linked_node *env,
+static void	initiate_tokenization(char *input, t_single_linked_node **env,
 			t_minishell *mini)
 {
 	t_token_iteri	iteri;

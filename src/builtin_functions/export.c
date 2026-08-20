@@ -3,67 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/30 04:08:21 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/20 16:42:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 //TODO: Parsing from what comes (not a valid identifier) IMPORTANT!!!!!
 //TODO: (BONUS) if you export a an existing var then suould replace the value with the new value
 //TODO: (BONUS) could appending (+=)
+//TODO: add the sorted print and fix 2 cases from tester
 
-static void compare_content(t_single_linked_node **curr_smallest,
-                            t_single_linked_node *prev_smallest,
-                            t_single_linked_node *curr_node)
+static int	is_valid_identifier(char	*input)
 {
-    t_env_var *smllst;
-    t_env_var *prev_smllst;
-    t_env_var *curr;
+	int first_equals;
+	int i;
 
-    smllst = (t_env_var *)(*curr_smallest)->content;
-	if(prev_smallest)
-    	prev_smllst = (t_env_var *)prev_smallest->content;
-    curr = (t_env_var *)curr_node->content;
-    if(!prev_smallest)
-    {
-        if(ft_strncmp(curr->key, smllst->key,
-            ft_get_biggest_s(curr->key, smllst->key)) < 0)
-            *curr_smallest = curr_node;
-        return;
-    }
-    if((ft_strncmp(curr->key, smllst->key,
-        ft_get_biggest_s(curr->key, smllst->key)) < 0)
-        && (ft_strncmp(curr->key, prev_smllst->key,
-            ft_get_biggest_s(curr->key, prev_smllst->key)) > 0))
-        *curr_smallest = curr_node;
-}
-
-static int print_sorted_env(t_single_linked_node *envp)
-{
-    t_print_sorted_env_vars vars;
-
-    vars = (t_print_sorted_env_vars){0};
-    vars.lst_len = ft_single_lstsize(envp);
-    while (vars.curr_cnt < vars.lst_len)
-    {
-        vars.tmp_lst = envp;
-        while(vars.tmp_lst)
-        {
-            if(!vars.prev_smllst_alpha && !vars.curr_smllst_alpha)
-                vars.curr_smllst_alpha = vars.tmp_lst;
-            compare_content(&vars.curr_smllst_alpha, vars.prev_smllst_alpha, vars.tmp_lst);
-            vars.tmp_lst = vars.tmp_lst->next;
-        }
-        vars.tmp_env_var = (t_env_var   *)vars.curr_smllst_alpha;
-        printf("declare -x %s=\"%s\"", vars.tmp_env_var->key, vars.tmp_env_var->value);
-        vars.prev_smllst_alpha = vars.curr_smllst_alpha;
-        vars.curr_cnt++;
-    }
-	return (0);
+	if(!ft_strlen(input))
+		return(0);
+	i = 0;
+	if(!(ft_isalpha(input[i]) || input[i] == '_'))
+		return(0);
+	i++;
+	first_equals = 1;
+	while (input[i] && input[i] != '=')
+	{
+		if(!(ft_isalnum(input[i]) || input[i] == '_'))
+			return(0);
+		i++;
+	}
+	return(1);
 }
 
 t_env_var	*fill_var_content(char	*input)
@@ -82,28 +54,23 @@ t_env_var	*fill_var_content(char	*input)
         return(NULL);
     ft_strlcpy(env_var->key, input, len + 1);
 	if(input[len] == '=')
-		input += 1;
-    input += len;
-    len = 0;
-    while (input[len])
-		len++;
-	if(!ft_strlen(input))
 	{
-		env_var->value = NULL;
-		return(env_var);
+		
+		input += len + 1;
+		env_var->value = ft_strdup(input);
+		if(!env_var->value)
+			return(NULL);
 	}
-	env_var->value = malloc(sizeof(char) * len + 1);
-    if(!env_var->value)
-        return(NULL);
-    ft_strlcpy(env_var->value, input, len + 1);
-    return(env_var);
+	else
+		env_var->value = NULL;
+	return(env_var);
 }
 
-t_single_linked_node    *create_var(char    *input)
+static t_single_linked_node	*create_var(char    *input)
 {
     t_single_linked_node    *node;
 
-    if(!ft_strlen(input))
+    if(!is_valid_identifier(input))
     {
         ft_putstr_fd("minishell: export: ", 2);
 		ft_putstr_fd(input, 2);
@@ -123,18 +90,25 @@ t_single_linked_node    *create_var(char    *input)
     return(node);
 }
 
-static int search_for_node(t_single_linked_node *node, t_single_linked_node *envp)
+
+static int print_sorted(t_single_linked_node *envp)
 {
-	t_env_var	*node_content;
+	//search for next string to print
+	if(envp)
+		printf("sorted");
+	return(0);
+}
+
+static int search_for_node(t_single_linked_node *node, t_single_linked_node	*envp)
+{
 	t_env_var	*curr_content;
-	size_t bigger;
+	t_env_var	*node_content;
 
 	node_content = (t_env_var	*)node->content;
-	while(envp)
+	while (envp)
 	{
 		curr_content = (t_env_var	*)envp->content;
-		bigger = ft_get_biggest_s(curr_content->key, node_content->key);
-		if(ft_strncmp(curr_content->key, node_content->key, bigger) == 0)
+		if(ft_strcmp(node_content->key, curr_content->key) == 0)
 		{
 			free(curr_content->value);
 			curr_content->value = ft_strdup(node_content->value);
@@ -152,28 +126,27 @@ static int search_for_node(t_single_linked_node *node, t_single_linked_node *env
 	return(2);
 }
 
-int export(char **input, t_single_linked_node *envp)
+int export(char **input, t_single_linked_node **envp)
 {
-    t_single_linked_node    *node;
-    int i;
-    int node_search;
+	t_single_linked_node    *node;
+	int ret;
+	int	i;
 
-    if(!envp)
-        return(1);
-    if(input[0] && !input[1])
-        return(print_sorted_env(envp));
-    i = 1;
-    while (input[i])
-    {
-        node = create_var(input[i]);
+	i = 1;
+	ret = 0;
+	if(!input[1])
+		return(print_sorted(*envp));
+	while (input[i])
+	{
+		node = create_var(input[i]);
         if(!node)
-            return(ft_putendl_fd("minishell: export: node malloc fail", 2), 1);
-		node_search = search_for_node(node, envp);
-        if(!node_search)
             return(1);
-        if(node_search == 2)
-            ft_lstadd_back_single_linked(&envp, node);
-        i++;
-    }
-    return(0);
+		ret = search_for_node(node, *envp);
+		if(!ret)
+			return(1);
+		if(ret == 2)
+			ft_lstadd_back_single_linked(envp, node);
+		i++;
+	}
+	return(0);
 }

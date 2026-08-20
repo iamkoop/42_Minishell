@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   free_command_struct.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:52:45 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/29 21:07:32 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:15 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 void		free_command_struct(t_cmd_data *cmd_data);

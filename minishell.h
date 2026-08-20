@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/17 12:22:21 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:33:10 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef MINISHELL_H
 # define MINISHELL_H
+# define _GNU_SOURCE
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdio.h>
@@ -187,27 +188,27 @@ t_env_var				*create_env_node(char   *str);
 t_single_linked_node	*default_env();
 
 //builtins
-int						env(char	**input, t_single_linked_node	*envp);
+int						env(char	**input, t_single_linked_node	**envp);
 int						echo(char	**input);
 void					builtin_exit(char	**input);
 int						pwd(char	**input);
 int						cd(char **input, t_single_linked_node	*envp);
 int						unset(char	**input, t_single_linked_node	**envp);
-int						export(char **input, t_single_linked_node *envp);
+int						export(char **input, t_single_linked_node **envp);
 
 int						is_builtin(char *cmd);
-void					exec_command(char   **cmd_and_args, t_single_linked_node    *envp, t_minishell *mini);
+void					exec_command(char   **cmd_and_args, t_single_linked_node	**envp, t_minishell *mini);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini);
-void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	*envp);
-int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp);
+void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	**envp);
+int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**envp);
 
 int						exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
-void					child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type);
-void					parent(t_minishell *mini, t_single_linked_node	*envp);
+void					child_process(t_minishell *mini, t_single_linked_node	**envp, int close_read, int child_type);
+void					parent(t_minishell *mini, t_single_linked_node	**envp);
 
 //PARSING PART
 //tokenization
-int		tokenization(char *input, t_single_linked_node *env, t_minishell *mini,
+int		tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		here_or_append(char *input, t_single_linked_node *env,
 			t_token_node *token_lst, t_token_iteri *iteri);
@@ -234,9 +235,9 @@ void    free_command_struct(t_cmd_data *cmd_data);
 void	close_fd(int	*fd);
 
 // parsing
-int		initiate_parsing(t_single_linked_node *env, t_minishell *mini,
+int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
-int		parsing(t_single_linked_node *env, t_minishell *mini, t_token_iteri *iteri,
+int		parsing(t_single_linked_node **env, t_minishell *mini, t_token_iteri *iteri,
 			t_cmd_data *cmd_data);
 int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
 int		redirect(t_single_linked_node *env, t_token_node *token_lst,
@@ -259,5 +260,7 @@ int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
 void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
 void    printing_struct_content(t_cmd_data *cmd_data);
 //static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
+
+void	main_testing(char **argv, char **envp);
 
 #endif

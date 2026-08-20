@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parent.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 17:28:48 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/20 20:44:50 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static int	*create_id_array(int size)
 {
@@ -36,7 +36,7 @@ static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 	}
 }
 
-void parent(t_minishell *mini, t_single_linked_node	*envp)
+void parent(t_minishell *mini, t_single_linked_node	**envp)
 {
 	int size = 0;
 	int *fork_id;

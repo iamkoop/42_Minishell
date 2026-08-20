@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization_operators.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 19:21:28 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/23 19:21:33 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:33:51 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	operators1(char *input, t_single_linked_node *env,

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   child_processes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 16:39:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 17:55:55 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/20 20:44:19 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 // prev_pipe and nxt_pipe have the fds that are needed in that child and 
 // therefore shouldnt be closed at the beginning of the child
@@ -42,7 +42,7 @@ static int final_redir(int	*fd, int	*final_fd, int child, int file_eno)
 	3 : normal cmd that was forked (no final redirections)
 */
 
-void child_process(t_minishell *mini, t_single_linked_node	*envp, int close_read, int child_type)
+void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_read, int child_type)
 {
 	if(close_read)
 		close_fd(&mini->next_pipe_fds[0]);
