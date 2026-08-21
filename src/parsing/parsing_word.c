@@ -9,6 +9,7 @@
 /*   Updated: 2026/08/19 17:16:15 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			add_word_to_struct(t_cmd_data *cmd_data,

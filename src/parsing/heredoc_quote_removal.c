@@ -9,6 +9,7 @@
 /*   Updated: 2026/05/26 14:10:30 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 char		*quote_removal(char *delimiter);

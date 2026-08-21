@@ -30,7 +30,7 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
                 free(input);
 			continue ;
 		}
-		else if (!input)
+		if (!input)
 		{
 			if (isatty(STDIN_FILENO))
 				write(2, "exit\n", 5);

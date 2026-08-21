@@ -9,7 +9,8 @@
 /*   Updated: 2026/07/21 12:55:20 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
+
+#include "../../minishell.h"
 
 int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
 int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,

@@ -9,6 +9,7 @@
 /*   Updated: 2026/07/30 14:23:30 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int		tokenization(char *input, t_single_linked_node *env,

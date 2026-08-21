@@ -9,6 +9,7 @@
 /*   Updated: 2026/07/23 19:21:33 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	operators1(char *input, t_single_linked_node *env,

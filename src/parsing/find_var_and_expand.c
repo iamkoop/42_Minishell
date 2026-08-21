@@ -9,6 +9,7 @@
 /*   Updated: 2026/07/28 12:45:04 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],

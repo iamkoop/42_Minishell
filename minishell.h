@@ -29,11 +29,11 @@
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include <assert.h>
 
-# define TOKEN_AMOUNT 10
-# define TOKEN_STR_SIZE 50
+# define TOKEN_AMOUNT 1000
+# define TOKEN_STR_SIZE 5000
 # define HD_DELIMITER_LEN 50 
-# define WORD_AMOUNT 40
-# define WORD_STR_SIZE 100
+# define WORD_AMOUNT 100
+# define WORD_STR_SIZE 10000
 
 extern volatile sig_atomic_t g_signal_code;
 
@@ -158,7 +158,7 @@ typedef struct s_export_vars
 
 typedef struct s_minishell
 {
-	t_token_node			 token_lst[TOKEN_AMOUNT];
+	t_token_node			token_lst[TOKEN_AMOUNT];
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
@@ -231,7 +231,7 @@ int		adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 //error and exit functions
 void	error(char *message);
 void	delete_hd_files();
-void    free_command_struct(t_cmd_data *cmd_data);
+void    free_command_struct(t_single_linked_node *cmd_lst);
 void	close_fd(int	*fd);
 
 // parsing

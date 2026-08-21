@@ -207,7 +207,7 @@ int run_single_command_test(t_test_case *tc)
         errors += compare_command(cmd_content, tc);
     }
     
-    free_command_struct(&cmd_data);
+    free_command_struct(cmd_data.head);
     return errors;
 }
 

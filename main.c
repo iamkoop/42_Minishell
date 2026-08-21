@@ -16,8 +16,7 @@ volatile sig_atomic_t	g_signal_code = 0;
 
 static void	handler_c(int signo)
 {
-	if (signo == SIGINT)
-		g_signal_code = signo;
+	g_signal_code = signo;
 }
 
 void	signal_ctrl_backslash(void)

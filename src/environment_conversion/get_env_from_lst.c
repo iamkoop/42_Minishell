@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 t_single_linked_node	*get_env_from_lst(char	*to_find, t_single_linked_node	*envp)
 {

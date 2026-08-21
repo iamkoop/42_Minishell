@@ -9,6 +9,7 @@
 /*   Updated: 2026/08/03 17:52:22 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
@@ -29,6 +30,16 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 	while (42)
 	{
 		heredoc_input = readline("> ");
+		/*
+		if (g_signal_code == SIGINT)
+		{
+			mini->exit_status = 130;
+			g_signal_code = 0;
+			if (input)
+                free(input);
+			continue ;
+		}
+			*/
 		if (!heredoc_input)
 			return (error("warning: here-document delimited by end-of-file "
 						"instead of delimiter"), 0);

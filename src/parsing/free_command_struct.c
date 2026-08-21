@@ -9,24 +9,26 @@
 /*   Updated: 2026/07/29 21:07:32 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
-void		free_command_struct(t_cmd_data *cmd_data);
+void		free_command_struct(t_single_linked_node *cmd_lst);
 static void	free_argv(t_command *cmd_content);
 static void	free_redir(t_command *cmd_content);
 
-void	free_command_struct(t_cmd_data *cmd_data)
+void	free_command_struct(t_single_linked_node *cmd_lst)
 {
 	t_single_linked_node	*curr_cmd_node;
 	t_single_linked_node	*next_cmd_node;
 	t_command				*cmd_content;
 
-	curr_cmd_node = cmd_data->head;
+	curr_cmd_node = cmd_lst;
 	while (curr_cmd_node)
 	{
 		cmd_content = (t_command *)curr_cmd_node->content;
 		free_argv(cmd_content);
 		free_redir(cmd_content);
+		free(cmd_content);
 		next_cmd_node = curr_cmd_node->next;
 		free(curr_cmd_node);
 		curr_cmd_node = next_cmd_node;

@@ -9,6 +9,7 @@
 /*   Updated: 2026/07/21 15:02:28 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
