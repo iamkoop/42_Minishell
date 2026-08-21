@@ -28,7 +28,11 @@ int	add_word_to_struct(t_cmd_data *cmd_data,
 
 	ft_bzero(&w, sizeof(t_word_iteri));
 	curr_cmd = (t_command *)cmd_data->tail->content;
-	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(curr_cmd->argv)
+	if (word[0][0] == 0)
+		tmp_argv = ft_calloc(1 + ft_strarraylen(curr_cmd->argv)
+			 + 1, sizeof(char *));
+	else
+		tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(curr_cmd->argv)
 			+ 1, sizeof(char *));
 	if (!tmp_argv)
 		return (1);
@@ -60,6 +64,14 @@ static int	transfer_new_word(char **tmp_argv, t_word_iteri *w,
 		tmp_argv[w->argv_i + w->i][w->j] = 0;
 		w->i++;
 	}
+	if (word[0][0] == 0)
+	{
+		tmp_argv[w->argv_i + w->i] = calloc(1, 1);
+		if (!tmp_argv[w->argv_i + w->i])
+			return (1);
+		tmp_argv[w->argv_i + w->i][0] = 0;
+		w->i++;
+	}
 	return (0);
 }
 
@@ -69,8 +81,8 @@ static int	transfer_existing_word(t_command *curr_cmd, char **tmp_argv,
 	w->argv_i = 0;
 	while (curr_cmd->argv && curr_cmd->argv[w->argv_i])
 	{
-		tmp_argv[w->argv_i] = calloc(ft_strlen(curr_cmd->argv[w->argv_i]
-					+ 1), 1);
+		tmp_argv[w->argv_i] = calloc(ft_strlen(curr_cmd->argv[w->argv_i])
+					+ 1, 1);
 		if (!tmp_argv[w->argv_i])
 		{
 			free_strarray(tmp_argv);

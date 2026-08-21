@@ -38,8 +38,8 @@ int	initializing_minishell(char **envp)
 	}
 //	testing_parsing(env);
 	get_commandline_input(env, &mini);
-//	free_env_lst(env);
-	return (0);
+	free_env_lst(env);
+	return (mini.exit_status);
 }
 
 static int	update_shell_level(t_single_linked_node *env)

@@ -32,13 +32,13 @@ int	initiate_parsing(t_single_linked_node **env,
 		return (1);
 	cmd_data.head = ft_single_lstnew(cmd);
 	if (!cmd_data.head)
-		return (1);
+		return (free(cmd), 1);
 	cmd_data.tail = cmd_data.head;
 	assert(mini->token_lst != NULL);
 	assert(cmd_data.head != NULL);
 	if (parsing(env, mini, iteri, &cmd_data))
-		return (free_command_struct(&cmd_data), 1);
-	return (free_command_struct(&cmd_data), 0);
+		return (free_command_struct(cmd_data.head), 1);
+	return (free_command_struct(cmd_data.head), 0);
 }
 
 int	parsing(t_single_linked_node **env, t_minishell *mini,

@@ -6,7 +6,7 @@
 /*   By: nildruon <bastalze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 17:50:42 by bastalze          #+#    #+#             */
-/*   Updated: 2026/05/25 19:01:33 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 12:10:00 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@
 void    free_env_lst(t_single_linked_node *env)
 {
 	t_single_linked_node	*curr_node;
+	t_single_linked_node	*next_node;
 
 	curr_node = env;
 	while(curr_node)
 	{
-		del_env_node_content(curr_node);
-		curr_node = curr_node->next;
+		next_node = curr_node->next;
+		del_env_node_content(curr_node->content);
+		free(curr_node);
+		curr_node = next_node;
 	}
 }

@@ -23,12 +23,18 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 	while (42)
 	{
 		input = readline("Minishell> ");
+		if (g_exit_status == SIGINT)
+		{
+			mini->exit_status = 130;
+			g_exit_status = 0;
+			if (input)
+                free(input);
+			continue ;
+		}
 		if (!input)
 		{
-//			if (isatty(STDIN_FILENO))
-//				write(2, "exit\n", 5);
-//			return (0);
-			write(2, "exit\n", 5);
+			if (isatty(STDIN_FILENO))
+				write(2, "exit\n", 5);
 			return (0);
 		}
 		else if (input[0])

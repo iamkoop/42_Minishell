@@ -47,7 +47,7 @@ static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
 	int	i;
 
 	i = 0;
-	while (tmp_content->value[i])
+	while (tmp_content->value && tmp_content->value[i])
 	{
 		if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
 				|| tmp_content->value[i] == '\n') && iteri->quoted == false
