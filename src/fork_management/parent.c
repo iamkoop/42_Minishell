@@ -64,6 +64,7 @@ void parent(t_minishell *mini, t_single_linked_node	**envp)
 		}
 		if(fork_id[size] == 0)
 		{
+			free(fork_id);
 			mini->curr_cmd = (t_command	*)mini->cmd_lst->content;
 			if(mini->cmd_lst_size == 1)
 				child_process(mini, envp, 0, 3);
@@ -73,6 +74,10 @@ void parent(t_minishell *mini, t_single_linked_node	**envp)
 				child_process(mini, envp, 0, 2);
 			else
 				child_process(mini, envp, 1, 1);
+			// free_command_struct(mini->cmd_lst);
+			// free_env_lst(*envp);
+			// rl_clear_history();
+			exit(0);
 		}
 		else
 		{
@@ -85,4 +90,5 @@ void parent(t_minishell *mini, t_single_linked_node	**envp)
 		size++;
  	}
 	wait_for_children(mini, fork_id, size);
+	free(fork_id);
 }

@@ -64,6 +64,7 @@ static void	free_redir(t_command *cmd_content)
 		free(redirection_content->filename);
 		if (redirection_content->fd > 0)
 			close(redirection_content->fd);
+		free(redirection_content);
 		next_redir_node = curr_redir_node->next;
 		free(curr_redir_node);
 		curr_redir_node = next_redir_node;
