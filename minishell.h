@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:33:10 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:54:58 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define WORD_AMOUNT 40
 # define WORD_STR_SIZE 50
 
-extern volatile sig_atomic_t signal_code;
+extern volatile sig_atomic_t g_exit_status;
 
 //Tokenization:
 enum e_token_type

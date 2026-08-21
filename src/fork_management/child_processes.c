@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 16:39:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 20:44:19 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:53:40 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,5 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 	if(child_type != 3)
 		close_fd(&mini->next_pipe_fds[1]);
 	exec_command(mini->curr_cmd->argv, envp, mini);
-	exit(mini->exit_status);
+	exit(g_exit_status);
 }

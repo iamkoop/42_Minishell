@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 20:44:50 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:58:29 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,16 @@ static int	*create_id_array(int size)
 static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 {
 	int i;
+	int status;
 
 	i = 0;
+	status = 0;
+	(void)mini;
 	while (i < size)
 	{
-		waitpid(fork_id[i], &mini->exit_status, 0);
-		if (WIFEXITED(mini->exit_status))
-			mini->exit_status = WEXITSTATUS(mini->exit_status);
+		waitpid(fork_id[i], &status, 0);
+		if (WIFEXITED(status))
+			g_exit_status = WEXITSTATUS(status);
 		i++;
 	}
 }
@@ -55,7 +58,7 @@ void parent(t_minishell *mini, t_single_linked_node	**envp)
 		fork_id[size] = fork();
 		if(fork_id[size] == -1)
 		{
-			mini->exit_status = -1337;
+			g_exit_status = -1337;
 			perror("fork in parent failed");
 			break ;
 		}
