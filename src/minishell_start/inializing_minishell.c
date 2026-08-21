@@ -23,13 +23,19 @@ int	initializing_minishell(char **envp)
 
 	ft_bzero(&mini, sizeof(t_minishell));
 	if (!envp || !envp[0])
+	{
 		env = default_env();
+		if (!env)
+			return (1);
+	}
 	else
+	{
 		env = env_to_lst(envp);
-	if (!env)
-		return (1);
-	if (update_shell_level(env))
-		return (1);
+		if (!env)
+			return (1);
+		if (update_shell_level(env))
+			return (free_env_lst(env), 1);
+	}
 //	testing_parsing(env);
 	get_commandline_input(env, &mini);
 //	free_env_lst(env);
