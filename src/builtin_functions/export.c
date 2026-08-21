@@ -112,13 +112,13 @@ static int search_for_node(t_single_linked_node *node, t_single_linked_node	*env
 		{
 			free(curr_content->value);
 			curr_content->value = ft_strdup(node_content->value);
-			del_env_node_content(node->content);
-			free(node);
-			if(!node_content->value)
+			if(!curr_content->value)
 			{
 				ft_putendl_fd("minishell: export: malloc fail node search", 2);
 				return(0);
 			}
+			del_env_node_content(node->content);
+			free(node);
 			return(1);
 		}
 		envp = envp->next;

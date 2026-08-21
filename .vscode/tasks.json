@@ -3,17 +3,13 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "Make Test",
+            "label": "Build Minishell",
             "command": "make",
-            "args": [
-                "test"
-            ],
+            "args": [],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
