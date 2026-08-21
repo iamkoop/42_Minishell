@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/19 17:26:41 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/21 18:53:40 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int			initiate_parsing(t_single_linked_node *env,
+int			initiate_parsing(t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
-int			parsing(t_single_linked_node *env, t_minishell *mini,
+int			parsing(t_single_linked_node **env, t_minishell *mini,
 				t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri);
 static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	delimit_command(t_cmd_data *cmd_data);
 
-int	initiate_parsing(t_single_linked_node *env,
+int	initiate_parsing(t_single_linked_node **env,
 		t_minishell *mini, t_token_iteri *iteri)
 {
 	t_cmd_data				cmd_data;
@@ -41,7 +41,7 @@ int	initiate_parsing(t_single_linked_node *env,
 	return (free_command_struct(cmd_data.head), 0);
 }
 
-int	parsing(t_single_linked_node *env, t_minishell *mini,
+int	parsing(t_single_linked_node **env, t_minishell *mini,
 		t_token_iteri *iteri, t_cmd_data *cmd_data)
 {
 	int	is_redir;
@@ -52,7 +52,7 @@ int	parsing(t_single_linked_node *env, t_minishell *mini,
 		is_redir = 0;
 		if (is_redirection(mini->token_lst, iteri))
 		{
-			if (redirect(env, mini->token_lst, iteri, cmd_data))
+			if (redirect(*env, mini->token_lst, iteri, cmd_data))
 				return (1);
 			is_redir = 1;
 		}
@@ -60,7 +60,7 @@ int	parsing(t_single_linked_node *env, t_minishell *mini,
 			return (error("syntax error unexpected token"), 1);
 		if (!is_redir)
 		{
-			if (word_or_pipe(env, mini, iteri, cmd_data))
+			if (word_or_pipe(*env, mini, iteri, cmd_data))
 				return (1);
 		}
 		iteri->token++;
@@ -106,7 +106,7 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 
 	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
 	ft_bzero(&exv, sizeof(t_quote_iteri));
-	exv.exit_status = mini->exit_status;
+	exv.exit_status = g_exit_status;
 	if (mini->token_lst[iteri->token].token_type == WORD)
 	{
 		if (quote_rm_var_expan(mini->token_lst[iteri->token].token_str, word, env,

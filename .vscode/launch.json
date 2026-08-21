@@ -9,12 +9,7 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [
-                {
-                    "name": "DEBUGINFOD_URLS",
-                    "value": ""
-                }
-            ],
+            "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
@@ -24,7 +19,7 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Disable debuginfod completely to prevent infinite loading hang",
+                    "description": "Disable debuginfod completely",
                     "text": "set debuginfod urls ",
                     "ignoreFailures": true
                 },
@@ -34,12 +29,22 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Let GDB follow the parent process and let the child run normally",
+                    "description": "Prevent GDB from using a shell to start the process (essential for empty env)",
+                    "text": "set startup-with-shell off",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Clear all inherited environment variables",
+                    "text": "unset environment",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Follow parent on fork",
                     "text": "set follow-fork-mode parent",
                     "ignoreFailures": false
                 },
                 {
-                    "description": "Detach from child process on fork so it doesn't get suspended",
+                    "description": "Detach from child process on fork",
                     "text": "set detach-on-fork on",
                     "ignoreFailures": false
                 }

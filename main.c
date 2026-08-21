@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 12:56:00 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/21 19:02:52 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_signal_code = 0;
+volatile sig_atomic_t	g_exit_status = 0;
 
 static void	handler_c(int signo)
 {
-	g_signal_code = signo;
+	g_exit_status = signo;
 }
 
 void	signal_ctrl_backslash(void)
@@ -31,7 +31,7 @@ void	signal_ctrl_backslash(void)
 
 static int	rl_signal_hook_ctrl_c(void)
 {
-	if (g_signal_code == SIGINT)
+	if (g_exit_status == SIGINT)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
@@ -46,7 +46,6 @@ static int	rl_signal_hook_ctrl_c(void)
 int	main(int argc, char	**argv, char **envp)
 {
 	struct sigaction	c;
-	int					ret;
 
 	ft_bzero(&c, sizeof(struct sigaction));
 	c.sa_handler = handler_c;
@@ -61,8 +60,9 @@ int	main(int argc, char	**argv, char **envp)
 		return (write(2, "minishell: program takes no arguments", 37), 1);
 	if (argv[0])
 		argv = NULL;
-//	main_testing(argv, envp);
-	ret = initializing_minishell(envp);
+	//main_testing(argv, envp);
+	if (initializing_minishell(envp))
+		return (1);
 	rl_clear_history();
-	return (ret);
+	return (g_exit_status);
 }

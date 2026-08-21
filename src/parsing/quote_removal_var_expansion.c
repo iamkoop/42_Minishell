@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_removal_var_expansion.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 16:27:55 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/21 15:02:28 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:45 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
