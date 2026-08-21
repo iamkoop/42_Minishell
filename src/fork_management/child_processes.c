@@ -47,19 +47,41 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 	if(close_read)
 		close_fd(&mini->next_pipe_fds[0]);
 	if(!exec_redirections(mini->curr_cmd->redir, mini))
+	{
+		free_command_struct(mini->cmd_lst);
+		free_env_lst(*envp);
+		rl_clear_history();
+		exit(g_exit_status);	
 		exit(1);
-	if(mini->in < -1 && (child_type != 0 && child_type != 3))
+	}
+	else if(mini->in < -1 && (child_type != 0 && child_type != 3))
 	{
 		if(!final_redir(&mini->prev_read_fd, &mini->redir_in, child_type, STDIN_FILENO))
+		{
+			free_command_struct(mini->cmd_lst);
+			free_env_lst(*envp);
+			rl_clear_history();
+			exit(g_exit_status);
 			exit(1);
+		}
 	}
-	if(mini->out < -1 && (child_type != 2 && child_type != 3))
+	else if(mini->out < -1 && (child_type != 2 && child_type != 3))
 	{
 		if(!final_redir(&mini->next_pipe_fds[1], &mini->redir_out, child_type, STDOUT_FILENO))
+		{
+			free_command_struct(mini->cmd_lst);
+			free_env_lst(*envp);
+			rl_clear_history();
+			exit(g_exit_status);
 			exit(1);
+		}
 	}
 	if(child_type != 3)
 		close_fd(&mini->next_pipe_fds[1]);
 	exec_command(mini->curr_cmd->argv, envp, mini);
+	free_command_struct(mini->cmd_lst);
+	free_env_lst(*envp);
+	rl_clear_history();
 	exit(g_exit_status);
+	
 }

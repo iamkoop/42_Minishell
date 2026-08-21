@@ -55,6 +55,11 @@ void exec_command(char   **cmd_and_args, t_single_linked_node    **envp, t_minis
     if(!converted_envp)
         ft_putendl_fd("minishell: exec_command: conversion failed", 2);
     else
+	{
         execve(path, cmd_and_args, converted_envp);
+	}
+// free_command_struct(mini->cmd_lst);
+	free_env_lst(*envp);
+	rl_clear_history();
     g_exit_status = 1;
 }

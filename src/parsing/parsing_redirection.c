@@ -41,7 +41,7 @@ int	redirect(t_single_linked_node *env, t_token_node *token_lst,
 	t_single_linked_node	*tmp_redir;
 
 	tmp_cmd = (t_command *)cmd_data->tail->content;
-	curr_redir = calloc(1, sizeof(t_redir_list));
+	curr_redir = ft_calloc(1, sizeof(t_redir_list));
 	if (!curr_redir)
 		return (1);
 	redir_type_assignment(curr_redir, token_lst, iteri);
