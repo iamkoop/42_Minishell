@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_reading+writing.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/03 17:52:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			adding_heredoc_into_file(int fd, bool expansion, char *delimiter,

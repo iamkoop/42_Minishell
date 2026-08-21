@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inializing_minishell.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/17 14:57:42 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 15:36:13 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

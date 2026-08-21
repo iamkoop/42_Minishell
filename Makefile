@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -I42_Libft -MMD
+CFLAGS = -Werror -Wall -Wextra -g -I42_Libft #-MMD
 LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \

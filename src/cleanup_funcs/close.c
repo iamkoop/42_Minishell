@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 20:18:01 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/07 20:24:04 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/19 15:18:13 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 void	close_fd(int	*fd)
 {

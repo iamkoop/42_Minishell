@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_word.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 12:20:37 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/30 12:20:40 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:39 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			add_word_to_struct(t_cmd_data *cmd_data,

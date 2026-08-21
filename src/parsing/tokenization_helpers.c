@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization_helpers.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 10:56:18 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/21 12:55:20 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:33:42 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../minishell.h"
+
+#include "../../minishell.h"
 
 int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
 int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,

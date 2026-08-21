@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 13:41:41 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/20 20:43:38 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static int input_redir(char	*file, enum e_redir_type type, t_minishell	*mini)
 {
@@ -99,7 +99,7 @@ int exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 	return(execute_redirections(mini));
 }
 
-int builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	*envp)
+int builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**envp)
 {
 	int		saved_in;
 	int		saved_out;
