@@ -40,10 +40,10 @@ void exec_command(char   **cmd_and_args, t_single_linked_node    **envp, t_minis
 
 	if(!cmd_and_args)
 		return ;
-    g_exit_status = 1;
+    mini->exit_status = 1;
     if(is_builtin(cmd_and_args[0]))
     {
-      g_exit_status = execute_builtin(cmd_and_args, envp);
+      mini->exit_status = execute_builtin(cmd_and_args, envp);
       return ;
     }
     path = get_path(cmd_and_args[0], *envp, mini);
@@ -61,5 +61,5 @@ void exec_command(char   **cmd_and_args, t_single_linked_node    **envp, t_minis
 // free_command_struct(mini->cmd_lst);
 	free_env_lst(*envp);
 	rl_clear_history();
-    g_exit_status = 1;
+    mini->exit_status = 1;
 }

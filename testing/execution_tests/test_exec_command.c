@@ -65,7 +65,7 @@ static int run_single_exec_test(t_exec_test test, char **original_envp)
         exec_command(test.input, env_lst, &mini);
         
         ft_single_lstclear(&env_lst, del_env_node_content);
-        exit(g_exit_status);
+        exit(mini.exit_status);
     }
 
     close(out_pipe[1]);

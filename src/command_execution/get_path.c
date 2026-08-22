@@ -21,7 +21,6 @@ static void print_error(char	*cmd)
 static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 {
 	int	access_valid;
-	(void)mini;
 	access_valid = access(cmd, F_OK);
 	if (!access_valid)
 	{
@@ -32,14 +31,14 @@ static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 		{
 			if (send_perror)
 				print_error(cmd);
-			g_exit_status = 126;
+			mini->exit_status = 126;
 		}
 	}
 	else
 	{
 		if (send_perror)
 			print_error(cmd);
-		g_exit_status = 127;
+		mini->exit_status = 127;
 	}
 	return (NULL);
 }
@@ -51,7 +50,6 @@ static char	*colon_edge_case(char *env, t_minishell	*mini)
 	char	*joined;
 
 	i = 0;
-	(void)mini;
 	len = ft_strlen(env);
 	joined = NULL;
 	while (env[i])
@@ -63,7 +61,7 @@ static char	*colon_edge_case(char *env, t_minishell	*mini)
 			if (!joined)
 			{
 				ft_putendl_fd("minishell: colon_edge_case: join failed", 2);
-				g_exit_status = 1;
+				mini->exit_status = 1;
 				return(NULL);
 			}
 			if (check_access(joined, 0, 0))
@@ -125,7 +123,7 @@ char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 	char		*path;
 	int			iterate_envp;
 	
-    g_exit_status = 127;
+    mini->exit_status = 127;
 	if (!cmd || !*cmd)
 		return(ft_putstr_fd("Minishell: command not found\n", 2), NULL);
 	if(check_if_its_a_path(cmd, mini, &iterate_envp))

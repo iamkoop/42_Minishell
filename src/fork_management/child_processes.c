@@ -51,7 +51,7 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 		free_command_struct(mini->cmd_lst);
 		free_env_lst(*envp);
 		rl_clear_history();
-		exit(g_exit_status);	
+		exit(mini->exit_status);	
 		exit(1);
 	}
 	else if(mini->in < -1 && (child_type != 0 && child_type != 3))
@@ -61,7 +61,7 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 			free_command_struct(mini->cmd_lst);
 			free_env_lst(*envp);
 			rl_clear_history();
-			exit(g_exit_status);
+			exit(mini->exit_status);
 			exit(1);
 		}
 	}
@@ -72,7 +72,7 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 			free_command_struct(mini->cmd_lst);
 			free_env_lst(*envp);
 			rl_clear_history();
-			exit(g_exit_status);
+			exit(mini->exit_status);
 			exit(1);
 		}
 	}
@@ -82,6 +82,6 @@ void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_rea
 	free_command_struct(mini->cmd_lst);
 	free_env_lst(*envp);
 	rl_clear_history();
-	exit(g_exit_status);
+	exit(mini->exit_status);
 	
 }
