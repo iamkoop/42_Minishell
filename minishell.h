@@ -36,7 +36,7 @@
 # define WORD_AMOUNT 100
 # define WORD_STR_SIZE 1000
 
-extern volatile sig_atomic_t g_exit_status;
+extern volatile sig_atomic_t g_signal;
 
 //Tokenization:
 enum e_token_type

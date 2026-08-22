@@ -106,7 +106,7 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 
 	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
 	ft_bzero(&exv, sizeof(t_quote_iteri));
-	exv.exit_status = g_exit_status;
+	exv.exit_status = mini->exit_status;
 	if (mini->token_lst[iteri->token].token_type == WORD)
 	{
 		if (quote_rm_var_expan(mini->token_lst[iteri->token].token_str, word, env,

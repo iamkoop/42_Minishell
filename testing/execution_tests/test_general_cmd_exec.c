@@ -208,7 +208,7 @@ static int assert_single_builtin_pwd(t_minishell *mini)
     ssize_t bytes = read(fd, buf, sizeof(buf) - 1);
     close(fd);
 
-    return (bytes > 0 && g_exit_status == 0);
+    return (bytes > 0 && mini->exit_status == 0);
 }
 
 static int assert_single_external_cmd(t_minishell *mini)
@@ -221,7 +221,7 @@ static int assert_single_external_cmd(t_minishell *mini)
     read(fd, buf, sizeof(buf) - 1);
     close(fd);
 
-    return (ft_strncmp(buf, "hello exec_main\n", 16) == 0 && g_exit_status == 0);
+    return (ft_strncmp(buf, "hello exec_main\n", 16) == 0 && mini->exit_status == 0);
 }
 
 static int assert_pipeline(t_minishell *mini)
@@ -234,7 +234,7 @@ static int assert_pipeline(t_minishell *mini)
     read(fd, buf, sizeof(buf) - 1);
     close(fd);
 
-    return (ft_strncmp(buf, "hello pipe\n", 11) == 0 && g_exit_status == 0);
+    return (ft_strncmp(buf, "hello pipe\n", 11) == 0 && mini->exit_status == 0);
 }
 
 static int assert_multi_pipe_wc(t_minishell *mini)
@@ -248,7 +248,7 @@ static int assert_multi_pipe_wc(t_minishell *mini)
     close(fd);
 
     /* "hello pipe\n" filtered through grep "hello" produces 1 line */
-    return (ft_atoi(buf) == 1 && g_exit_status == 0);
+    return (ft_atoi(buf) == 1 && mini->exit_status == 0);
 }
 
 static int assert_multi_pipe_rev(t_minishell *mini)
@@ -262,7 +262,7 @@ static int assert_multi_pipe_rev(t_minishell *mini)
     close(fd);
 
     /* "hello pipe\n" -> grep "hello" -> tr lower-to-upper -> "HELLO PIPE\n" -> rev -> "EPIP OLLEH\n" */
-    return (ft_strncmp(buf, "EPIP OLLEH\n", 11) == 0 && g_exit_status == 0);
+    return (ft_strncmp(buf, "EPIP OLLEH\n", 11) == 0 && mini->exit_status == 0);
 }
 
 static int assert_mid_cmd_failure(t_minishell *mini)
@@ -275,7 +275,7 @@ static int assert_mid_cmd_failure(t_minishell *mini)
     read(fd, buf, sizeof(buf) - 1);
     close(fd);
 
-    return (ft_strncmp(buf, "pipeline finished\n", 18) == 0 && g_exit_status == 0);
+    return (ft_strncmp(buf, "pipeline finished\n", 18) == 0 && mini->exit_status == 0);
 }
 
 /* --- RUNNER ENGINE --- */
@@ -343,7 +343,7 @@ static int run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
         printf("----------------------------------------------------------------------------------------------------------\n");
         exec_main(&mini, mini.cmd_lst, envp);
 
-        write(pipe_fd[1], &g_exit_status, sizeof(int));
+        write(pipe_fd[1], &mini.exit_status, sizeof(int));
 
         int assert_res = 1;
         if (test->assert_behavior)

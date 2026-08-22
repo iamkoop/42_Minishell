@@ -29,12 +29,11 @@ static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 
 	i = 0;
 	status = 0;
-	(void)mini;
 	while (i < size)
 	{
 		waitpid(fork_id[i], &status, 0);
 		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
+			mini->exit_status = WEXITSTATUS(status);
 		i++;
 	}
 }
@@ -58,7 +57,7 @@ void parent(t_minishell *mini, t_single_linked_node	**envp)
 		fork_id[size] = fork();
 		if(fork_id[size] == -1)
 		{
-			g_exit_status = -1337;
+			mini->exit_status = -1337;
 			perror("fork in parent failed");
 			break ;
 		}

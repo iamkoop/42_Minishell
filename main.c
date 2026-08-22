@@ -12,11 +12,11 @@
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_exit_status = 0;
+volatile sig_atomic_t	g_signal = 0;
 
 static void	handler_c(int signo)
 {
-	g_exit_status = signo;
+	g_signal = signo;
 }
 
 void	signal_ctrl_backslash(void)
@@ -31,13 +31,13 @@ void	signal_ctrl_backslash(void)
 
 static int	rl_signal_hook_ctrl_c(void)
 {
-	if (g_exit_status == SIGINT)
+	if (g_signal == SIGINT)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line ("", 0);
 		rl_redisplay();
-		rl_done = 1;
+		return (1);
 	}
 	return (0);
 }
@@ -46,6 +46,7 @@ static int	rl_signal_hook_ctrl_c(void)
 int	main(int argc, char	**argv, char **envp)
 {
 	struct sigaction	c;
+	int					exit_status;
 
 	ft_bzero(&c, sizeof(struct sigaction));
 	c.sa_handler = handler_c;
@@ -61,8 +62,7 @@ int	main(int argc, char	**argv, char **envp)
 	if (argv[0])
 		argv = NULL;
 	//main_testing(argv, envp);
-	if (initializing_minishell(envp))
-		return (1);
+	exit_status = initializing_minishell(envp);
 	rl_clear_history();
-	return (g_exit_status);
+	return (exit_status);
 }
