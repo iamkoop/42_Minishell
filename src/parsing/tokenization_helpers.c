@@ -13,7 +13,7 @@
 #include "../../minishell.h"
 
 int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int	delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 		t_token_iteri *iteri);
 
 int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri)
@@ -29,7 +29,7 @@ int	add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri)
 	return (0);
 }
 
-int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int	delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 				t_token_iteri *iteri)
 {
 	if(iteri->token >= TOKEN_AMOUNT)
@@ -41,11 +41,11 @@ int	delimit_token(char *input, t_single_linked_node *env, t_token_node *token_ls
 	iteri->token++;
 	iteri->t = 0;
 	if (iteri->token >= 2
-		&& token_lst[iteri->token - 1].token_type == WORD
-		&& token_lst[iteri->token - 2].token_type == HERE_DOC)
+		&& mini->token_lst[iteri->token - 1].token_type == WORD
+		&& mini->token_lst[iteri->token - 2].token_type == HERE_DOC)
 	{
 		printf("Heredoc entered\n");
-		here_doc(input, env, token_lst, iteri);
+		here_doc(input, env, mini, iteri);
 	}
 	return (0);
 }

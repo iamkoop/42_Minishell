@@ -13,7 +13,7 @@
 #include "../../minishell.h"
 
 int			here_doc(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
+				t_minishell *mini, t_token_iteri *iteri);
 static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
 				t_token_iteri *iteri, bool *expansion);
 static int	heredoc_filename_creation(char *filename, char *input,
@@ -21,28 +21,28 @@ static int	heredoc_filename_creation(char *filename, char *input,
 static int	creating_read_fd(char *filename, t_token_node *token_lst,
 				t_token_iteri *iteri);
 
-int	here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 		t_token_iteri *iteri)
 {
 	char	delimiter[HD_DELIMITER_LEN];
 	char	filename[16];
 	bool	expansion;
-	int		write_fd;
 
 	expansion = false;
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
-	if (prepare_delimiter(delimiter, token_lst, iteri, &expansion))
+	if (prepare_delimiter(delimiter, mini->token_lst, iteri, &expansion))
 		return (1);
 	if (heredoc_filename_creation(filename, input, iteri))
 		return (1);
-	write_fd = open((const char *) filename, O_WRONLY | O_CLOEXEC | O_EXCL | O_CREAT, 0600);
-	if (write_fd == -1)
+	mini->heredoc_write_fd = open((const char *) filename,
+		O_WRONLY | O_CLOEXEC | O_EXCL | O_CREAT, 0600);
+	if (mini->heredoc_write_fd == -1)
 		return (perror(NULL), 1);
-	if (adding_heredoc_into_file(write_fd, expansion, delimiter, env))
-		return (unlink(filename), close(write_fd), 1);
-	if (creating_read_fd(filename, token_lst, iteri))
-		return (close(write_fd), 1);
-	close(write_fd);
+	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
+		return (unlink(filename), close(mini->heredoc_write_fd), 1);
+	if (creating_read_fd(filename, mini->token_lst, iteri))
+		return (close(mini->heredoc_write_fd), 1);
+	close(mini->heredoc_write_fd);
 	unlink(filename);
 	return (0);
 }

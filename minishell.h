@@ -160,6 +160,7 @@ typedef struct s_export_vars
 typedef struct s_minishell
 {
 	t_token_node			token_lst[TOKEN_AMOUNT];
+	int						heredoc_write_fd;
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
@@ -212,22 +213,22 @@ void					parent(t_minishell *mini, t_single_linked_node	**envp);
 int		tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		here_or_append(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		operators1(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		operators2(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		redirections(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-int		delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int		delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 				t_token_iteri *iteri);
 
 //here_doc
 char	*quote_removal(char *delimiter);
-int		here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int		here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri);
-int		adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+int		adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env);
 //error and exit functions
 void	error(char *message);
