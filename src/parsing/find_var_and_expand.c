@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   find_var_and_expand.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:45:00 by bastalze          #+#    #+#             */
-/*   Updated: 2026/07/28 12:45:04 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:10 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
@@ -46,7 +47,7 @@ static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
 	int	i;
 
 	i = 0;
-	while (tmp_content->value[i])
+	while (tmp_content->value && tmp_content->value[i])
 	{
 		if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
 				|| tmp_content->value[i] == '\n') && iteri->quoted == false

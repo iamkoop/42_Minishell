@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 10:22:12 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/07/06 15:15:56 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/21 19:09:19 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int	is_builtin(char *cmd)
 {
-	if (ft_strncmp(cmd, "cd", ft_get_biggest_s(cmd, "cd")) == 0
-	|| ft_strncmp(cmd, "echo", ft_get_biggest_s(cmd, "echo")) == 0
-	|| ft_strncmp(cmd, "env", ft_get_biggest_s(cmd, "env")) == 0
-	|| ft_strncmp(cmd, "export", ft_get_biggest_s(cmd, "export")) == 0
-	|| ft_strncmp(cmd, "exit", ft_get_biggest_s(cmd, "exit")) == 0
-	|| ft_strncmp(cmd, "pwd", ft_get_biggest_s(cmd, "pwd")) == 0
-		|| ft_strncmp(cmd, "unset", ft_get_biggest_s(cmd, "unset")) == 0)
+	if (ft_strcmp(cmd, "cd") == 0
+	|| ft_strcmp(cmd, "echo") == 0
+	|| ft_strcmp(cmd, "env") == 0
+	|| ft_strcmp(cmd, "export") == 0
+	|| ft_strcmp(cmd, "exit") == 0
+	|| ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "unset") == 0)
 		return (1);
 	return (0);
 }

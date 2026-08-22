@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/17 19:23:26 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/21 18:56:39 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static void print_error(char	*cmd)
 {
@@ -21,7 +21,6 @@ static void print_error(char	*cmd)
 static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 {
 	int	access_valid;
-
 	access_valid = access(cmd, F_OK);
 	if (!access_valid)
 	{

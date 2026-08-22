@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:54 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/30 00:45:16 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/20 18:59:21 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static void remove_node(t_single_linked_node	**curr,
 						t_single_linked_node	**prev,
@@ -33,7 +33,6 @@ int unset(char	**input, t_single_linked_node	**envp)
 	t_single_linked_node	*prev;
 	t_single_linked_node	*curr;
 	t_env_var	*node;
-	size_t		bigger;
 	int i;
 	
 	i = 1;
@@ -41,13 +40,10 @@ int unset(char	**input, t_single_linked_node	**envp)
 	{
 		curr = *envp;
 		prev = NULL;
-		bigger = ft_strlen(input[i]);
 		while (curr)
 		{
 			node = (t_env_var	*)curr->content;
-			if(ft_strlen(node->key) > bigger)
-				bigger = ft_strlen(node->key);
-			if(!ft_strncmp(node->key, input[i], bigger))
+			if(!ft_strcmp(node->key, input[i]))
 			{
 				remove_node(&curr, &prev, envp);
 				break;

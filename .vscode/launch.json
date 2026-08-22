@@ -2,49 +2,39 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Minishell Test Runner",
+            "name": "Debug Minishell",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/test",
+            "program": "${workspaceFolder}/minishell",  // Your minishell executable
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
                 {
-                    "name": "DEBUGINFOD_URLS",
-                    "value": ""
+                    "name": "PATH",
+                    "value": "/usr/local/bin:/usr/bin:/bin"
                 }
             ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
                 {
-                    "description": "Enable pretty-printing for gdb",
+                    "description": "Enable pretty-printing",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Disable debuginfod completely to prevent infinite loading hang",
-                    "text": "set debuginfod urls ",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Disable debuginfod enabled",
+                    "description": "Disable debuginfod",
                     "text": "set debuginfod enabled off",
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Let GDB follow the parent process and let the child run normally",
-                    "text": "set follow-fork-mode parent",
-                    "ignoreFailures": false
-                },
-                {
-                    "description": "Detach from child process on fork so it doesn't get suspended",
-                    "text": "set detach-on-fork on",
+                    "description": "Prevent GDB from using a shell",
+                    "text": "set startup-with-shell off",
                     "ignoreFailures": false
                 }
             ],
-            "preLaunchTask": "Make Test"
+            "preLaunchTask": "Build Minishell"
         }
     ]
 }

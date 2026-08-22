@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parent.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 17:28:48 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/21 18:58:29 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static int	*create_id_array(int size)
 {
@@ -25,18 +25,20 @@ static int	*create_id_array(int size)
 static void wait_for_children(t_minishell *mini, int *fork_id, int size)
 {
 	int i;
+	int status;
 
 	i = 0;
+	status = 0;
 	while (i < size)
 	{
-		waitpid(fork_id[i], &mini->exit_status, 0);
-		if (WIFEXITED(mini->exit_status))
-			mini->exit_status = WEXITSTATUS(mini->exit_status);
+		waitpid(fork_id[i], &status, 0);
+		if (WIFEXITED(status))
+			mini->exit_status = WEXITSTATUS(status);
 		i++;
 	}
 }
 
-void parent(t_minishell *mini, t_single_linked_node	*envp)
+void parent(t_minishell *mini, t_single_linked_node	**envp)
 {
 	int size = 0;
 	int *fork_id;
@@ -61,6 +63,7 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 		}
 		if(fork_id[size] == 0)
 		{
+			free(fork_id);
 			mini->curr_cmd = (t_command	*)mini->cmd_lst->content;
 			if(mini->cmd_lst_size == 1)
 				child_process(mini, envp, 0, 3);
@@ -70,6 +73,10 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 				child_process(mini, envp, 0, 2);
 			else
 				child_process(mini, envp, 1, 1);
+			// free_command_struct(mini->cmd_lst);
+			// free_env_lst(*envp);
+			// rl_clear_history();
+			exit(0);
 		}
 		else
 		{
@@ -82,4 +89,5 @@ void parent(t_minishell *mini, t_single_linked_node	*envp)
 		size++;
  	}
 	wait_for_children(mini, fork_id, size);
+	free(fork_id);
 }

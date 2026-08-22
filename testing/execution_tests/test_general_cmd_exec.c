@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_general_cmd_exec.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 19:55:38 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/12 18:00:28 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/21 18:54:25 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

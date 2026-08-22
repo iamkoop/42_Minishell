@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_reading+writing.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/03 17:52:22 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:34:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int			adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
@@ -29,6 +30,16 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 	while (42)
 	{
 		heredoc_input = readline("> ");
+		/*
+		if (g_signal_code == SIGINT)
+		{
+			mini->exit_status = 130;
+			g_signal_code = 0;
+			if (input)
+                free(input);
+			continue ;
+		}
+			*/
 		if (!heredoc_input)
 			return (error("warning: here-document delimited by end-of-file "
 						"instead of delimiter"), 0);

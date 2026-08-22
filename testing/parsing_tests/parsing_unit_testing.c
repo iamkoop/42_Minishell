@@ -6,7 +6,7 @@
 /*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 11:13:01 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/04 14:41:17 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/19 17:25:56 by bastalze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../minishell.h"
@@ -49,6 +49,7 @@ static int compare_argv(t_command *cmd_content, char **expected_argv)
         {
             printf("ERROR: Extra argv[%d] '%s', expected NULL\n", i, cmd_content->argv[i]);
             errors++;
+			break ;
         }
         else if (strcmp(expected_argv[i], cmd_content->argv[i]) != 0)
         {
@@ -206,7 +207,7 @@ int run_single_command_test(t_test_case *tc)
         errors += compare_command(cmd_content, tc);
     }
     
-    free_command_struct(&cmd_data);
+    free_command_struct(cmd_data.head);
     return errors;
 }
 
@@ -231,7 +232,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, DEFAULT},
 			.expected_argv = (char *[]){"ls", NULL},
 			.expected_filenames = (char *[]){"file.txt", NULL},
-			.expected_fds = (int []){-1},
+			.expected_fds = (int []){-42},
 			.expected_redir_types = (enum e_redir_type[]){IN},
 			.expected_return = 0,
 			.expected_redirection_count = 1,
@@ -243,7 +244,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, REDIR_OUT, WORD, DEFAULT},
 			.expected_argv = (char *[]){"ls", NULL},
 			.expected_filenames = (char *[]){"infile", "outfile", NULL},
-			.expected_fds = (int []){-1, -1},
+			.expected_fds = (int []){-42, -42},
 			.expected_redir_types = (enum e_redir_type[]){IN, OUT},
 			.expected_return = 0,
 			.expected_redirection_count = 2,
@@ -255,7 +256,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, REDIR_OUT_A, WORD, DEFAULT},
 			.expected_argv = (char *[]){"cat", NULL},
 			.expected_filenames = (char *[]){"infile", "outfile", NULL},
-			.expected_fds = (int []){-1, -1},
+			.expected_fds = (int []){-42, -42},
 			.expected_redir_types = (enum e_redir_type[]){IN, APPEND},
 			.expected_return = 0,
 			.expected_redirection_count = 2,
@@ -279,7 +280,7 @@ int parsing_unit_testing()
 			.token_types = (enum e_token_type[]){WORD, REDIR_IN, WORD, WORD},
 			.expected_argv = (char *[]){"ls", "-l", NULL},
 			.expected_filenames = (char *[]){"infile"},
-			.expected_fds = (int []){-1},
+			.expected_fds = (int []){-42},
 			.expected_redir_types = (enum e_redir_type[]){IN},
 			.expected_return = 0,
 			.expected_redirection_count = 1,
@@ -337,13 +338,25 @@ int parsing_unit_testing()
 		{
 			.tokens = (char *[]){"\"\"", NULL},
 			.token_types = (enum e_token_type[]){WORD},
-			.expected_argv = (char *[]){NULL},
+			.expected_argv = (char *[]){"", NULL},
 			.expected_filenames = (char *[]){NULL},
 			.expected_fds = (int []){0},
 			.expected_redir_types = (enum e_redir_type[]){0},
 			.expected_return = 0,
 			.expected_redirection_count = 0,
 			.test_case_name = "Input only quotes"
+		},
+		// Test 12: Echo double quotes with space
+		{
+			.tokens = (char *[]){"echo", "\"\"", "\"\"", NULL},
+			.token_types = (enum e_token_type[]){WORD, WORD, WORD},
+			.expected_argv = (char *[]){"echo", "", "", NULL},
+			.expected_filenames = (char *[]){NULL},
+			.expected_fds = (int []){0},
+			.expected_redir_types = (enum e_redir_type[]){0},
+			.expected_return = 0,
+			.expected_redirection_count = 0,
+			.test_case_name = "Echo double quotes with space"
 		}
 	};
 
