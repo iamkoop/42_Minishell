@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/21 18:54:58 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:11:53 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,7 @@ void	error(char *message);
 void	delete_hd_files();
 void    free_command_struct(t_single_linked_node *cmd_lst);
 void	close_fd(int	*fd);
+void	close_all_fds(t_minishell  *mini);
 
 // parsing
 int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,

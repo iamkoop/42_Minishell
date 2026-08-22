@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -I42_Libft -MMD -Wnull-dereference
+CFLAGS = -Werror -Wall -Wextra -g -I -I42_Libft -MMD -Wnull-dereference
 LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
@@ -25,7 +25,8 @@ FORK_MANAGEMENT = src/fork_management/redirections.c \
 				  src/fork_management/child_processes.c
 
 CLEANUP_FUNCS = src/cleanup_funcs/close.c \
-				src/cleanup_funcs/free_env_lst.c
+				src/cleanup_funcs/free_env_lst.c \
+				src/cleanup_funcs/close_all_fds.c
 
 EXEC_MAIN = src/exec_main.c
 

@@ -6,11 +6,11 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:51 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/04 15:48:44 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/22 18:55:56 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int pwd(char	**input)
 {

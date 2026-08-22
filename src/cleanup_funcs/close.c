@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   close.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 20:18:01 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/19 15:18:13 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:08:26 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void	close_fd(int	*fd)
 {
-	close(*fd);
-	*fd = -42;
+	if(*fd > -1)
+	{
+		close(*fd);
+		*fd = -42;
+	}
 }

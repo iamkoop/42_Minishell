@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   child_processes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 16:39:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/21 18:53:40 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 19:18:11 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,46 +42,35 @@ static int final_redir(int	*fd, int	*final_fd, int child, int file_eno)
 	3 : normal cmd that was forked (no final redirections)
 */
 
+static void cleanup_vars_in_child_process(t_minishell *mini, t_single_linked_node	**envp)
+{
+	free_command_struct(mini->cmd_lst);
+	close_all_fds(mini);
+	free_env_lst(*envp);
+	rl_clear_history();
+	exit(mini->exit_status);
+}
+
 void child_process(t_minishell *mini, t_single_linked_node	**envp, int close_read, int child_type)
 {
 	if(close_read)
 		close_fd(&mini->next_pipe_fds[0]);
 	if(!exec_redirections(mini->curr_cmd->redir, mini))
 	{
-		free_command_struct(mini->cmd_lst);
-		free_env_lst(*envp);
-		rl_clear_history();
-		exit(mini->exit_status);	
-		exit(1);
+		cleanup_vars_in_child_process(mini, envp);
 	}
 	else if(mini->in < -1 && (child_type != 0 && child_type != 3))
 	{
 		if(!final_redir(&mini->prev_read_fd, &mini->redir_in, child_type, STDIN_FILENO))
-		{
-			free_command_struct(mini->cmd_lst);
-			free_env_lst(*envp);
-			rl_clear_history();
-			exit(mini->exit_status);
-			exit(1);
-		}
+			cleanup_vars_in_child_process(mini, envp);
 	}
 	else if(mini->out < -1 && (child_type != 2 && child_type != 3))
 	{
 		if(!final_redir(&mini->next_pipe_fds[1], &mini->redir_out, child_type, STDOUT_FILENO))
-		{
-			free_command_struct(mini->cmd_lst);
-			free_env_lst(*envp);
-			rl_clear_history();
-			exit(mini->exit_status);
-			exit(1);
-		}
+			cleanup_vars_in_child_process(mini, envp);
 	}
 	if(child_type != 3)
 		close_fd(&mini->next_pipe_fds[1]);
 	exec_command(mini->curr_cmd->argv, envp, mini);
-	free_command_struct(mini->cmd_lst);
-	free_env_lst(*envp);
-	rl_clear_history();
-	exit(mini->exit_status);
-	
+	cleanup_vars_in_child_process(mini, envp);
 }

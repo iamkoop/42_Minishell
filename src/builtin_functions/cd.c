@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 20:59:35 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 23:59:25 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:55:05 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 //TODO: Norminette and use the func get env from lst could remove alot of lines :)
 //TODO: You check if input[1] is "-" and set pwds.is_dash = 1. But cd - shouldn't just change directories;

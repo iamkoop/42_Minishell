@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   convert_env_lst_to_char_arr.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 19:54:45 by nildruon          #+#    #+#             */
-/*   Updated: 2026/06/11 21:08:06 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:54:56 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 char	**env_to_char_arr(t_single_linked_node	*lst)
 {

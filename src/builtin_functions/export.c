@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 16:42:36 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 17:48:22 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 static int	is_valid_identifier(char	*input)
 {
-	int first_equals;
 	int i;
 
 	if(!ft_strlen(input))
@@ -28,7 +27,6 @@ static int	is_valid_identifier(char	*input)
 	if(!(ft_isalpha(input[i]) || input[i] == '_'))
 		return(0);
 	i++;
-	first_equals = 1;
 	while (input[i] && input[i] != '=')
 	{
 		if(!(ft_isalnum(input[i]) || input[i] == '_'))

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   convert_env_char_arr_to_lst.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/17 12:24:59 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:54:36 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static t_env_var	*create_node_and_key(t_create_env_node_vars	*vars, char *s)
 {

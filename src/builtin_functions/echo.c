@@ -6,11 +6,11 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:32 by nildruon          #+#    #+#             */
-/*   Updated: 2026/07/04 15:41:16 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/22 18:55:14 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static int is_validFlag(char	*str, int	*print_nl)
 {
