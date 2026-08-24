@@ -14,12 +14,11 @@
 
 int			here_doc(char *input, t_single_linked_node *env,
 				t_minishell *mini, t_token_iteri *iteri);
-static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
-				t_token_iteri *iteri, bool *expansion);
+static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
+				bool *expansion);
 static int	heredoc_filename_creation(char *filename, char *input,
 				t_token_iteri *iteri);
-static int	creating_read_fd(char *filename, t_token_node *token_lst,
-				t_token_iteri *iteri);
+static int	creating_read_fd(char *filename, t_token_iteri *iteri);
 
 int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 		t_token_iteri *iteri)
@@ -30,7 +29,7 @@ int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 
 	expansion = false;
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
-	if (prepare_delimiter(delimiter, mini->token_lst, iteri, &expansion))
+	if (prepare_delimiter(delimiter, iteri, &expansion))
 		return (1);
 	if (heredoc_filename_creation(filename, input, iteri))
 		return (1);
@@ -40,7 +39,7 @@ int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 		return (perror(NULL), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (unlink(filename), close(mini->heredoc_write_fd), 1);
-	if (creating_read_fd(filename, mini->token_lst, iteri))
+	if (creating_read_fd(filename, iteri))
 		return (close(mini->heredoc_write_fd), 1);
 	close(mini->heredoc_write_fd);
 	unlink(filename);
@@ -51,8 +50,7 @@ int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 //where the last thing is written and then read would continue reading there.
 //This way with the read fd you start reading from the beginning of the file.
 
-static int	creating_read_fd(char *filename, t_token_node *token_lst,
-				t_token_iteri *iteri)
+static int	creating_read_fd(char *filename, t_token_iteri *iteri)
 {
 	int		read_fd;
 	char	*fd_str;
@@ -63,7 +61,7 @@ static int	creating_read_fd(char *filename, t_token_node *token_lst,
 	fd_str = ft_itoa(read_fd);
 	if (!fd_str)
 		return (close(read_fd), unlink(filename), perror(NULL), 1);
-	ft_strlcpy(token_lst[iteri->token - 1]. token_str, fd_str, TOKEN_STR_SIZE);
+	ft_strlcpy((iteri->tok - 1)->token_str, fd_str, TOKEN_STR_SIZE);
 	free(fd_str);
 	return (0);
 }
@@ -71,19 +69,19 @@ static int	creating_read_fd(char *filename, t_token_node *token_lst,
 // read_fd is stored in token_str from the word token_type 
 // (that contained the delimiter) as a string
 
-static int	prepare_delimiter(char *delimiter, t_token_node *token_lst,
-		t_token_iteri *iteri, bool *expansion)
+static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
+				bool *expansion)
 {
 	size_t	len;
 
-	len = ft_strlen(token_lst[iteri->token - 1].token_str);
+	len = ft_strlen((iteri->tok - 1)->token_str);
 	if (len >= HD_DELIMITER_LEN)
 	{
 		error("exceeding memory limit: Heredoc delimiter \
 				\nRaise HD_DELIMITER_LEN in minishell.h");
 		return (1);
 	}
-	ft_strlcpy(delimiter, token_lst[iteri->token - 1].token_str, len +1);
+	ft_strlcpy(delimiter, (iteri->tok - 1)->token_str, len +1);
 	if (strchr(delimiter, '\"') || strchr(delimiter, '\''))
 		quote_removal(delimiter);
 	else

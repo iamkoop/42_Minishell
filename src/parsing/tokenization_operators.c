@@ -43,7 +43,7 @@ int	operators1(char *input, t_single_linked_node *env,
 int	operators2(char *input, t_single_linked_node *env,
 		t_minishell *mini, t_token_iteri *iteri)
 {
-	if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+	if (add_to_token(input[iteri->i], mini, iteri))
 		return (1);
 	if (input[iteri->i] == '<' || input[iteri->i] == '>')
 	{
@@ -52,7 +52,7 @@ int	operators2(char *input, t_single_linked_node *env,
 	}
 	else if (input[iteri->i] == '|')
 	{
-		mini->token_lst[iteri->token].token_type = PIPE;
+		iteri->tok->token_type = PIPE;
 		if (delimit_token(input, env, mini, iteri))
 			return (1);
 	}
@@ -64,17 +64,17 @@ int	here_or_append(char *input, t_single_linked_node *env,
 {
 	if (input[iteri->i - 1] == '>' && input[iteri->i] == '>')
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
-		mini->token_lst[iteri->token].token_type = REDIR_OUT_A;
+		iteri->tok->token_type = REDIR_OUT_A;
 		if (delimit_token(input, env, mini, iteri))
 			return (1);
 	}
 	else if (input[iteri->i - 1] == '<' && input[iteri->i] == '<')
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
-		mini->token_lst[iteri->token].token_type = HERE_DOC;
+		iteri->tok->token_type = HERE_DOC;
 		if (delimit_token(input, env, mini, iteri))
 			return (1);
 	}
@@ -86,7 +86,7 @@ int	redirections(char *input, t_single_linked_node *env,
 {
 	if (input[iteri->i] == '<')
 	{
-		mini->token_lst[iteri->token].token_type = REDIR_IN;
+		iteri->tok->token_type = REDIR_IN;
 		if (input[iteri->i + 1] != '<')
 		{
 			if (delimit_token(input, env, mini, iteri))
@@ -95,7 +95,7 @@ int	redirections(char *input, t_single_linked_node *env,
 	}
 	else if (input[iteri->i] == '>')
 	{
-		mini->token_lst[iteri->token].token_type = REDIR_OUT;
+		iteri->tok->token_type = REDIR_OUT;
 		if (input[iteri->i + 1] != '>')
 		{
 			if (delimit_token(input, env, mini, iteri))

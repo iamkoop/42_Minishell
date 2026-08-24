@@ -37,6 +37,7 @@ int	initializing_minishell(char **envp)
 			return (free_env_lst(env), 1);
 	}
 //	testing_parsing(env);
+	arena_init_all(&mini);
 	get_commandline_input(env, &mini);
 	free_env_lst(env);
 	return (mini.exit_status);

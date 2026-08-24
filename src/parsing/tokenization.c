@@ -34,7 +34,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
 		{
-			mini->token_lst[iteri->token].token_type = WORD;
+			iteri->tok->token_type = WORD;
 			if (quotation_mode(input, *env, mini, iteri))
 				return (1);
 		}
@@ -58,17 +58,18 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 	char	c;
 
 	c = input[iteri->i];
-	add_to_token(input[iteri->i], mini->token_lst, iteri);
+	if (add_to_token(input[iteri->i], mini, iteri))
+			return (1);
 	iteri->i++;
 	while (input[iteri->i] != c && input[iteri->i] != 0)
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		iteri->i++;
 	}
 	if (input[iteri->i] == c)
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
 			|| input[iteri->i + 1] == '|')
@@ -85,7 +86,7 @@ static int	space_or_word(char *input, t_single_linked_node *env,
 	if (input[iteri->i] == ' ' || input[iteri->i] == '\t'
 		|| input[iteri->i] == '\v')
 	{
-		if (mini->token_lst[iteri->token].token_str[0] != 0)
+		if (iteri->tok->token_str[0] != 0)
 		{
 			if (delimit_token(input, env, mini, iteri))
 				return (1);
@@ -102,9 +103,9 @@ static int	space_or_word(char *input, t_single_linked_node *env,
 int	word(char *input, t_single_linked_node *env,
 		t_minishell *mini, t_token_iteri *iteri)
 {
-	if (iteri->t != 0)
+	if (iteri->str_pos != 0)
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
 			|| input[iteri->i + 1] == '|')
@@ -115,9 +116,9 @@ int	word(char *input, t_single_linked_node *env,
 	}
 	else
 	{
-		if (add_to_token(input[iteri->i], mini->token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
-		mini->token_lst[iteri->token].token_type = WORD;
+		iteri->tok->token_type = WORD;
 	}
 	return (0);
 }

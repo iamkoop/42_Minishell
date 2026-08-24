@@ -33,8 +33,9 @@
 # define TOKEN_AMOUNT 100
 # define TOKEN_STR_SIZE 5000
 # define HD_DELIMITER_LEN 50 
-# define WORD_AMOUNT 100
-# define WORD_STR_SIZE 1000
+# define WORD_AMOUNT 10
+# define WORD_STR_SIZE 10
+# define ARENA_SIZE 4096
 
 extern volatile sig_atomic_t g_signal;
 
@@ -50,17 +51,24 @@ enum e_token_type
 	PIPE,
 } ;
 
+typedef struct s_arena
+{
+	char	data[ARENA_SIZE];
+	size_t	cap;
+	size_t	pos;
+}	t_arena;
+
 typedef struct s_token_node
 {
 	enum e_token_type	token_type;
-	char				token_str[TOKEN_STR_SIZE];
+	char				*token_str;
 }		t_token_node;
 
 typedef struct s_token_iteri
 {
-	int		token;
-	int		t;
-	int		i;
+	t_token_node	*tok;
+	int				str_pos;
+	int				i;
 }		t_token_iteri;
 
 //Parsing:
@@ -159,7 +167,8 @@ typedef struct s_export_vars
 
 typedef struct s_minishell
 {
-	t_token_node			token_lst[TOKEN_AMOUNT];
+	t_arena					arena_strings;
+	t_arena					arena_tokens;
 	int						heredoc_write_fd;
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
@@ -220,7 +229,8 @@ int		operators2(char *input, t_single_linked_node *env,
 			t_minishell *mini, t_token_iteri *iteri);
 int		redirections(char *input, t_single_linked_node *env,
 			t_minishell *mini, t_token_iteri *iteri);
-int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
+int		start_first_token(t_minishell *mini, t_token_iteri *iteri);
+int		add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
 int		delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 				t_token_iteri *iteri);
 
@@ -241,8 +251,8 @@ int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		parsing(t_single_linked_node **env, t_minishell *mini, t_token_iteri *iteri,
 			t_cmd_data *cmd_data);
-int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
-int		redirect(t_single_linked_node *env, t_token_node *token_lst,
+int		is_redirection(t_arena *arena_tokens, t_token_iteri *iteri);
+int		redirect(t_single_linked_node *env,
 			t_token_iteri *iteri, t_cmd_data *cmd_data);
 int		add_word_to_struct(t_cmd_data *cmd_data,
 				char word[WORD_AMOUNT][WORD_STR_SIZE]);
@@ -267,5 +277,12 @@ void    testing_parsing(t_single_linked_node *env);
 //static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
 void	main_testing(char **argv, char **envp);
+
+//arenas
+t_arena	arena_init(void);
+void	*get_arena_element_start(t_arena *arena);
+bool	grow_arena_element(t_arena *arena, size_t size);
+void	arena_init_all(t_minishell *mini);
+
 
 #endif

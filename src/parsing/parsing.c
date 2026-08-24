@@ -16,7 +16,7 @@ int			initiate_parsing(t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
 int			parsing(t_single_linked_node **env, t_minishell *mini,
 				t_token_iteri *iteri, t_cmd_data *cmd_data);
-static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri);
+static int	is_syntax_error(t_arena *arena_tokens, t_token_iteri *iteri);
 static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	delimit_command(t_cmd_data *cmd_data);
@@ -34,8 +34,9 @@ int	initiate_parsing(t_single_linked_node **env,
 	if (!cmd_data.head)
 		return (free(cmd), 1);
 	cmd_data.tail = cmd_data.head;
-	assert(mini->token_lst != NULL);
 	assert(cmd_data.head != NULL);
+	ft_bzero(iteri, sizeof(t_token_iteri));
+	iteri->tok = (t_token_node *)mini->arena_tokens.data;
 	if (parsing(env, mini, iteri, &cmd_data))
 		return (free_command_struct(cmd_data.head), 1);
 	return (free_command_struct(cmd_data.head), 0);
@@ -46,54 +47,53 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 {
 	int	is_redir;
 
-	ft_bzero(iteri, sizeof(t_token_iteri));
-	while (mini->token_lst[iteri->token].token_type)
+	while (iteri->tok->token_type)
 	{
 		is_redir = 0;
-		if (is_redirection(mini->token_lst, iteri))
+		if (is_redirection(&mini->arena_tokens, iteri))
 		{
-			if (redirect(*env, mini->token_lst, iteri, cmd_data))
+			if (redirect(*env, iteri, cmd_data))
 				return (1);
 			is_redir = 1;
 		}
-		if (is_syntax_error(mini->token_lst, iteri))
+		if (is_syntax_error(&mini->arena_tokens, iteri))
 			return (error("syntax error unexpected token"), 1);
 		if (!is_redir)
 		{
 			if (word_or_pipe(*env, mini, iteri, cmd_data))
 				return (1);
 		}
-		iteri->token++;
+		iteri->tok++;
 	}
 //	printing_struct_content(cmd_data);
 	exec_main(mini, cmd_data->head, env);
 	return (0);
 }
 
-static int	is_syntax_error(t_token_node *token_lst, t_token_iteri *iteri)
+static int	is_syntax_error(t_arena *arena_tokens, t_token_iteri *iteri)
 {
-	if (token_lst[0].token_type == PIPE)
+	if (((t_token_node *)arena_tokens->data)->token_type == PIPE)
 		return (1);
-	else if (iteri->token != 0
-		&& (token_lst[iteri->token - 1].token_type == REDIR_IN
-			|| token_lst[iteri->token - 1].token_type == REDIR_OUT
-			|| token_lst[iteri->token - 1].token_type == REDIR_OUT_A
-			|| token_lst[iteri->token - 1].token_type == HERE_DOC)
-		&& (token_lst[iteri->token].token_type == REDIR_IN
-			|| token_lst[iteri->token].token_type == REDIR_OUT
-			|| token_lst[iteri->token].token_type == REDIR_OUT_A
-			|| token_lst[iteri->token].token_type == HERE_DOC
-			|| token_lst[iteri->token].token_type == PIPE))
+	else if (arena_tokens->pos != 0
+		&& ((iteri->tok - 1)->token_type == REDIR_IN
+			|| (iteri->tok - 1)->token_type == REDIR_OUT
+			|| (iteri->tok - 1)->token_type == REDIR_OUT_A
+			|| (iteri->tok - 1)->token_type == HERE_DOC)
+		&& (iteri->tok->token_type == REDIR_IN
+			|| iteri->tok->token_type == REDIR_OUT
+			|| iteri->tok->token_type == REDIR_OUT_A
+			|| iteri->tok->token_type == HERE_DOC
+			|| iteri->tok->token_type == PIPE))
 		return (1);
-	else if (token_lst[iteri->token].token_type == PIPE
-		&& token_lst[iteri->token + 1].token_type == PIPE)
+	else if (iteri->tok->token_type == PIPE
+		&& (iteri->tok + 1)->token_type == PIPE)
 		return (1);
-	else if ((token_lst[iteri->token].token_type == REDIR_IN
-			|| token_lst[iteri->token].token_type == REDIR_OUT
-			|| token_lst[iteri->token].token_type == REDIR_OUT_A
-			|| token_lst[iteri->token].token_type == HERE_DOC
-			|| token_lst[iteri->token].token_type == PIPE)
-		&& token_lst[iteri->token + 1].token_type == 0)
+	else if ((iteri->tok->token_type == REDIR_IN
+			|| iteri->tok->token_type == REDIR_OUT
+			|| iteri->tok->token_type == REDIR_OUT_A
+			|| iteri->tok->token_type == HERE_DOC
+			|| iteri->tok->token_type == PIPE)
+		&& (iteri->tok + 1)->token_type == 0)
 		return (1);
 	return (0);
 }
@@ -107,9 +107,9 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
 	ft_bzero(&exv, sizeof(t_quote_iteri));
 	exv.exit_status = mini->exit_status;
-	if (mini->token_lst[iteri->token].token_type == WORD)
+	if (iteri->tok->token_type == WORD)
 	{
-		if (quote_rm_var_expan(mini->token_lst[iteri->token].token_str, word, env,
+		if (quote_rm_var_expan(iteri->tok->token_str, word, env,
 				&exv))
 			return (1);
 		if (add_word_to_struct(cmd_data, word))
@@ -118,7 +118,7 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 			return (1);
 		}
 	}
-	else if (mini->token_lst[iteri->token].token_type == PIPE)
+	else if (iteri->tok->token_type == PIPE)
 	{
 		if (delimit_command(cmd_data))
 			return (1);
