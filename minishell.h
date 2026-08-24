@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/22 18:11:53 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/25 01:12:21 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,6 @@ typedef struct s_pwds_vars
 	char				new_pwd[4096];
 	int					is_dash;
 }					t_pwds_vars;
-
-typedef struct s_pwd_and_key_len
-{
-	size_t 		pwd_l;
-	size_t		key_l;
-}				t_pwd_and_key_len;
 
 typedef struct s_print_sorted_env_vars
 {
