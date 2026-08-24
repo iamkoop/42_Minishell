@@ -78,7 +78,11 @@ static int	add_redir_to_struct(t_single_linked_node *env,
         ft_bzero(&exv, sizeof(t_quote_iteri));
 	ft_bzero(word, WORD_AMOUNT * WORD_STR_SIZE);
 	if ((iteri->tok - 1)->token_type == HERE_DOC)
-		curr_redir->fd = ft_atoi(iteri->tok->token_str);
+	{
+		curr_redir->fd = iteri->tok->hd_fd;
+//		printf("heredoc fd in parsing: %d\n", curr_redir->fd);
+//		printf("redir type in parsing: %d\n", curr_redir->redir_type);
+	}
 	else
 	{
 		if (quote_rm_var_expan(iteri->tok->token_str, word, env,

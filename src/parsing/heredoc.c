@@ -18,7 +18,8 @@ static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
 				bool *expansion);
 static int	heredoc_filename_creation(char *filename, char *input,
 				t_token_iteri *iteri);
-static int	creating_read_fd(char *filename, t_token_iteri *iteri);
+static int	creating_read_fd(char *filename, t_token_iteri *iteri,
+				t_minishell *mini);
 
 int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 		t_token_iteri *iteri)
@@ -33,13 +34,15 @@ int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 		return (1);
 	if (heredoc_filename_creation(filename, input, iteri))
 		return (1);
-	mini->heredoc_write_fd = open((const char *) filename,
-		O_WRONLY | O_CLOEXEC | O_EXCL | O_CREAT, 0600);
+//	mini->heredoc_write_fd = open(".", O_TMPFILE | O_WRONLY |
+//		O_CLOEXEC, 0600);
+	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY |
+		O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (mini->heredoc_write_fd == -1)
 		return (perror(NULL), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (unlink(filename), close(mini->heredoc_write_fd), 1);
-	if (creating_read_fd(filename, iteri))
+	if (creating_read_fd(filename, iteri, mini))
 		return (close(mini->heredoc_write_fd), 1);
 	close(mini->heredoc_write_fd);
 	unlink(filename);
@@ -50,24 +53,28 @@ int	here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 //where the last thing is written and then read would continue reading there.
 //This way with the read fd you start reading from the beginning of the file.
 
-static int	creating_read_fd(char *filename, t_token_iteri *iteri)
+static int	creating_read_fd(char *filename, t_token_iteri *iteri,
+				t_minishell *mini)
 {
 	int		read_fd;
-	char	*fd_str;
 
+	(void)mini;
 	read_fd = open((const char *) filename, O_RDONLY);
 	if (read_fd == -1)
 		return (unlink(filename), perror(NULL), 1);
-	fd_str = ft_itoa(read_fd);
-	if (!fd_str)
-		return (close(read_fd), unlink(filename), perror(NULL), 1);
-	ft_strlcpy((iteri->tok - 1)->token_str, fd_str, TOKEN_STR_SIZE);
-	free(fd_str);
+	(iteri->tok - 1)->hd_fd = read_fd;
+//	printf("token str -1: %s\n", (iteri->tok - 1)->token_str);
+//	printf("token hd_fd -1: %d\n", (iteri->tok - 1)->hd_fd);
 	return (0);
 }
+/*
+static int	file_path_read_fd()
+{
 
-// read_fd is stored in token_str from the word token_type 
-// (that contained the delimiter) as a string
+}
+*/
+
+// read_fd is stored in hd_fd from token that is "word" token_type
 
 static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
 				bool *expansion)

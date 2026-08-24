@@ -62,6 +62,7 @@ typedef struct s_token_node
 {
 	enum e_token_type	token_type;
 	char				*token_str;
+	int					hd_fd;
 }		t_token_node;
 
 typedef struct s_token_iteri
