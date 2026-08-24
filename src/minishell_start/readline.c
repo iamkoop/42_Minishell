@@ -53,6 +53,7 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 
 	ft_bzero(&iteri, sizeof(t_token_iteri));
 	reset_mini(mini);
+	arena_init_all(mini);
 	start_first_token(mini, &iteri);
 	tokenization(input, env, mini, &iteri);
 }
