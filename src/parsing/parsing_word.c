@@ -13,19 +13,21 @@
 #include "../../minishell.h"
 
 int			add_word_to_struct(t_cmd_data *cmd_data,
-				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+				t_minishell *mini);
 static int	transfer_existing_word(t_command *curr_cmd, char **tmp_argv,
 				t_word_iteri *w);
 static int	transfer_new_word(char **tmp_argv, t_word_iteri *w,
-				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+				char **word);
 
 int	add_word_to_struct(t_cmd_data *cmd_data,
-		char word[WORD_AMOUNT][WORD_STR_SIZE])
+		t_minishell *mini)
 {
 	t_word_iteri	w;
 	char			**tmp_argv;
 	t_command		*curr_cmd;
+	char			**word;
 
+	word = (char **)&mini->arena_split_tokens.data;
 	ft_bzero(&w, sizeof(t_word_iteri));
 	curr_cmd = (t_command *)cmd_data->tail->content;
 	if (word[0][0] == 0)
@@ -47,12 +49,12 @@ int	add_word_to_struct(t_cmd_data *cmd_data,
 }
 
 static int	transfer_new_word(char **tmp_argv, t_word_iteri *w,
-				char word[WORD_AMOUNT][WORD_STR_SIZE])
+				char **word)
 {
 	w->i = 0;
-	while (w->i < WORD_AMOUNT && word[w->i][0] != 0)
+	while (word[w->i])
 	{
-		tmp_argv[w->argv_i + w->i] = calloc(ft_strlen(word[w->i]) + 1, 1);
+		tmp_argv[w->argv_i + w->i] = ft_calloc(ft_strlen(word[w->i]) + 1, 1);
 		if (!tmp_argv[w->argv_i + w->i])
 			return (1);
 		w->j = 0;
@@ -66,7 +68,7 @@ static int	transfer_new_word(char **tmp_argv, t_word_iteri *w,
 	}
 	if (word[0][0] == 0)
 	{
-		tmp_argv[w->argv_i + w->i] = calloc(1, 1);
+		tmp_argv[w->argv_i + w->i] = ft_calloc(1, 1);
 		if (!tmp_argv[w->argv_i + w->i])
 			return (1);
 		tmp_argv[w->argv_i + w->i][0] = 0;
@@ -81,7 +83,7 @@ static int	transfer_existing_word(t_command *curr_cmd, char **tmp_argv,
 	w->argv_i = 0;
 	while (curr_cmd->argv && curr_cmd->argv[w->argv_i])
 	{
-		tmp_argv[w->argv_i] = calloc(ft_strlen(curr_cmd->argv[w->argv_i])
+		tmp_argv[w->argv_i] = ft_calloc(ft_strlen(curr_cmd->argv[w->argv_i])
 					+ 1, 1);
 		if (!tmp_argv[w->argv_i])
 		{

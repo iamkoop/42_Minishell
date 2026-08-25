@@ -52,7 +52,7 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 		is_redir = 0;
 		if (is_redirection(&mini->arena_tokens, iteri))
 		{
-			if (redirect(*env, iteri, cmd_data))
+			if (redirect(*env, iteri, cmd_data, mini))
 				return (1);
 			is_redir = 1;
 		}
@@ -101,19 +101,19 @@ static int	is_syntax_error(t_arena *arena_tokens, t_token_iteri *iteri)
 static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri, t_cmd_data *cmd_data)
 {
-	char		word[WORD_AMOUNT][WORD_STR_SIZE];
 	t_quote_iteri	exv;
 
-	ft_bzero(word, (WORD_AMOUNT * WORD_STR_SIZE));
+	init_qrve_arena(mini);
 	ft_bzero(&exv, sizeof(t_quote_iteri));
+	start_first_word(mini, &exv);
 	exv.exit_status = mini->exit_status;
 	if (iteri->tok->token_type == WORD)
 	{
 //		printf("word before quote removal: %s\n", iteri->tok->token_str);
-		if (quote_rm_var_expan(iteri->tok->token_str, word, env,
+		if (quote_rm_var_expan(iteri->tok->token_str, mini, env,
 				&exv))
 			return (1);
-		if (add_word_to_struct(cmd_data, word))
+		if (add_word_to_struct(cmd_data, mini))
 		{
 			perror("minishell: Malloc for argv in parsing failed");
 			return (1);
@@ -132,7 +132,7 @@ static int	delimit_command(t_cmd_data *cmd_data)
 	t_command				*new_cmd;
 	t_single_linked_node	*new_node_ptr;
 
-	new_cmd = calloc(1, sizeof(t_command));
+	new_cmd = ft_calloc(1, sizeof(t_command));
 	if (!new_cmd)
 		return (1);
 	new_node_ptr = ft_single_lstnew(new_cmd);

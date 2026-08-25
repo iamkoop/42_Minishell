@@ -15,7 +15,7 @@
 int			adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env);
 static int	var_expansion(char **heredoc_input,
-				char word[WORD_AMOUNT][WORD_STR_SIZE],
+				t_minishell *mini,
 				t_single_linked_node *env);
 static int	write_heredoc_line(char *heredoc_input, int fd);
 int			ft_write(int fd, char *line, size_t len);
@@ -24,9 +24,7 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env)
 {
 	char	*heredoc_input;
-	char	word[WORD_AMOUNT][WORD_STR_SIZE];
 
-	ft_bzero(word, WORD_AMOUNT * WORD_STR_SIZE);
 	while (42)
 	{
 		heredoc_input = readline("> ");
@@ -44,7 +42,7 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			return (free(heredoc_input), 0);
 		if (expansion)
 		{
-			if (var_expansion(&heredoc_input, word, env))
+			if (var_expansion(&heredoc_input, mini, env))
 				return (free(heredoc_input), 1);
 		}
 		if (write_heredoc_line(heredoc_input, mini->heredoc_write_fd))
@@ -55,18 +53,20 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 }
 
 static int	var_expansion(char **heredoc_input,
-				char word[WORD_AMOUNT][WORD_STR_SIZE],
+				t_minishell *mini,
 				t_single_linked_node *env)
 {
-	char		*tmp_heredoc_input;
+	char			*tmp_heredoc_input;
 	t_quote_iteri   exv;
+	char			**word;
 
+	word = (char **)&mini->arena_split_tokens.data;
 	ft_bzero(&exv, sizeof(t_quote_iteri));
 	exv.heredoc = true;
-	if (quote_rm_var_expan(*heredoc_input, word, env, &exv))
+	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
 	assert(word[1][0] == 0);
-	tmp_heredoc_input = calloc(1, ft_strlen(word[0]) + 1);
+	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (1);
 	ft_strlcpy(tmp_heredoc_input, word[0], ft_strlen(word[0]) + 1);

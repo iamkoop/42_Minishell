@@ -260,20 +260,25 @@ int		parsing(t_single_linked_node **env, t_minishell *mini, t_token_iteri *iteri
 			t_cmd_data *cmd_data);
 int		is_redirection(t_arena *arena_tokens, t_token_iteri *iteri);
 int		redirect(t_single_linked_node *env,
-			t_token_iteri *iteri, t_cmd_data *cmd_data);
+			t_token_iteri *iteri, t_cmd_data *cmd_data,
+			t_minishell *mini);
 int		add_word_to_struct(t_cmd_data *cmd_data,
-				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+				t_minishell *mini);
 void	free_strarray(char **array);
-size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_2darraylen(char **word);
 size_t	ft_strarraylen(char **argv);
 
 //quote removal and variable expansion
-int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		quote_rm_var_expan(char *s, t_minishell *mini,
 			t_single_linked_node *env, t_quote_iteri *iteri);
-int		dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		dollar_found(char *s, t_minishell *mini,
 			t_quote_iteri *iteri, t_single_linked_node *env);
-int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		find_var(char *var, t_minishell *mini,
 			t_quote_iteri *iteri, t_single_linked_node *env);
+void 	init_qrve_arena(t_minishell *mini);
+int		start_first_word(t_minishell *mini, t_quote_iteri *iteri);
+int		add_to_word(char c, t_minishell *mini, t_quote_iteri *iteri);
+int		delimit_word_array(t_minishell *mini, t_quote_iteri *iteri);
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);

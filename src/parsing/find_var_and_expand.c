@@ -12,16 +12,16 @@
 
 #include "../../minishell.h"
 
-int			find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int			find_var(char *var, t_minishell *mini,
 				t_quote_iteri *iteri, t_single_linked_node *env);
-static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
+static int	variable_expansion(t_minishell *mini,
 				t_quote_iteri *iteri, t_env_var *tmp_content);
-static int	field_splitting(char word[WORD_AMOUNT][WORD_STR_SIZE],
+static int	field_splitting(t_minishell *mini,
 				t_quote_iteri *iteri);
-static int	add_variable_char(char word[WORD_AMOUNT][WORD_STR_SIZE],
+static int	add_variable_char(t_minishell *mini,
 				t_quote_iteri *iteri, int i, t_env_var *tmp_content);
 
-int	find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int	find_var(char *var, t_minishell *mini,
 		t_quote_iteri *iteri, t_single_linked_node *env)
 {
 	t_single_linked_node	*tmp_node;
@@ -33,7 +33,7 @@ int	find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
 		tmp_content = (t_env_var *)tmp_node->content;
 		if (!ft_strncmp(tmp_content->key, var, ft_strlen(var)))
 		{
-			if (variable_expansion(word, iteri, tmp_content))
+			if (variable_expansion(mini, iteri, tmp_content))
 				return (1);
 		}
 		tmp_node = tmp_node->next;
@@ -41,7 +41,7 @@ int	find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
 	return (0);
 }
 
-static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
+static int	variable_expansion(t_minishell *mini,
 		t_quote_iteri *iteri, t_env_var *tmp_content)
 {
 	int	i;
@@ -55,52 +55,55 @@ static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
 		{
 			if (iteri->has_char == true)
 			{
-				if (field_splitting(word, iteri))
+				if (field_splitting(mini, iteri))
 					return (1);
 			}
-			else 
-				i++;
 			iteri->has_char = false;
 		}
 		else
 		{
-			if (add_variable_char(word, iteri, i, tmp_content))
+			if (add_variable_char(mini, iteri, i, tmp_content))
 				return (1);
+			iteri->has_char = true;
 		}
 		i++;
 	}
 	return (0);
 }
 
-static int	field_splitting(char word[WORD_AMOUNT][WORD_STR_SIZE],
+static int	field_splitting(t_minishell *mini,
 		t_quote_iteri *iteri)
 {
-	if (iteri->wj != 0)
-	{
-		word[iteri->wi][iteri->wj] = 0;
-		if (iteri->wi + 1 >= WORD_AMOUNT)
-		{
-			error("exceeding memory limit: Amount of words \
-				\nRaise WORD_AMOUNT in minishell.h");
-			return (1);
-		}
-		iteri->wi++;
-		iteri->wj = 0;
-	}
+	t_arena	*arena_split_tokens;
+	t_arena	*arena_split_strings;
+
+	arena_split_tokens = &mini->arena_split_tokens;
+	arena_split_strings = &mini->arena_split_strings;
+	add_to_word(0, mini, iteri);
+	iteri->field = get_arena_element_start(arena_split_tokens);
+	if(!grow_arena_element(arena_split_tokens, sizeof(char *)))
+		return (1);
+	iteri->field[0] = get_arena_element_start(arena_split_strings);
+	iteri->split_count++;
+	iteri->str_pos = 0;
 	return (0);
 }
 
-static int	add_variable_char(char word[WORD_AMOUNT][WORD_STR_SIZE],
+//iteri->field = get_arena_element_start(arena_split_tokens);
+	//if(!grow_arena_element(arena_split_tokens, sizeof(char *)))
+	//	return (1);
+	//iteri->field[iteri->split_count] = get_arena_element_start(arena_split_strings);
+	//iteri->split_count++;
+
+static int	add_variable_char(t_minishell *mini,
 		t_quote_iteri *iteri, int i, t_env_var *tmp_content)
 {
-	word[iteri->wi][iteri->wj] = tmp_content->value[i];
-	if (iteri->wj + 1 >= WORD_STR_SIZE)
-	{
-		error("exceeding memory limit: Word length \
-			\nRaise WORD_STR_SIZE in minishell.h");
+	t_arena	*arena_split_strings;
+
+	arena_split_strings = &mini->arena_split_strings;
+	if(!grow_arena_element(arena_split_strings, 1))
 		return (1);
-	}
-	iteri->wj++;
-	iteri->has_char = true;
+	iteri->field[0][iteri->str_pos] = tmp_content->value[i];
+	iteri->str_pos++;
 	return (0);
 }
