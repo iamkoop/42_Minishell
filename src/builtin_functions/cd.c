@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 01:23:00 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 01:40:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/25 14:51:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,12 @@ static int	above_dir_del_case(t_pwds_vars *pwds, t_single_linked_node *envp, cha
 	update_env(pwds->old_pwd, "OLDPWD", envp);
 	new_pwd = ft_strjoin_three(pwds->old_pwd, "/", cmd_arg);
 	if (!new_pwd)
-		return (ft_putendl_fd("minishell: cd: malloc fail", 2), 1);
-	update_env(new_pwd, "PWD", envp);
+		return (err_msg("cd", NULL, "malloc fail in above_dir_del_case"), 1);
+	if (!update_env(new_pwd, "PWD", envp))
+		err_msg("cd", NULL, "malloc fail in update_env");
 	free(new_pwd);
-	perror("error retrieving current directory: getcwd");
+	perror("cd: error retrieving current directory: getcwd:"
+		" cannot access parent directories");
 	return (0);
 }
 
@@ -88,25 +90,17 @@ static char	*find_target(char **input, t_single_linked_node *envp)
 	{
 		tmp = get_env(envp, "HOME");
 		if (!tmp)
-			return (ft_putendl_fd("minishell: cd: HOME not set", 2), NULL);
+			return (err_msg("cd", NULL, "HOME not set"), NULL);
 		return (tmp->value);
 	}
 	if (!ft_strcmp(input[1], "-"))
 	{
 		tmp = get_env(envp, "OLDPWD");
 		if (!tmp)
-			return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2), NULL);
+			return (err_msg("cd", NULL, "OLDPWD not set"), NULL);
 		return (tmp->value);
 	}
 	return (input[1]);
-}
-
-void	err_msg(char *target)
-{
-	ft_putstr_fd("minishell: cd: ", 2);
-	ft_putstr_fd(target, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(strerror(errno), 2);
 }
 
 int	cd(char **input, t_single_linked_node *envp)
@@ -115,7 +109,7 @@ int	cd(char **input, t_single_linked_node *envp)
 	t_pwds_vars	pwds;
 
 	if (input[0] && input[1] && input[2])
-		return (ft_putendl_fd("minishell: cd: too many arguments", 2), 1);
+		return (err_msg("cd", NULL, "too many arguments"), 1);
 	if (input[1] && ft_strlen(input[1]) == 0)
 		return (0);
 	target = find_target(input, envp);
@@ -124,14 +118,14 @@ int	cd(char **input, t_single_linked_node *envp)
 	if (!getcwd(pwds.old_pwd, sizeof(pwds.old_pwd)))
 		copy_pwd_from_env(&pwds, "PWD", envp);
 	if (chdir(target) == -1)
-		return (err_msg(target), 1);
+		return (err_msg("cd", target, NULL), 1);
 	if (!getcwd(pwds.new_pwd, sizeof(pwds.new_pwd)))
 		return (above_dir_del_case(&pwds, envp, input[1]));
 	if (input[1] && !ft_strcmp(input[1], "-"))
 		printf("%s\n", pwds.new_pwd);
 	if (!update_env(pwds.old_pwd, "OLDPWD", envp))
-		ft_putendl_fd("minishell: cd: malloc fail in update_env", 2);
+		err_msg("cd", NULL, "malloc fail in update_env");
 	if (!update_env(pwds.new_pwd, "PWD", envp))
-		ft_putendl_fd("minishell: cd: malloc fail in update_env", 2);
+		err_msg("cd", NULL, "malloc fail in update_env");
 	return (0);
 }
