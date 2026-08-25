@@ -50,11 +50,17 @@ static int	variable_expansion(char word[WORD_AMOUNT][WORD_STR_SIZE],
 	while (tmp_content->value && tmp_content->value[i])
 	{
 		if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
-				|| tmp_content->value[i] == '\n') && iteri->quoted == false
+			|| tmp_content->value[i] == '\n') && iteri->quoted == false
 			&& iteri->heredoc == false)
 		{
-			if (field_splitting(word, iteri))
-				return (1);
+			if (iteri->has_char == true)
+			{
+				if (field_splitting(word, iteri))
+					return (1);
+			}
+			else 
+				i++;
+			iteri->has_char = false;
 		}
 		else
 		{
@@ -95,5 +101,6 @@ static int	add_variable_char(char word[WORD_AMOUNT][WORD_STR_SIZE],
 		return (1);
 	}
 	iteri->wj++;
+	iteri->has_char = true;
 	return (0);
 }

@@ -53,6 +53,7 @@ int	delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 	}
 	return (0);
 }
+
 int	start_first_token(t_minishell *mini, t_token_iteri *iteri)
 {
 	t_arena	*arena_strings;

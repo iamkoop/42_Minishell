@@ -24,6 +24,8 @@ int	add_char(char word[WORD_AMOUNT][WORD_STR_SIZE], char *s,
 int	quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
 		t_single_linked_node *env, t_quote_iteri *iteri)
 {
+//	init_qrve(mini);
+	
 	while (s[iteri->i])
 	{
 		if ((s[iteri->i] == '\'' || s[iteri->i] == '\"') && iteri->heredoc == false)
