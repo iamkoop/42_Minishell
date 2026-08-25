@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/25 01:12:21 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/25 14:18:54 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,8 @@ int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**en
 int						exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 void					child_process(t_minishell *mini, t_single_linked_node	**envp, int close_read, int child_type);
 void					parent(t_minishell *mini, t_single_linked_node	**envp);
+
+void					err_msg(char	*func, char *value, char	*custom_err);
 
 //PARSING PART
 //tokenization

@@ -24,9 +24,10 @@ FORK_MANAGEMENT = src/fork_management/redirections.c \
 				  src/fork_management/parent.c \
 				  src/fork_management/child_processes.c
 
-CLEANUP_FUNCS = src/cleanup_funcs/close.c \
-				src/cleanup_funcs/free_env_lst.c \
-				src/cleanup_funcs/close_all_fds.c
+CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
+				src/err_and_cleanup_funcs/free_env_lst.c \
+				src/err_and_cleanup_funcs/close_all_fds.c \
+				src/err_and_cleanup_funcs/exec_err_msg.c
 
 EXEC_MAIN = src/exec_main.c
 
