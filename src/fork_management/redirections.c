@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/22 20:07:03 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/25 15:38:02 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int input_redir(t_redir_list	*curr_redir, t_minishell	*mini)
 	}
 	mini->in = open(curr_redir->filename, O_RDONLY);
 	if(mini->in == -1)
-		return(perror("open in input_redirection"), 0);
+		return(err_msg(NULL, curr_redir->filename, NULL), 0);
 	return(1);
 }
 
@@ -41,12 +41,12 @@ static int output_redir(t_redir_list	*curr_redir, t_minishell	*mini)
 	{
 		mini->out = open(curr_redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if(mini->out == -1)
-			return(perror("open fail in output_redirection"), 0);
+			return(err_msg(NULL, curr_redir->filename, NULL), 0);
 		return(1);
 	}
 	mini->out = open(curr_redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if(mini->out == -1)
-		return(perror("open fail in output_redirection"), 0);
+		return(err_msg(NULL, curr_redir->filename, NULL), 0);
 	return(1);
 }
 
