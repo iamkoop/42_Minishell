@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/25 14:18:54 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/26 15:56:00 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node **envp);
 
 int						is_builtin(char *cmd);
-void					exec_command(char   **cmd_and_args, t_single_linked_node	**envp, t_minishell *mini);
+void						exec_command(char   **cmd_and_args, t_single_linked_node	**envp, t_minishell *mini);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini);
 void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	**envp);
 int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**envp);
