@@ -57,7 +57,8 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 			is_redir = 1;
 		}
 		if (is_syntax_error(&mini->arena_tokens, iteri))
-			return (error("syntax error unexpected token"), 1);
+			return (mini->exit_status = 2,
+				error("syntax error unexpected token"), 1);
 		if (!is_redir)
 		{
 			if (word_or_pipe(*env, mini, iteri, cmd_data))
