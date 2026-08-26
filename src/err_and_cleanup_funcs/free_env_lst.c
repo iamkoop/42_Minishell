@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   free_env_lst.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <bastalze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 17:50:42 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/19 12:10:00 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:56:24 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 void    free_env_lst(t_single_linked_node *env)
 {
