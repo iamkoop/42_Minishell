@@ -79,8 +79,10 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 	t_quote_iteri   exv;
 	char			**word;
 
+	init_qrve_arena(mini);
+	ft_bzero(&exv, sizeof(t_quote_iteri));
+	start_first_word(mini, &exv);
 	word = (char **)&mini->arena_split_tokens.data;
-    ft_bzero(&exv, sizeof(t_quote_iteri));
 	if ((iteri->tok - 1)->token_type == HERE_DOC)
 	{
 		curr_redir->fd = iteri->tok->hd_fd;
@@ -92,7 +94,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		if (quote_rm_var_expan(iteri->tok->token_str, mini, env,
 			&exv))
 			return (1);
-		if (word[1][0] != 0)
+		if (word[1] != NULL)
 			return (error("ambiguous redirect"), 1);
 		curr_redir->filename = ft_calloc(1, ft_strlen(word[0]) + 1);
 		if (!curr_redir->filename)

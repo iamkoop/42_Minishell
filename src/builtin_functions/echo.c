@@ -42,7 +42,7 @@ int echo(char	**input)
 	i = 1;
 	while (input[i] && is_validFlag(input[i], &print_nl))
 			i++;
-	while (input[i])
+	while (input && input[i])
 	{
 		ft_putstr_fd(input[i], 1);
 		if(input[i +1])

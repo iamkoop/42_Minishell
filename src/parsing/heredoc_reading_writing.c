@@ -60,12 +60,14 @@ static int	var_expansion(char **heredoc_input,
 	t_quote_iteri   exv;
 	char			**word;
 
-	word = (char **)&mini->arena_split_tokens.data;
+	init_qrve_arena(mini);
 	ft_bzero(&exv, sizeof(t_quote_iteri));
+	start_first_word(mini, &exv);
+	word = (char **)&mini->arena_split_tokens.data;
 	exv.heredoc = true;
 	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1][0] == 0);
+	assert(word[1] != NULL);
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (1);
