@@ -177,6 +177,7 @@ typedef struct s_minishell
 	t_arena					arena_split_strings;
 	t_arena					arena_split_tokens;
 	int						heredoc_write_fd;
+	bool					quote_mode_entered;
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;

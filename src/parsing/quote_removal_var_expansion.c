@@ -25,7 +25,6 @@ int	quote_rm_var_expan(char *s, t_minishell *mini,
 		t_single_linked_node *env, t_quote_iteri *iteri)
 {
 //	init_qrve(mini);
-	
 	while (s[iteri->i])
 	{
 		if ((s[iteri->i] == '\'' || s[iteri->i] == '\"') && iteri->heredoc == false)
@@ -48,6 +47,7 @@ int	quote_mode(char *s, t_minishell *mini,
 {
 	char	c;
 
+	mini->quote_mode_entered = true;
 	c = s[iteri->i];
 	iteri->quoted = true;
 	assert(s[iteri->i] == '\'' || s[iteri->i] == '\"');

@@ -28,13 +28,13 @@ int	add_word_to_struct(t_cmd_data *cmd_data,
 	char			**word;
 
 	word = (char **)&mini->arena_split_tokens.data;
+	if (!mini->quote_mode_entered && word[0][0] == 0)
+		return (0);
 	ft_bzero(&w, sizeof(t_word_iteri));
 	curr_cmd = (t_command *)cmd_data->tail->content;
 //	if (word[0][0] == 0)
 //		tmp_argv = ft_calloc(1 + ft_strarraylen(curr_cmd->argv)
 //			 + 1, sizeof(char *));
-	//if (word[0][0] != 0)
-	//{
 	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(curr_cmd->argv)
 		+ 1, sizeof(char *));
 	if (!tmp_argv)
@@ -46,7 +46,7 @@ int	add_word_to_struct(t_cmd_data *cmd_data,
 	tmp_argv[w.argv_i + w.i] = NULL;
 	free_strarray(curr_cmd->argv);
 	curr_cmd->argv = tmp_argv;
-	//}
+	mini->quote_mode_entered = false;
 	return (0);
 }
 
