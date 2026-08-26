@@ -40,7 +40,7 @@ int	echo(char **input)
 
 	print_nl = 1;
 	i = 1;
-	while (input[i] && is_validFlag(input[i], &print_nl))
+	while (input[i] && is_valid_flag(input[i], &print_nl))
 			i++;
 	while (input && input[i])
 	{
