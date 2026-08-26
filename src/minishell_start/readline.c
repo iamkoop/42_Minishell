@@ -53,12 +53,15 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 
 	ft_bzero(&iteri, sizeof(t_token_iteri));
 	reset_mini(mini);
+	arena_init_all(mini);
+	start_first_token(mini, &iteri);
 	tokenization(input, env, mini, &iteri);
 }
 
 void	reset_mini(t_minishell *mini)
 {
-	ft_bzero(mini->token_lst, sizeof(t_token_node) * TOKEN_AMOUNT);
+	ft_bzero(mini->arena_tokens.data, ARENA_SIZE);
+	ft_bzero(mini->arena_strings.data, ARENA_SIZE);
 	mini->cmd_lst = NULL;
 	mini->curr_cmd = NULL;
 	mini->cmd_lst_size = -42;

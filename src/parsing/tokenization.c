@@ -15,11 +15,11 @@
 int		tokenization(char *input, t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
 static int	quotation_mode(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
+				t_minishell *mini, t_token_iteri *iteri);
 static int	space_or_word(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
+				t_minishell *mini, t_token_iteri *iteri);
 static int	word(char *input, t_single_linked_node *env,
-				t_token_node *token_lst, t_token_iteri *iteri);
+				t_minishell *mini, t_token_iteri *iteri);
 
 int	tokenization(char *input, t_single_linked_node **env,
 		t_minishell *mini, t_token_iteri *iteri)
@@ -29,23 +29,23 @@ int	tokenization(char *input, t_single_linked_node **env,
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
 			|| input[iteri->i] == '|')
 		{
-			if (operators1(input, *env, mini->token_lst, iteri))
+			if (operators1(input, *env, mini, iteri))
 				return (1);
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
 		{
-			mini->token_lst[iteri->token].token_type = WORD;
-			if (quotation_mode(input, *env, mini->token_lst, iteri))
+			iteri->tok->token_type = WORD;
+			if (quotation_mode(input, *env, mini, iteri))
 				return (1);
 		}
 		else
 		{
-			if (space_or_word(input, *env, mini->token_lst, iteri))
+			if (space_or_word(input, *env, mini, iteri))
 				return (1);
 		}
 		iteri->i++;
 	}
-	delimit_token(input, *env, mini->token_lst, iteri);
+	delimit_token(input, *env, mini, iteri);
 //	tokenization_testing(token_lst, env);
 	if(initiate_parsing(env, mini, iteri))
 		return (1);
@@ -53,26 +53,27 @@ int	tokenization(char *input, t_single_linked_node **env,
 }
 
 static int	quotation_mode(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
+		t_minishell *mini, t_token_iteri *iteri)
 {
 	char	c;
 
 	c = input[iteri->i];
-	add_to_token(input[iteri->i], token_lst, iteri);
+	if (add_to_token(input[iteri->i], mini, iteri))
+			return (1);
 	iteri->i++;
 	while (input[iteri->i] != c && input[iteri->i] != 0)
 	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		iteri->i++;
 	}
 	if (input[iteri->i] == c)
 	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
 			|| input[iteri->i + 1] == '|')
-			delimit_token(input, env, token_lst, iteri);
+			delimit_token(input, env, mini, iteri);
 		return (0);
 	}
 	else
@@ -80,44 +81,44 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 }
 
 static int	space_or_word(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
+		t_minishell *mini, t_token_iteri *iteri)
 {
 	if (input[iteri->i] == ' ' || input[iteri->i] == '\t'
 		|| input[iteri->i] == '\v')
 	{
-		if (token_lst[iteri->token].token_str[0] != 0)
+		if (iteri->tok->token_str[0] != 0)
 		{
-			if (delimit_token(input, env, token_lst, iteri))
+			if (delimit_token(input, env, mini, iteri))
 				return (1);
 		}
 	}
 	else
 	{
-		if (word(input, env, token_lst, iteri))
+		if (word(input, env, mini, iteri))
 			return (1);
 	}
 	return (0);
 }
 
 int	word(char *input, t_single_linked_node *env,
-		t_token_node *token_lst, t_token_iteri *iteri)
+		t_minishell *mini, t_token_iteri *iteri)
 {
-	if (iteri->t != 0)
+	if (iteri->str_pos != 0)
 	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
 			|| input[iteri->i + 1] == '|')
 		{
-			if (delimit_token(input, env, token_lst, iteri))
+			if (delimit_token(input, env, mini, iteri))
 				return (1);
 		}
 	}
 	else
 	{
-		if (add_to_token(input[iteri->i], token_lst, iteri))
+		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
-		token_lst[iteri->token].token_type = WORD;
+		iteri->tok->token_type = WORD;
 	}
 	return (0);
 }

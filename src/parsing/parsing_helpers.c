@@ -13,7 +13,7 @@
 #include "../../minishell.h"
 
 void	free_strarray(char **array);
-size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_2darraylen(char **word);
 size_t	ft_strarraylen(char **argv);
 
 void	free_strarray(char **array)
@@ -31,12 +31,12 @@ void	free_strarray(char **array)
 	free(array);
 }
 
-size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE])
+size_t	ft_2darraylen(char **word)
 {
 	size_t	i;
-
+	
 	i = 0;
-	while (i < WORD_AMOUNT && word[i][0] != 0)
+	while (word[i])
 		i++;
 	return (i);
 }

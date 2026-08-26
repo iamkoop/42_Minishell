@@ -35,6 +35,7 @@
 # define HD_DELIMITER_LEN 50 
 # define WORD_AMOUNT 100
 # define WORD_STR_SIZE 1000
+# define ARENA_SIZE 40096
 
 extern volatile sig_atomic_t g_signal;
 
@@ -50,17 +51,25 @@ enum e_token_type
 	PIPE,
 } ;
 
+typedef struct s_arena
+{
+	char	data[ARENA_SIZE];
+	size_t	cap;
+	size_t	pos;
+}	t_arena;
+
 typedef struct s_token_node
 {
 	enum e_token_type	token_type;
-	char				token_str[TOKEN_STR_SIZE];
+	char				*token_str;
+	int					hd_fd;
 }		t_token_node;
 
 typedef struct s_token_iteri
 {
-	int		token;
-	int		t;
-	int		i;
+	t_token_node	*tok;
+	int				str_pos;
+	int				i;
 }		t_token_iteri;
 
 //Parsing:
@@ -106,6 +115,10 @@ typedef struct s_quote_iteri
 	int		i;
 	int		wi;
 	int		wj;
+	char	**field;
+	int		str_pos;
+	int		split_count;
+	bool	has_char;
 	bool	quoted;
 	bool	heredoc;
 	int		exit_status;
@@ -153,7 +166,12 @@ typedef struct s_export_vars
 
 typedef struct s_minishell
 {
-	t_token_node			token_lst[TOKEN_AMOUNT];
+	t_arena					arena_strings;
+	t_arena					arena_tokens;
+	t_arena					arena_split_strings;
+	t_arena					arena_split_tokens;
+	int						heredoc_write_fd;
+	bool					quote_mode_entered;
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
@@ -208,22 +226,23 @@ void					err_msg(char	*func, char *value, char	*custom_err);
 int		tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		here_or_append(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		operators1(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		operators2(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
+			t_minishell *mini, t_token_iteri *iteri);
 int		redirections(char *input, t_single_linked_node *env,
-			t_token_node *token_lst, t_token_iteri *iteri);
-int		add_to_token(char c, t_token_node *token_lst, t_token_iteri *iteri);
-int		delimit_token(char *input, t_single_linked_node *env, t_token_node *token_lst,
+			t_minishell *mini, t_token_iteri *iteri);
+int		start_first_token(t_minishell *mini, t_token_iteri *iteri);
+int		add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
+int		delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 				t_token_iteri *iteri);
 
 //here_doc
 char	*quote_removal(char *delimiter);
-int		here_doc(char *input, t_single_linked_node *env, t_token_node *token_lst,
+int		here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
 			t_token_iteri *iteri);
-int		adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+int		adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env);
 //error and exit functions
 void	error(char *message);
@@ -237,22 +256,27 @@ int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,
 			t_token_iteri *iteri);
 int		parsing(t_single_linked_node **env, t_minishell *mini, t_token_iteri *iteri,
 			t_cmd_data *cmd_data);
-int		is_redirection(t_token_node *token_lst, t_token_iteri *iteri);
-int		redirect(t_single_linked_node *env, t_token_node *token_lst,
-			t_token_iteri *iteri, t_cmd_data *cmd_data);
+int		is_redirection(t_arena *arena_tokens, t_token_iteri *iteri);
+int		redirect(t_single_linked_node *env,
+			t_token_iteri *iteri, t_cmd_data *cmd_data,
+			t_minishell *mini);
 int		add_word_to_struct(t_cmd_data *cmd_data,
-				char word[WORD_AMOUNT][WORD_STR_SIZE]);
+				t_minishell *mini);
 void	free_strarray(char **array);
-size_t	ft_2darraylen(char word[WORD_AMOUNT][WORD_STR_SIZE]);
+size_t	ft_2darraylen(char **word);
 size_t	ft_strarraylen(char **argv);
 
 //quote removal and variable expansion
-int		quote_rm_var_expan(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		quote_rm_var_expan(char *s, t_minishell *mini,
 			t_single_linked_node *env, t_quote_iteri *iteri);
-int		dollar_found(char *s, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		dollar_found(char *s, t_minishell *mini,
 			t_quote_iteri *iteri, t_single_linked_node *env);
-int		find_var(char *var, char word[WORD_AMOUNT][WORD_STR_SIZE],
+int		find_var(char *var, t_minishell *mini,
 			t_quote_iteri *iteri, t_single_linked_node *env);
+void 	init_qrve_arena(t_minishell *mini);
+int		start_first_word(t_minishell *mini, t_quote_iteri *iteri);
+int		add_to_word(char c, t_minishell *mini, t_quote_iteri *iteri);
+int		delimit_word_array(t_minishell *mini, t_quote_iteri *iteri);
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
@@ -263,5 +287,12 @@ void    testing_parsing(t_single_linked_node *env);
 //static int	heredoc_filename_creation(char *filename, char *input, t_token_iteri *iteri);
 
 void	main_testing(char **argv, char **envp);
+
+//arenas
+t_arena	arena_init(void);
+void	*get_arena_element_start(t_arena *arena);
+bool	grow_arena_element(t_arena *arena, size_t size);
+void	arena_init_all(t_minishell *mini);
+
 
 #endif

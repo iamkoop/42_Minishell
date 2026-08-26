@@ -31,6 +31,8 @@ CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
 
 EXEC_MAIN = src/exec_main.c
 
+ARENA = src/arena/arena.c
+
 MAIN = main.c
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)
@@ -53,8 +55,10 @@ PARSING = src/parsing/tokenization.c \
 		  src/parsing/parsing_helpers.c \
 		  src/parsing/quote_removal_var_expansion.c \
 		  src/parsing/var_expansion_dollar_found.c \
-		  src/parsing/find_var_and_expand.c
-CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING)
+		  src/parsing/find_var_and_expand.c \
+		  src/parsing/qrve_helpers.c
+
+CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA)
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 

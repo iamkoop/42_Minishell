@@ -12,34 +12,29 @@
 
 #include "../../minishell.h"
 
-int			adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+int			adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env);
 static int	var_expansion(char **heredoc_input,
-				char word[WORD_AMOUNT][WORD_STR_SIZE],
+				t_minishell *mini,
 				t_single_linked_node *env);
 static int	write_heredoc_line(char *heredoc_input, int fd);
-static int	write_check(ssize_t c_written, size_t len);
+int			ft_write(int fd, char *line, size_t len);
 
-int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
+int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env)
 {
 	char	*heredoc_input;
-	char	word[WORD_AMOUNT][WORD_STR_SIZE];
 
-	ft_bzero(word, WORD_AMOUNT * WORD_STR_SIZE);
 	while (42)
 	{
 		heredoc_input = readline("> ");
-		/*
-		if (g_signal_code == SIGINT)
+		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
-			g_signal_code = 0;
-			if (input)
-                free(input);
-			continue ;
+			g_signal = 0;
+            free(heredoc_input);
+			return (1);
 		}
-			*/
 		if (!heredoc_input)
 			return (error("warning: here-document delimited by end-of-file "
 						"instead of delimiter"), 0);
@@ -47,10 +42,10 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 			return (free(heredoc_input), 0);
 		if (expansion)
 		{
-			if (var_expansion(&heredoc_input, word, env))
+			if (var_expansion(&heredoc_input, mini, env))
 				return (free(heredoc_input), 1);
 		}
-		if (write_heredoc_line(heredoc_input, fd))
+		if (write_heredoc_line(heredoc_input, mini->heredoc_write_fd))
 			return (free(heredoc_input), 1);
 		free(heredoc_input);
 	}
@@ -58,18 +53,22 @@ int	adding_heredoc_into_file(int fd, bool expansion, char *delimiter,
 }
 
 static int	var_expansion(char **heredoc_input,
-				char word[WORD_AMOUNT][WORD_STR_SIZE],
+				t_minishell *mini,
 				t_single_linked_node *env)
 {
-	char		*tmp_heredoc_input;
+	char			*tmp_heredoc_input;
 	t_quote_iteri   exv;
+	char			**word;
 
+	init_qrve_arena(mini);
 	ft_bzero(&exv, sizeof(t_quote_iteri));
+	start_first_word(mini, &exv);
+	word = (char **)&mini->arena_split_tokens.data;
 	exv.heredoc = true;
-	if (quote_rm_var_expan(*heredoc_input, word, env, &exv))
+	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1][0] == 0);
-	tmp_heredoc_input = calloc(1, ft_strlen(word[0]) + 1);
+	assert(word[1] == NULL); 
+	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (1);
 	ft_strlcpy(tmp_heredoc_input, word[0], ft_strlen(word[0]) + 1);
@@ -80,28 +79,27 @@ static int	var_expansion(char **heredoc_input,
 
 static int	write_heredoc_line(char *heredoc_input, int fd)
 {
-	ssize_t	c_written;
-
-	c_written = write(fd, heredoc_input, ft_strlen(heredoc_input));
-	if (write_check(c_written, ft_strlen(heredoc_input)))
+	
+	if (ft_write(fd, heredoc_input, ft_strlen(heredoc_input)))
 		return (1);
-	c_written = write(fd, "\n", 1);
-	if (write_check(c_written, 1))
+	if (ft_write(fd, "\n", 1))
 		return (1);
 	return (0);
 }
 
-static int	write_check(ssize_t c_written, size_t len)
+int	ft_write(int fd, char *line, size_t len)
 {
+	ssize_t	c_written;
+
+	c_written = write(fd, line, len);
 	if (c_written == -1)
 	{
-		perror("minishell: write failure in heredoc");
+		perror("minishell: write failure");
 		return (1);
 	}
 	else if (c_written != (ssize_t)len)
 	{
-		error("cannot create temp file for here-document: No space left \
-				on device");
+		error("write failure: No space left on device");
 		return (1);
 	}
 	return (0);
