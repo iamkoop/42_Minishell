@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:32 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 01:27:57 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/26 18:33:03 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	echo(char **input)
 
 	print_nl = 1;
 	i = 1;
-	while (input[i] && is_validFlag(input[i], &print_nl))
+	while (input[i] && is_valid_flag(input[i], &print_nl))
 			i++;
 	while (input && input[i])
 	{
