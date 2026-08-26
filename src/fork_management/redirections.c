@@ -6,49 +6,47 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 14:21:48 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/20 20:43:38 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/25 15:38:02 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int input_redir(char	*file, enum e_redir_type type, t_minishell	*mini)
+static int input_redir(t_redir_list	*curr_redir, t_minishell	*mini)
 {
 	if(mini->in > -1)
 	{
 		mini->prev_in = mini->in;
 		close_fd(&mini->prev_in);
 	}
-	if(type == HERE)
+	if(curr_redir->redir_type == HERE)
 	{
-		mini->in = open(file, O_RDONLY);
-		if(mini->in == -1)
-			return(perror("open fail in input_redirection"), 0);
+		mini->in = curr_redir->fd;
 		return(1);
 	}
-	mini->in = open(file, O_RDONLY);
+	mini->in = open(curr_redir->filename, O_RDONLY);
 	if(mini->in == -1)
-		return(perror("open in input_redirection"), 0);
+		return(err_msg(NULL, curr_redir->filename, NULL), 0);
 	return(1);
 }
 
-static int output_redir(char	*file, enum e_redir_type type,t_minishell	*mini)
+static int output_redir(t_redir_list	*curr_redir, t_minishell	*mini)
 {
 	if(mini->out > -1)
 	{
 		mini->prev_out = mini->out;
 		close_fd(&mini->prev_out);
 	}
-	if(type == APPEND)
+	if(curr_redir->redir_type == APPEND)
 	{
-		mini->out = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		mini->out = open(curr_redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if(mini->out == -1)
-			return(perror("open fail in output_redirection"), 0);
+			return(err_msg(NULL, curr_redir->filename, NULL), 0);
 		return(1);
 	}
-	mini->out = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	mini->out = open(curr_redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if(mini->out == -1)
-		return(perror("open fail in output_redirection"), 0);
+		return(err_msg(NULL, curr_redir->filename, NULL), 0);
 	return(1);
 }
 
@@ -86,12 +84,12 @@ int exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini)
 		curr_redir = (t_redir_list	*)redir_lst->content;
 		if(curr_redir->redir_type == IN || curr_redir->redir_type == HERE)
 		{
-			if(!input_redir(curr_redir->filename, curr_redir->redir_type ,mini))
+			if(!input_redir(curr_redir, mini))
 				return(0);
 		}
 		if(curr_redir->redir_type == OUT || curr_redir->redir_type == APPEND)
 		{
-			if(!output_redir(curr_redir->filename, curr_redir->redir_type, mini))	
+			if(!output_redir(curr_redir, mini))	
 				return(0);
 		}
 		redir_lst = redir_lst->next;

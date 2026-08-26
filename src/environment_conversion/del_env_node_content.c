@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   del_env_node_content.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
-/*   Updated: 2026/05/25 19:01:33 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/22 18:54:48 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 void del_env_node_content(void	*content)
 {

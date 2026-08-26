@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/21 18:54:58 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/26 15:56:00 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,12 +147,6 @@ typedef struct s_pwds_vars
 	int					is_dash;
 }					t_pwds_vars;
 
-typedef struct s_pwd_and_key_len
-{
-	size_t 		pwd_l;
-	size_t		key_l;
-}				t_pwd_and_key_len;
-
 typedef struct s_print_sorted_env_vars
 {
 	t_single_linked_node    *tmp_lst;
@@ -216,7 +210,7 @@ int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node **envp);
 
 int						is_builtin(char *cmd);
-void					exec_command(char   **cmd_and_args, t_single_linked_node	**envp, t_minishell *mini);
+void						exec_command(char   **cmd_and_args, t_single_linked_node	**envp, t_minishell *mini);
 char					*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini);
 void					exec_main(t_minishell *mini, t_single_linked_node	*cmd_lst, t_single_linked_node	**envp);
 int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**envp);
@@ -224,6 +218,8 @@ int						builtin_redir_special_case(t_minishell	*mini, t_single_linked_node	**en
 int						exec_redirections(t_single_linked_node	*redir_lst, t_minishell	*mini);
 void					child_process(t_minishell *mini, t_single_linked_node	**envp, int close_read, int child_type);
 void					parent(t_minishell *mini, t_single_linked_node	**envp);
+
+void					err_msg(char	*func, char *value, char	*custom_err);
 
 //PARSING PART
 //tokenization
@@ -253,6 +249,7 @@ void	error(char *message);
 void	delete_hd_files();
 void    free_command_struct(t_single_linked_node *cmd_lst);
 void	close_fd(int	*fd);
+void	close_all_fds(t_minishell  *mini);
 
 // parsing
 int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,
