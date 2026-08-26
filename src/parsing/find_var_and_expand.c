@@ -31,7 +31,7 @@ int	find_var(char *var, t_minishell *mini,
 	while (tmp_node)
 	{
 		tmp_content = (t_env_var *)tmp_node->content;
-		if (!ft_strncmp(tmp_content->key, var, ft_strlen(var)))
+		if (!ft_strncmp(tmp_content->key, var, ft_strlen(var) + 1))
 		{
 			if (variable_expansion(mini, iteri, tmp_content))
 				return (1);

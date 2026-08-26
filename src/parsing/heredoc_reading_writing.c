@@ -67,7 +67,7 @@ static int	var_expansion(char **heredoc_input,
 	exv.heredoc = true;
 	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1] != NULL);
+	assert(word[1] == NULL); 
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (1);

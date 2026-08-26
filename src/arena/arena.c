@@ -33,8 +33,7 @@ bool	grow_arena_element(t_arena *arena, size_t size)
 {
 	if (arena->pos + size >= arena->cap)
 	{
-		error("exceeding memory limit: Token length \
-			   	\nRaise TOKEN_STR_SIZE in minishell.h");
+		error("exceeding memory limit: arena full");
 		return (false);
 	}
 	arena->pos += size;
