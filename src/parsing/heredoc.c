@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/27 16:12:39 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:56:51 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
 		return (1);
 	}
 	ft_strlcpy(delimiter, (iteri->tok - 1)->token_str, len +1);
-	if (strchr(delimiter, '\"') || strchr(delimiter, '\''))
+	if (ft_strchr(delimiter, '\"') || ft_strchr(delimiter, '\''))
 		quote_removal(delimiter);
 	else
 		*expansion = true;
