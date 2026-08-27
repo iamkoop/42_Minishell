@@ -82,17 +82,20 @@ static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
 	size_t	len;
 
 	len = ft_strlen((iteri->tok - 1)->token_str);
-	if (len >= HD_DELIMITER_LEN)
+	if (len + 2 >= HD_DELIMITER_LEN)
 	{
 		error("exceeding memory limit: Heredoc delimiter \
 				\nRaise HD_DELIMITER_LEN in minishell.h");
 		return (1);
 	}
-	ft_strlcpy(delimiter, (iteri->tok - 1)->token_str, len +1);
+	ft_strlcpy(delimiter, (iteri->tok - 1)->token_str, len + 1);
 	if (strchr(delimiter, '\"') || strchr(delimiter, '\''))
 		quote_removal(delimiter);
 	else
 		*expansion = true;
+	len = ft_strlen(delimiter);
+	delimiter[len] = '\n';
+	delimiter[len + 1] = 0;
 	return (0);
 }
 
