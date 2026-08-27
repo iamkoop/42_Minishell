@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 12:37:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/25 16:45:27 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:08:27 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*add_to_string(char	*curr, char	*to_append1, char	*to_append2)
 	if(curr)
 		ret = ft_strjoin_three(curr, to_append1, to_append2);
 	else
-		ret = strdup(to_append1);
+		ret = ft_strdup(to_append1);
 	free(curr);
 	return(ret);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion_dollar_found.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:24:32 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/17 12:48:41 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:12:59 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	dollar_found(char *s, t_minishell *mini,
 	char	var[WORD_STR_SIZE];
 	int		v;
 
-	bzero(var, WORD_STR_SIZE - 1);
+	ft_bzero(var, WORD_STR_SIZE - 1);
 	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;

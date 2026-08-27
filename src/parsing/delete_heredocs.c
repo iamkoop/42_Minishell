@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 15:51:51 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:03 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:12:18 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	heredoc_filename_generator(char *filename, int *num)
 	char		*start;
 
 	start = ".hd/File_";
-	memcpy(filename, start, 9);
+	ft_memcpy(filename, start, 9);
 	filename[9] = *num / 10 + '0';
 	filename[10] = *num % 10 + '0';
 	filename[11] = '.';
