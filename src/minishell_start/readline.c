@@ -20,15 +20,17 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 {
 	char	*input;
 
+	rl_outstream = stderr;
 	while (42)
 	{
-		input = readline("Minishell> ");
+		if(isatty(STDIN_FILENO))
+            input = readline("Minishell> ");
+        else
+            input = readline(NULL);
 		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
 			g_signal = 0;
-            //free(input);
-			//continue ;
 		}
 		if (!input)
 		{
@@ -45,6 +47,9 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		}
 	}
 }
+
+// Without isatty it would print exit even when the input comes through a pipe
+// or is read from a file. But it should only do it when ctrl+d is pressed.
 
 static void	initiate_tokenization(char *input, t_single_linked_node **env,
 			t_minishell *mini)
