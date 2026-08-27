@@ -19,7 +19,16 @@ void del_env_node_content(void	*content)
 	node = (t_env_var	*)content;
 	if(!content)
 		return	;
-	free(node->key);
-	free(node->value);
+	if (node->key)
+	{
+		free(node->key);
+		node->key = NULL;
+	}
+	if (node->value)
+	{
+		free(node->value);
+		node->value = NULL;
+	}
 	free(node);
+	node = NULL;
 }
