@@ -5,23 +5,19 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/19 12:38:16 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/17 19:26:06 by nilsdruon        ###   ########.fr       */
+/*   Created: 2026/05/19 12:38:16 by username          #+#    #+#             */
+/*   Updated: 2026/08/30 15:02:01 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "testing.h"
 
-void testing_exec(char **argv, char **envp)
+void	testing_exec(char **argv, char **envp)
 {
-	/*if(argv)
-		argv = NULL;
-	if(envp)
-		envp = NULL;*/
-   	//env_tests(envp);
-	//env_manipulation_tests(envp);
+	(void) argv;
+	//env_manipulation_tests(envp); passes valgrind and funcheck
 	builtins_tests(argv, envp);
-//	test_exec_command(envp);
-//	test_redirections_suite();
-//	test_general_cmd_exec();
+	//test_exec_command(envp);
+	//test_redirections_suite();
+	//test_general_cmd_exec();
 }
