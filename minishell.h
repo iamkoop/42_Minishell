@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/26 15:56:00 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/31 18:27:34 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ t_single_linked_node	*default_env();
 //builtins
 int						env(char	**input, t_single_linked_node	**envp);
 int						echo(char	**input);
-void					builtin_exit(char	**input);
+void					builtin_exit(char	**input, t_single_linked_node	**envp, t_minishell	*mini);
 int						pwd(char	**input);
 int						cd(char **input, t_single_linked_node	*envp);
 int						unset(char	**input, t_single_linked_node	**envp);

@@ -6,24 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/08/28 13:39:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/31 19:15:48 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int zero(char c, int	*is_zero)
-{
-	if(c)
-	{
-		*is_zero = 0;
-		return(0);
-	}
-	*is_zero = 1;
-	return(1);
-}
-
-static int	num_is_valid_help(char *str, int is_negative, int *is_zero)
+static int	num_is_valid_help(char *str, int is_negative)
 {
 	char	*ll_max;
 	char	*ll_min;
@@ -35,7 +24,7 @@ static int	num_is_valid_help(char *str, int is_negative, int *is_zero)
 	i = -1;
 	while (*str && *str == '0')
 		str++;
-	if(zero(*str, is_zero))
+	if(!*str)
 		return(1);
 	len = ft_strlen(str);
 	if(len < 19)
@@ -51,7 +40,7 @@ static int	num_is_valid_help(char *str, int is_negative, int *is_zero)
 	return (1);
 }
 
-static int	num_is_valid(char *str, int *is_zero)
+static int	num_is_valid(char *str)
 {
 	int	i;
 	int	is_negative;
@@ -77,7 +66,7 @@ static int	num_is_valid(char *str, int *is_zero)
 		is_negative = 0;
 	if(str[0] == '+' || str[0] == '-')
 		str++;
-	return (num_is_valid_help(str, is_negative, is_zero));
+	return (num_is_valid_help(str, is_negative));
 }
 
 static void	exit_error_msg(char *arg)
@@ -92,15 +81,14 @@ static void	exit_error_msg(char *arg)
 		ft_putendl_fd("too many arguments", 2);
 }
 
-void	builtin_exit(char **input)
+void	builtin_exit(char **input, t_single_linked_node	**envp, t_minishell	*mini)
 {
 	int	len;
-	int is_zero;
+	long long	exit_code;
 
-	len = 0;
-	ft_putendl_fd("exit", 1);
+	exit_code = -42;
 	if (!input[1])
-		exit(0);
+		exit_code = 0;
 	len = 1;
 	while (input[len])
 	{
@@ -109,12 +97,19 @@ void	builtin_exit(char **input)
 			exit_error_msg(NULL);
 			return ;
 		}
-		if (!num_is_valid(input[len], &is_zero))
+		if (!num_is_valid(input[len]))
 		{
 			exit_error_msg(input[len]);
-			exit(2);
+			exit_code = 2;
+			break;
 		}
 		len++;
 	}
-	exit((unsigned char) ft_atoll(input[1]));
+	if(exit_code == -42)
+		exit_code = ft_atoll(input[1]);
+	free_command_struct(mini->cmd_lst);
+	ft_single_lstclear(envp, del_env_node_content);
+	rl_clear_history();
+	ft_putendl_fd("exit", 1);
+	exit((unsigned char)exit_code);
 }
