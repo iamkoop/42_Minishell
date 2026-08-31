@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:50:01 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 12:39:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,16 +106,17 @@ static int	search_for_node(t_single_linked_node *node, t_single_linked_node *env
 		curr_content = (t_env_var *) envp->content;
 		if (ft_strcmp(node_content->key, curr_content->key) == 0)
 		{
-			free(curr_content->value);
-			curr_content->value = ft_strdup(node_content->value);
-			if (!curr_content->value)
+			if(node_content->value)
+			{
+				free(curr_content->value);
+				curr_content->value = ft_strdup(node_content->value);
+			}
+			if (node_content->value && !curr_content->value)
 			{
 				ft_putendl_fd("minishell: export: malloc fail node search", 2);
 				return (del_env_node_content(node->content), free(node), 0);
 			}
-			del_env_node_content(node->content);
-			free(node);
-			return (1);
+			return (del_env_node_content(node->content), free(node), 1);
 		}
 		envp = envp->next;
 	}
