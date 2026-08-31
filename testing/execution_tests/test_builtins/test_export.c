@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/29 19:30:18 by username          #+#    #+#             */
-/*   Updated: 2026/08/31 13:55:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/31 16:15:19 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,14 @@ static int	run_single_export_test(t_export_test test, char **original_envp)
 	if (pipe(out_pipe) == -1)
 	{
 		perror("pipe failed");
-		return (0);
+		return (-1);
 	}
 	if (pipe(err_pipe) == -1)
 	{
 		perror("pipe failed");
 		close(out_pipe[0]);
 		close(out_pipe[1]);
-		return (0);
+		return (-1);
 	}
 	if (pipe(res_pipe) == -1)
 	{
@@ -112,7 +112,7 @@ static int	run_single_export_test(t_export_test test, char **original_envp)
 		close(out_pipe[1]);
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		return (0);
+		return (-1);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -124,7 +124,7 @@ static int	run_single_export_test(t_export_test test, char **original_envp)
 		close(err_pipe[1]);
 		close(res_pipe[0]);
 		close(res_pipe[1]);
-		return (0);
+		return (-1);
 	}
 	if (pid == 0)
 	{
@@ -341,7 +341,13 @@ int	test_export(char **envp)
 	printf("\n--- Running Minishell Export Builtin Tests ---\n");
 	for (int i = 0; i < num_tests; i++)
 	{
-		if (!run_single_export_test(tests[i], envp))
+		int	res = run_single_export_test(tests[i], envp);
+		if (res == -1)
+		{
+			success = 0;
+			break ;
+		}
+		else if (res == 0)
 			success = 0;
 	}
 	return (success);

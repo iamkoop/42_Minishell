@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 12:09:29 by username          #+#    #+#             */
-/*   Updated: 2026/08/31 12:57:36 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/31 16:15:19 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ static int	run_single_pwd_test(t_pwd_test test, const char *system_cwd)
 	if (pipe(out_pipe) == -1)
 	{
 		perror("pipe failed");
-		return (0);
+		return (-1);
 	}
 	if (pipe(err_pipe) == -1)
 	{
 		perror("pipe failed");
 		close(out_pipe[0]);
 		close(out_pipe[1]);
-		return (0);
+		return (-1);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -47,7 +47,7 @@ static int	run_single_pwd_test(t_pwd_test test, const char *system_cwd)
 		close(out_pipe[1]);
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		return (0);
+		return (-1);
 	}
 	if (pid == 0)
 	{
@@ -207,7 +207,13 @@ int	test_pwd(void)
 	printf("\n--- Running Minishell Pwd Builtin Tests ---\n");
 	for (int i = 0; i < num_tests; i++)
 	{
-		if (!run_single_pwd_test(tests[i], system_cwd))
+		int	res = run_single_pwd_test(tests[i], system_cwd);
+		if (res == -1)
+		{
+			success = 0;
+			break ;
+		}
+		else if (res == 0)
 			success = 0;
 	}
 	return (success);
