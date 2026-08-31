@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_unset.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 16:29:58 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:18:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 13:55:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,53 +79,85 @@ static int	verify_key_missing(t_single_linked_node *env_lst, const char *key)
 
 static int	run_single_unset_test(t_unset_test test, char **original_envp)
 {
-	int						saved_stderr;
-	int						err_pipe[2];
-	char					err_buffer[4096];
-	int						actual_status;
-	int						pass = 1;
-	t_single_linked_node	*env_lst;
+	int		err_pipe[2];
+	int		res_pipe[2];
+	pid_t	pid;
 
-	env_lst = create_mock_env(test.setup_type, original_envp);
 	if (pipe(err_pipe) == -1)
 	{
 		perror("pipe failed");
-		if (env_lst)
-			ft_single_lstclear(&env_lst, del_env_node_content);
 		return (0);
 	}
-	saved_stderr = dup(STDERR_FILENO);
-	if (saved_stderr == -1)
+	if (pipe(res_pipe) == -1)
 	{
+		perror("pipe failed");
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		if (env_lst) ft_single_lstclear(&env_lst, del_env_node_content);
-			return (0);
+		return (0);
 	}
-	if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-		close(saved_stderr);
+		perror("fork failed");
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		if (env_lst) ft_single_lstclear(&env_lst, del_env_node_content);
-			return (0);
+		close(res_pipe[0]);
+		close(res_pipe[1]);
+		return (0);
+	}
+	if (pid == 0)
+	{
+		close(err_pipe[0]);
+		close(res_pipe[0]);
+		t_single_linked_node	*env_lst = create_mock_env(test.setup_type, original_envp);
+		if (!env_lst && test.setup_type != 2)
+		{
+			close(err_pipe[1]);
+			close(res_pipe[1]);
+			exit(1);
+		}
+		if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+		{
+			close(err_pipe[1]);
+			close(res_pipe[1]);
+			if (env_lst)
+				ft_single_lstclear(&env_lst, del_env_node_content);
+			exit(1);
+		}
+		close(err_pipe[1]);
+		int	actual_status = unset(test.input, &env_lst);
+		fflush(stderr);
+		int	state_ok = 1;
+		if (test.check_missing_key)
+			state_ok = verify_key_missing(env_lst, test.check_missing_key);
+		write(res_pipe[1], &actual_status, sizeof(int));
+		write(res_pipe[1], &state_ok, sizeof(int));
+		close(res_pipe[1]);
+		if (env_lst)
+			ft_single_lstclear(&env_lst, del_env_node_content);
+		exit(0);
 	}
 	close(err_pipe[1]);
-	// CALLING YOUR UNSET IMPLEMENTATION
-	actual_status = unset(test.input, &env_lst);
-	fflush(stderr);
-	if (dup2(saved_stderr, STDERR_FILENO) == -1)
-	{
-		close(saved_stderr);
-		close(err_pipe[0]);
-		if (env_lst) ft_single_lstclear(&env_lst, del_env_node_content);
-			return (0);
-	}
-	close(saved_stderr);
+	close(res_pipe[1]);
+	int		actual_status = -1;
+	int		state_ok = 0;
+	char	err_buffer[4096];
+	int		status;
+
+	read(res_pipe[0], &actual_status, sizeof(int));
+	read(res_pipe[0], &state_ok, sizeof(int));
+	close(res_pipe[0]);
 	memset(err_buffer, 0, sizeof(err_buffer));
 	fcntl(err_pipe[0], F_SETFL, O_NONBLOCK);
 	read(err_pipe[0], err_buffer, sizeof(err_buffer) - 1);
 	close(err_pipe[0]);
+	waitpid(pid, &status, 0);
+	int	pass = 1;
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+	{
+		if (actual_status == -1)
+			pass = 0;
+	}
 	// 1. Verify Exit Code
 	if (actual_status != test.expected_status)
 	{
@@ -139,7 +171,7 @@ static int	run_single_unset_test(t_unset_test test, char **original_envp)
 		if (strstr(err_buffer, test.expected_stderr) == NULL)
 		{
 			if (pass) printf("❌ FAIL: %s [STDERR Mismatch]\n", test.test_name);
-				printf("   Expected Error Msg to contain: \"%s\"\n", test.expected_stderr);
+			printf("   Expected Error Msg to contain: \"%s\"\n", test.expected_stderr);
 			printf("   Got Error Msg                : \"%s\"\n", err_buffer);
 			pass = 0;
 		}
@@ -147,13 +179,13 @@ static int	run_single_unset_test(t_unset_test test, char **original_envp)
 	else if (err_buffer[0] != '\0')
 	{
 		if (pass) printf("❌ FAIL: %s [Unexpected Error Output]\n", test.test_name);
-			printf("   Got unexpected stderr noise: \"%s\"\n", err_buffer);
+		printf("   Got unexpected stderr noise: \"%s\"\n", err_buffer);
 		pass = 0;
 	}
 	// 3. Structural State Integrity Verification
 	if (pass && test.check_missing_key)
 	{
-		if (!verify_key_missing(env_lst, test.check_missing_key))
+		if (!state_ok)
 		{
 			printf("❌ FAIL: %s [State Corruption]\n", test.test_name);
 			printf("   Variable '%s' was expected to be unlinked and freed, but still exists.\n", test.check_missing_key);
@@ -162,8 +194,6 @@ static int	run_single_unset_test(t_unset_test test, char **original_envp)
 	}
 	if (pass)
 		printf("✅ PASS: %s\n", test.test_name);
-	if (env_lst)
-		ft_single_lstclear(&env_lst, del_env_node_content);
 	return (pass);
 }
 

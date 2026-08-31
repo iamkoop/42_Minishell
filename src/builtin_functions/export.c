@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/08/31 12:39:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/31 13:50:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static t_single_linked_node	*create_var(char *input)
 	if (!node->content)
 	{
 		ft_putendl_fd("minishell: export: malloc in fill_var_content failed", 2);
-		return (NULL);
+		return (free(node), NULL);
 	}
 	node->next = NULL;
 	return (node);

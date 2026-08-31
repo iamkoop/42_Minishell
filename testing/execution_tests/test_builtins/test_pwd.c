@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_pwd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 12:09:29 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:18:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 12:57:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,16 @@ static int	run_single_pwd_test(t_pwd_test test, const char *system_cwd)
 	int		err_pipe[2];
 	pid_t	pid;
 
-	if (pipe(out_pipe) == -1 || pipe(err_pipe) == -1)
+	if (pipe(out_pipe) == -1)
 	{
 		perror("pipe failed");
+		return (0);
+	}
+	if (pipe(err_pipe) == -1)
+	{
+		perror("pipe failed");
+		close(out_pipe[0]);
+		close(out_pipe[1]);
 		return (0);
 	}
 	pid = fork();
@@ -46,11 +53,19 @@ static int	run_single_pwd_test(t_pwd_test test, const char *system_cwd)
 	{
 		close(out_pipe[0]);
 		if (dup2(out_pipe[1], STDOUT_FILENO) == -1)
+		{
+			close(out_pipe[1]);
+			close(err_pipe[0]);
+			close(err_pipe[1]);
 			exit(1);
+		}
 		close(out_pipe[1]);
 		close(err_pipe[0]);
 		if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+		{
+			close(err_pipe[1]);
 			exit(1);
+		}
 		close(err_pipe[1]);
 		// CALLING YOUR PWD IMPLEMENTATION
 		int	ret = pwd(test.input);

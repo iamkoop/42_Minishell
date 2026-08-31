@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   convert_env_char_arr_to_lst.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/22 18:54:36 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 16:05:18 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,48 +54,30 @@ t_env_var	*create_env_node(char	*str)
 	return (node);
 }
 
-static int help_convert_env_to_lst(t_single_linked_node **current, char	*envp)
-{
-	t_single_linked_node	*node;
-
-	node = *current;
-	(*current)->next = ft_single_lstnew(NULL);
-	if(!(*current)->next)
-		return(0);
-	(*current) = (*current)->next;
-	(*current)->content = create_env_node(envp);
-	if(!(*current)->content)
-	{
-		node->next = NULL;
-        free(*current); 
-        *current = node;
-		return(0);	
-	}
-	return(1);
-}
-
 t_single_linked_node	*env_to_lst(char	**envp)
 {
-	int var;
 	t_single_linked_node	*env_lst;
-	t_single_linked_node	*current;
+	t_single_linked_node	*node;
+	t_env_var	*curr_content;
+	int var;
 	
 	if(!envp || !*envp)
 		return (NULL);
 	var = 0;
-	current = ft_single_lstnew(NULL);
-	if(!current)
-		return (NULL);
-	current->content = create_env_node(envp[var++]);
-	if(!current->content)
-		return (free(current), NULL);
-	env_lst = current;	
+	env_lst = NULL;
 	while (envp[var])
 	{
-		if(!help_convert_env_to_lst(&current, envp[var]))
+		curr_content = create_env_node(envp[var]);
+		if(!curr_content)
 			return(ft_single_lstclear(&env_lst, del_env_node_content), NULL);
+		node = ft_single_lstnew(curr_content);
+		if(!node)
+		{
+			del_env_node_content(curr_content);
+			return(ft_single_lstclear(&env_lst, del_env_node_content), NULL);
+		}
+		ft_lstadd_back_single_linked(&env_lst, node);
 		var++;
 	}
-	current->next = NULL;
 	return (env_lst);
 }

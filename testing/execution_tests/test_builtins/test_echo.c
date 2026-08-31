@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_echo.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 18:02:46 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 15:23:20 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 13:55:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,44 +96,35 @@ int	test_echo(void)
 			perror("pipe failed");
 			return (0);
 		}
-		int	saved_stdout = dup(STDOUT_FILENO);
-
-		if (saved_stdout == -1)
+		pid_t	pid = fork();
+		if (pid == -1)
 		{
-			perror("dup failed");
+			perror("fork failed");
 			close(pipefd[0]);
 			close(pipefd[1]);
 			return (0);
 		}
-		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+		if (pid == 0)
 		{
-			perror("dup2 failed");
-			close(saved_stdout);
 			close(pipefd[0]);
+			if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+			{
+				close(pipefd[1]);
+				exit(1);
+			}
 			close(pipefd[1]);
-			return (0);
+			echo(tests[i].input);
+			exit(0);
 		}
 		close(pipefd[1]);
-		// ==========================================
-		// CALLING YOUR ECHO IMPLEMENTATION
-		// ==========================================
-		echo(tests[i].input);
-		// ==========================================
-		fflush(stdout);
-		if (dup2(saved_stdout, STDOUT_FILENO) == -1)
-		{
-			close(saved_stdout);
-			close(pipefd[0]);
-			return (0);
-		}
-		close(saved_stdout);
-		// Fixed-size buffer stack allocation
 		char	buffer[4096];
 
 		memset(buffer, 0, sizeof(buffer));
 		fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
 		read(pipefd[0], buffer, sizeof(buffer) - 1);
 		close(pipefd[0]);
+		int	status;
+		waitpid(pid, &status, 0);
 		if (strcmp(buffer, tests[i].expected_output) == 0)
 		{
 			printf("✅ PASS: %s\n", tests[i].test_name);

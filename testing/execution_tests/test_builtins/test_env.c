@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 15:50:10 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 15:23:20 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 13:55:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,58 +113,54 @@ int	env_tests(char **envp)
 			free_local_matrix(safe_envp);
 			return (0);
 		}
-		int	saved_stdout = dup(STDOUT_FILENO);
-
-		if (saved_stdout == -1)
+		pid_t	pid = fork();
+		if (pid == -1)
 		{
+			perror("fork failed");
 			close(pipefd[0]);
 			close(pipefd[1]);
 			free_local_matrix(safe_envp);
 			return (0);
 		}
-		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+		if (pid == 0)
 		{
-			close(saved_stdout);
 			close(pipefd[0]);
+			t_single_linked_node	*lst = env_to_lst(current_envp);
+			if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+			{
+				close(pipefd[1]);
+				if (lst)
+					ft_single_lstclear(&lst, del_env_node_content);
+				free_local_matrix(safe_envp);
+				exit(1);
+			}
 			close(pipefd[1]);
+			int	ret_status = env(mock_input, &lst);
+			if (lst)
+				ft_single_lstclear(&lst, del_env_node_content);
 			free_local_matrix(safe_envp);
-			return (0);
+			exit(ret_status);
 		}
 		close(pipefd[1]);
-		t_single_linked_node	*lst = env_to_lst(current_envp);
-
-		// Call updated env signature and capture the return status
-		int	ret_status = env(mock_input, &lst);
-
-		ft_single_lstclear(&lst, del_env_node_content);
-		fflush(stdout);
-		if (dup2(saved_stdout, STDOUT_FILENO) == -1)
-		{
-			close(saved_stdout);
-			close(pipefd[0]);
-			free_local_matrix(safe_envp);
-			return (0);
-		}
-		close(saved_stdout);
 		char	*buffer = calloc(65536, 1);
-
 		if (buffer)
 		{
 			fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
 			ssize_t	bytes = read(pipefd[0], buffer, 65535);
-
 			(void) bytes;
-			// Validate both output format AND correct success return status (0)
-			if (verify_output(buffer, current_envp) && ret_status == 0)
-				printf("✅ PASS: env() output perfectly matches and returned 0!\n");
-			else
-			{
-				printf("❌ FAIL: env() output mismatch or bad return status (ret: %d)!\n", ret_status);
-				success = 0;
-			}
-			free(buffer);
 		}
 		close(pipefd[0]);
+		int	status;
+		waitpid(pid, &status, 0);
+		int	ret_status = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+		if (buffer && verify_output(buffer, current_envp) && ret_status == 0)
+			printf("✅ PASS: env() output perfectly matches and returned 0!\n");
+		else
+		{
+			printf("❌ FAIL: env() output mismatch or bad return status (ret: %d)!\n", ret_status);
+			success = 0;
+		}
+		free(buffer);
 	}
 	free_local_matrix(safe_envp);
 	return (success);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 15:21:04 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 12:42:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	main(int argc, char **argv, char **envp)
 	}
 	if (argc != 1)
 		return (write(2, "minishell: program takes no arguments\n", 38), 1);
+	/*if (argv[0])
+		argv = NULL;*/
 	signal_ctrl_backslash();
 	exit_status = initializing_minishell(envp);
 	rl_clear_history();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_redirections.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 15:57:58 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:18:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 12:57:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,11 +150,12 @@ static void	cleanup_read_only_err(void)
 
 static int	assert_append(t_minishell *mini)
 {
-	int	fd = open("test_outfile1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("test_outfile1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	memset(buf, 0, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -233,6 +234,7 @@ static int	run_single_redir_test(t_redir_test *tests, int num_tests, int current
 			if (tests[i].redir_lst)
 				clear_redir_list(&tests[i].redir_lst);
 		}
+		close(pipe_fd[1]);
 		exit(0);
 	}
 	close(pipe_fd[1]);

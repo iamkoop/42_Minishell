@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_general_cmd_exec.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 19:55:38 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:18:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 12:57:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,69 +97,6 @@ static t_single_linked_node	*create_cmd_node(char **argv, t_single_linked_node *
 	node->next = NULL;
 	return (node);
 }
-
-/* --- DEEP COPY HELPERS (ISOLATES MINI FROM TEST DEF) --- */
-
-static t_single_linked_node	*clone_redir_list(t_single_linked_node *redir_src)
-{
-	t_single_linked_node	*head = NULL;
-	t_single_linked_node	*tail = NULL;
-	t_single_linked_node	*curr = redir_src;
-
-	while (curr)
-	{
-		t_redir_list			*src_r = (t_redir_list *) curr->content;
-		t_single_linked_node	*new_node = create_redir_node(src_r->filename, src_r->redir_type);
-
-		if (!new_node)
-		{
-			while (head)
-			{
-				t_single_linked_node	*tmp = head->next;
-
-				free_redir_node(head->content);
-				free(head);
-				head = tmp;
-			}
-			return (NULL);
-		}
-		if (!head)
-			head = new_node;
-		else
-			tail->next = new_node;
-		tail = new_node;
-		curr = curr->next;
-	}
-	return (head);
-}
-
-static t_single_linked_node	*clone_cmd_list(t_single_linked_node *src)
-{
-	t_single_linked_node	*head = NULL;
-	t_single_linked_node	*tail = NULL;
-	t_single_linked_node	*curr = src;
-
-	while (curr)
-	{
-		t_command				*src_cmd = (t_command *) curr->content;
-		t_single_linked_node	*cloned_redirs = clone_redir_list(src_cmd->redir);
-		t_single_linked_node	*new_cmd_node = create_cmd_node(src_cmd->argv, cloned_redirs);
-
-		if (!new_cmd_node)
-		{
-			clear_cmd_list(&head);
-			return (NULL);
-		}
-		if (!head)
-			head = new_cmd_node;
-		else
-			tail->next = new_cmd_node;
-		tail = new_cmd_node;
-		curr = curr->next;
-	}
-	return (head);
-}
-
 /* --- MEMORY CLEANUP HELPERS --- */
 
 static void	free_redir_node(void *content)
@@ -269,25 +206,26 @@ static void	setup_pipe_input(void)
 
 static int	assert_single_builtin_pwd(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[1024];
 
-	if (fd < 0) return (0);
-		char	buf[1024];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	ssize_t	bytes = read(fd, buf, sizeof(buf) - 1);
-
 	close(fd);
 	return (bytes > 0 && mini->exit_status == 0);
 }
 
 static int	assert_single_external_cmd(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -296,11 +234,12 @@ static int	assert_single_external_cmd(t_minishell *mini)
 
 static int	assert_pipeline(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -309,11 +248,12 @@ static int	assert_pipeline(t_minishell *mini)
 
 static int	assert_multi_pipe_wc(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -323,11 +263,12 @@ static int	assert_multi_pipe_wc(t_minishell *mini)
 
 static int	assert_multi_pipe_rev(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -337,11 +278,12 @@ static int	assert_multi_pipe_rev(t_minishell *mini)
 
 static int	assert_mid_cmd_failure(t_minishell *mini)
 {
-	int	fd = open("exec_out1.txt", O_RDONLY);
+	int		fd;
+	char	buf[64];
 
-	if (fd < 0) return (0);
-		char	buf[64];
-
+	fd = open("exec_out1.txt", O_RDONLY);
+	if (fd < 0)
+		return (0);
 	ft_bzero(buf, sizeof(buf));
 	read(fd, buf, sizeof(buf) - 1);
 	close(fd);
@@ -376,10 +318,7 @@ static int	run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
 		t_minishell	mini;
 
 		init_mock_minishell(&mini);
-		/* Clone list into mini so exec_main operates on isolated memory */
-		t_single_linked_node	*cloned_cmds = clone_cmd_list(test->cmd_lst);
-
-		mini.cmd_lst = cloned_cmds;
+		mini.cmd_lst = test->cmd_lst;
 		printf("----------------------------------------------------------------------------------------------------------\n");
 		exec_main(&mini, mini.cmd_lst, &envp);
 		write(pipe_fd[1], &mini.exit_status, sizeof(int));
@@ -388,7 +327,6 @@ static int	run_single_exec_test(t_exec_test *test, t_single_linked_node *envp)
 		if (test->assert_behavior)
 			assert_res = test->assert_behavior(&mini);
 		write(pipe_fd[1], &assert_res, sizeof(int));
-		clear_cmd_list(&cloned_cmds);
 		clear_cmd_list(&test->cmd_lst);
 		ft_single_lstclear(&envp, del_env_node_content);
 		close(pipe_fd[1]);

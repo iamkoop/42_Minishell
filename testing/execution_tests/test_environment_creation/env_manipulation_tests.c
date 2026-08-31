@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_manipulation_tests.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 19:10:17 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 14:52:55 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 15:55:14 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

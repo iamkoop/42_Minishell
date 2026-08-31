@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/03 23:02:37 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:18:35 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 13:55:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static void	provision_test_environment(int setup_type, char *saved_cwd, t_single
 		saved_cwd[0] = '\0';
 	if (setup_type == 1)
 	{
+		chmod("test_no_perm_dir", 0755);
+		rmdir("test_no_perm_dir");
 		mkdir("test_no_perm_dir", 0000);
 	}
 	else if (setup_type == 2 || setup_type == 3)
@@ -99,6 +101,8 @@ static void	provision_test_environment(int setup_type, char *saved_cwd, t_single
 	}
 	else if (setup_type == 7)
 	{
+		unlink("test_broken_link");
+		rmdir("test_sym_target");
 		mkdir("test_sym_target", 0755);
 		symlink("test_sym_target", "test_broken_link");
 		rmdir("test_sym_target");
@@ -115,6 +119,7 @@ static void	cleanup_test_environment(int setup_type, const char *saved_cwd)
 	else if (setup_type == 7)
 	{
 		unlink("test_broken_link");
+		rmdir("test_sym_target");
 	}
 	if (saved_cwd && saved_cwd[0] != '\0')
 		chdir(saved_cwd);
@@ -122,56 +127,77 @@ static void	cleanup_test_environment(int setup_type, const char *saved_cwd)
 
 static int	run_single_cd_test(t_cd_test test, char **original_envp)
 {
-	char					saved_cwd[4096];
-	int						saved_stderr;
-	int						err_pipe[2];
-	char					err_buffer[4096];
-	int						actual_status;
-	int						pass = 1;
-	t_single_linked_node	*env_lst = env_to_lst(original_envp);
+	int		err_pipe[2];
+	int		res_pipe[2];
+	pid_t	pid;
 
-	provision_test_environment(test.setup_type, saved_cwd, &env_lst);
 	if (pipe(err_pipe) == -1)
 	{
 		perror("pipe failed");
-		ft_single_lstclear(&env_lst, del_env_node_content);
-		cleanup_test_environment(test.setup_type, saved_cwd);
 		return (0);
 	}
-	saved_stderr = dup(STDERR_FILENO);
-	if (saved_stderr == -1)
+	if (pipe(res_pipe) == -1)
 	{
+		perror("pipe failed");
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		ft_single_lstclear(&env_lst, del_env_node_content);
-		cleanup_test_environment(test.setup_type, saved_cwd);
 		return (0);
 	}
-	if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-		close(saved_stderr);
+		perror("fork failed");
 		close(err_pipe[0]);
 		close(err_pipe[1]);
-		ft_single_lstclear(&env_lst, del_env_node_content);
-		cleanup_test_environment(test.setup_type, saved_cwd);
+		close(res_pipe[0]);
+		close(res_pipe[1]);
 		return (0);
+	}
+	if (pid == 0)
+	{
+		close(err_pipe[0]);
+		close(res_pipe[0]);
+		char					saved_cwd[4096];
+		t_single_linked_node	*env_lst = env_to_lst(original_envp);
+		provision_test_environment(test.setup_type, saved_cwd, &env_lst);
+		if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+		{
+			close(err_pipe[1]);
+			close(res_pipe[1]);
+			cleanup_test_environment(test.setup_type, saved_cwd);
+			if (env_lst)
+				ft_single_lstclear(&env_lst, del_env_node_content);
+			exit(1);
+		}
+		close(err_pipe[1]);
+		int	actual_status = cd(test.input, env_lst);
+		fflush(stderr);
+		cleanup_test_environment(test.setup_type, saved_cwd);
+		write(res_pipe[1], &actual_status, sizeof(int));
+		close(res_pipe[1]);
+		if (env_lst)
+			ft_single_lstclear(&env_lst, del_env_node_content);
+		exit(0);
 	}
 	close(err_pipe[1]);
-	actual_status = cd(test.input, env_lst);
-	fflush(stderr);
-	if (dup2(saved_stderr, STDERR_FILENO) == -1)
-	{
-		close(saved_stderr);
-		close(err_pipe[0]);
-		ft_single_lstclear(&env_lst, del_env_node_content);
-		cleanup_test_environment(test.setup_type, saved_cwd);
-		return (0);
-	}
-	close(saved_stderr);
+	close(res_pipe[1]);
+	int		actual_status = -1;
+	char	err_buffer[4096];
+	int		status;
+
+	read(res_pipe[0], &actual_status, sizeof(int));
+	close(res_pipe[0]);
 	memset(err_buffer, 0, sizeof(err_buffer));
 	fcntl(err_pipe[0], F_SETFL, O_NONBLOCK);
 	read(err_pipe[0], err_buffer, sizeof(err_buffer) - 1);
 	close(err_pipe[0]);
+	waitpid(pid, &status, 0);
+	int	pass = 1;
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+	{
+		if (actual_status == -1)
+			pass = 0;
+	}
 	if (actual_status != test.expected_status)
 	{
 		printf("❌ FAIL: %s [Exit Status Mismatch]\n", test.test_name);
@@ -183,7 +209,7 @@ static int	run_single_cd_test(t_cd_test test, char **original_envp)
 		if (strstr(err_buffer, test.expected_stderr) == NULL)
 		{
 			if (pass) printf("❌ FAIL: %s [STDERR Mismatch]\n", test.test_name);
-				printf("   Expected Error Msg to contain: \"%s\"\n", test.expected_stderr);
+			printf("   Expected Error Msg to contain: \"%s\"\n", test.expected_stderr);
 			printf("   Got Error Msg                : \"%s\"\n", err_buffer);
 			pass = 0;
 		}
@@ -191,13 +217,11 @@ static int	run_single_cd_test(t_cd_test test, char **original_envp)
 	else if (err_buffer[0] != '\0' && test.setup_type != 2 && test.setup_type != 3)
 	{
 		if (pass) printf("❌ FAIL: %s [Unexpected Error Output]\n", test.test_name);
-			printf("   Got unexpected stderr noise: \"%s\"\n", err_buffer);
+		printf("   Got unexpected stderr noise: \"%s\"\n", err_buffer);
 		pass = 0;
 	}
 	if (pass)
 		printf("✅ PASS: %s\n", test.test_name);
-	cleanup_test_environment(test.setup_type, saved_cwd);
-	ft_single_lstclear(&env_lst, del_env_node_content);
 	return (pass);
 }
 
