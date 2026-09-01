@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/09/01 14:54:45 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/01 15:25:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ static int	num_is_valid(char *str)
 		str++;
 	if (str[i] == '-' || str[i] == '+' || ft_isdigit(str[i]))
 		i++;
-	if(i == 0 || !str[i] || !ft_isdigit(str[i]))
+	else
+		return(0);
+	if(!ft_isdigit(str[0]) && !str[1])
 		return(0);
 	while (str[i] && ft_isdigit(str[i]))
 		i++;
