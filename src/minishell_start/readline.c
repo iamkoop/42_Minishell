@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 20:58:20 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/01 16:53:13 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 
 	while (42)
 	{
+		if(mini->exe_exit)
+		{
+			ft_single_lstclear(&env, del_env_node_content);
+			rl_clear_history();
+			exit(mini->exit_status);
+		}
 		input = readline("Minishell> ");
 		if (g_signal == SIGINT)
 		{

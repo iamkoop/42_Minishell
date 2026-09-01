@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/09/01 15:25:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/01 16:43:06 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,35 +83,30 @@ static void	exit_error_msg(char *arg)
 		ft_putendl_fd("too many arguments", 2);
 }
 
-void	builtin_exit(char **input, t_single_linked_node	**envp, t_minishell	*mini)
+int	builtin_exit(char **input, t_minishell	*mini)
 {
 	int	len;
-	long long	exit_code;
 
-	exit_code = -42;
+	mini->exit_status = -42;
+	mini->exe_exit = 1;
 	if (!input[1])
-		exit_code = 0;
+		mini->exit_status = 0;
 	len = 1;
 	while (input[len])
 	{
 		if (len > 1)
-		{
-			exit_error_msg(NULL);
-			return ;
-		}
+			return (exit_error_msg(NULL), 1);
 		if (!num_is_valid(input[len]))
 		{
 			exit_error_msg(input[len]);
-			exit_code = 2;
+			mini->exit_status = 2;
 			break;
 		}
 		len++;
 	}
-	if(exit_code == -42)
-		exit_code = ft_atoll(input[1]);
-	free_command_struct(mini->cmd_lst);
-	ft_single_lstclear(envp, del_env_node_content);
-	rl_clear_history();
+	if(mini->exit_status == -42)
+		mini->exit_status = (unsigned char)ft_atoll(input[1]);
 	ft_putendl_fd("exit", 1);
-	exit((unsigned char)exit_code);
+	mini->exe_exit = 1;
+	return(mini->exit_status);
 }

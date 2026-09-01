@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/31 18:55:45 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/01 16:41:38 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int execute_builtin(char   **cmd_and_args, t_single_linked_node  **envp, 
 	if (ft_strncmp(cmd_and_args[0], "env", ft_get_biggest_s(cmd_and_args[0], "env")) == 0)
 			return (env(cmd_and_args, envp));
     if (ft_strncmp(cmd_and_args[0], "exit", ft_get_biggest_s(cmd_and_args[0], "exit")) == 0)
-		builtin_exit(cmd_and_args, envp, mini);
+			return (builtin_exit(cmd_and_args, mini));
     if (ft_strncmp(cmd_and_args[0], "export", ft_get_biggest_s(cmd_and_args[0], "export")) == 0)
 		return (export(cmd_and_args, envp));
     if (ft_strncmp(cmd_and_args[0], "pwd", ft_get_biggest_s(cmd_and_args[0], "pwd")) == 0)
