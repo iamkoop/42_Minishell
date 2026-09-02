@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/26 15:56:00 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/01 16:41:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ typedef struct s_minishell
 	t_single_linked_node	*cmd_lst;
 	t_command				*curr_cmd; //initialized to NULL every new commandline input, same for the -42s below
 	int						exit_status;
+	bool					exe_exit;
 	int						cmd_lst_size; //initialzed to -42
 	int						next_pipe_fds[2]; //initialzed to -42
 	int						prev_read_fd; //initialzed to -42
@@ -203,7 +204,7 @@ t_single_linked_node	*default_env();
 //builtins
 int						env(char	**input, t_single_linked_node	**envp);
 int						echo(char	**input);
-void					builtin_exit(char	**input);
+int						builtin_exit(char	**input, t_minishell	*mini);
 int						pwd(char	**input);
 int						cd(char **input, t_single_linked_node	*envp);
 int						unset(char	**input, t_single_linked_node	**envp);

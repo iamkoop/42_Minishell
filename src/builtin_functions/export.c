@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 01:42:51 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/08/31 13:50:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ t_env_var	*fill_var_content(char *input)
 		len++;
 	env_var->key = malloc(sizeof(char)*len + 1);
 	if (!env_var->key)
-		return (NULL);
+		return (free(env_var), NULL);
 	ft_strlcpy(env_var->key, input, len + 1);
 	if (input[len] == '=')
 	{
 		input += len + 1;
 		env_var->value = ft_strdup(input);
 		if (!env_var->value)
-			return (NULL);
+			return (free(env_var->key), free(env_var), NULL);
 	}
 	else
 		env_var->value = NULL;
@@ -81,7 +81,7 @@ static t_single_linked_node	*create_var(char *input)
 	if (!node->content)
 	{
 		ft_putendl_fd("minishell: export: malloc in fill_var_content failed", 2);
-		return (NULL);
+		return (free(node), NULL);
 	}
 	node->next = NULL;
 	return (node);
@@ -106,16 +106,17 @@ static int	search_for_node(t_single_linked_node *node, t_single_linked_node *env
 		curr_content = (t_env_var *) envp->content;
 		if (ft_strcmp(node_content->key, curr_content->key) == 0)
 		{
-			free(curr_content->value);
-			curr_content->value = ft_strdup(node_content->value);
-			if (!curr_content->value)
+			if(node_content->value)
+			{
+				free(curr_content->value);
+				curr_content->value = ft_strdup(node_content->value);
+			}
+			if (node_content->value && !curr_content->value)
 			{
 				ft_putendl_fd("minishell: export: malloc fail node search", 2);
-				return (0);
+				return (del_env_node_content(node->content), free(node), 0);
 			}
-			del_env_node_content(node->content);
-			free(node);
-			return (1);
+			return (del_env_node_content(node->content), free(node), 1);
 		}
 		envp = envp->next;
 	}

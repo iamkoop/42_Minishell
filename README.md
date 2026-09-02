@@ -66,3 +66,7 @@ The volatile keyword is used to inform the compiler that the value of a variable
 Variable: rl_hook_func_t * rl_signal_event_hook
 
     If non-zero, this is the address of a function to call if a read system call is interrupted by a signal when Readline is reading terminal input. 
+
+
+## debugging
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell

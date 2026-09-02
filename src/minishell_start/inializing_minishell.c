@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/19 15:36:13 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:08:16 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ t_single_linked_node	*creating_fake_env(void)
 	t_env_var				*env_struct;
 
 	env_struct = malloc(sizeof(t_env_var));
-	env_struct->key = strdup("VAR");
-	env_struct->value = strdup("Hamster cage");
+	env_struct->key = ft_strdup("VAR");
+	env_struct->value = ft_strdup("Hamster cage");
 	return (ft_single_lstnew(env_struct));
 }
 */

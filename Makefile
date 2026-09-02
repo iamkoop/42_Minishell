@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -I -I42_Libft -MMD -Wnull-dereference
+CFLAGS = -Werror -Wall -Wextra -g -fno-omit-frame-pointer -I -I42_Libft -MMD -Wnull-dereference
 LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
@@ -101,10 +101,10 @@ re: fclean all
 # ============================================================================ #
 
 TEST_NAME   = test
-TEST_FLAGS  = -Itesting
+TEST_FLAGS  = -Itesting -DTESTING=1
 
-# 1. DEEP SEARCH: This recursively finds EVERY .c file inside testing/ and all subfolders
-TEST_SRCS   = $(shell find testing -name "*.c")
+# 1. DEEP SEARCH: Finds execution tests and main_testing.c inside testing/
+TEST_SRCS   = $(shell find testing/execution_tests -name "*.c") testing/main_testing.c
 TEST_OFILES = $(TEST_SRCS:.c=.o)
 
 # 2. UNIVERSAL RULE: Compiles ANY .o file located anywhere inside the testing/ tree.
