@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-int		ft_get_commandline_input(t_single_linked_node **env, t_minishell *mini);
+int			ft_get_commandline_input(t_single_linked_node **env, t_minishell *mini);
 static void	initiate_tokenization(char *input, t_single_linked_node **env, t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
@@ -69,6 +69,30 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 	tokenization(input, env, mini, &iteri);
 	close_heredoc_fds(mini);
 }
+/*
+int	check_for_heredoc_syntax_error(char *input, t_minishell *mini)
+{
+	int	i;
+	int	counter;
+
+	i = 0;
+	counter = 0;
+	while (input[i])
+	{
+		if (intput[i] == '<')
+		{
+			counter++;
+			while (input[i])
+			{
+				if (intput[i] == '<')
+					counter++;
+				i++;
+			}
+		}
+		i++;
+	}
+}
+*/
 
 void	reset_mini(t_minishell *mini)
 {
