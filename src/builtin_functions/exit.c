@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/09/01 16:43:06 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/02 14:33:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ static int	num_is_valid_help(char *str, int is_negative)
 	i = -1;
 	while (*str && *str == '0')
 		str++;
-	if(!*str)
-		return(1);
+	if (!*str)
+		return (1);
 	len = ft_strlen(str);
-	if(len < 19)
+	if (len < 19)
 		return (1);
 	while (str[++i])
 	{
-		if(!ft_isdigit(str[i]))
+		if (!ft_isdigit(str[i]))
 			break ;
-		if ((is_negative && (str[i] > ll_min[i])) ||
-			(!is_negative && (str[i] > ll_max[i])))
+		if ((is_negative && (str[i] > ll_min[i]))
+			|| (!is_negative && (str[i] > ll_max[i])))
 			return (0);
 	}
 	return (1);
@@ -50,15 +50,13 @@ static int	num_is_valid(char *str)
 		str++;
 	if (str[i] == '-' || str[i] == '+' || ft_isdigit(str[i]))
 		i++;
-	else
-		return(0);
-	if(!ft_isdigit(str[0]) && !str[1])
-		return(0);
+	if (i == 0 || (!ft_isdigit(str[0]) && !str[1]))
+		return (0);
 	while (str[i] && ft_isdigit(str[i]))
 		i++;
 	while (str[i])
 	{
-		if(str[i] != ' ')
+		if (str[i] != ' ')
 			return (0);
 		i++;
 	}
@@ -66,7 +64,7 @@ static int	num_is_valid(char *str)
 		is_negative = 1;
 	else
 		is_negative = 0;
-	if(str[0] == '+' || str[0] == '-')
+	if (str[0] == '+' || str[0] == '-')
 		str++;
 	return (num_is_valid_help(str, is_negative));
 }
@@ -100,13 +98,13 @@ int	builtin_exit(char **input, t_minishell	*mini)
 		{
 			exit_error_msg(input[len]);
 			mini->exit_status = 2;
-			break;
+			break ;
 		}
 		len++;
 	}
-	if(mini->exit_status == -42)
+	if (mini->exit_status == -42)
 		mini->exit_status = (unsigned char)ft_atoll(input[1]);
 	ft_putendl_fd("exit", 1);
 	mini->exe_exit = 1;
-	return(mini->exit_status);
+	return (mini->exit_status);
 }
