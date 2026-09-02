@@ -27,7 +27,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 	while (input[iteri->i])
 	{
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
-			|| input[iteri->i] == '|')
+				|| input[iteri->i] == '|')
 		{
 			if (operators1(input, *env, mini, iteri))
 				return (1);
