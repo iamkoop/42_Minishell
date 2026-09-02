@@ -12,11 +12,11 @@
 
 #include "../../minishell.h"
 
-int		ft_get_commandline_input(t_single_linked_node *env, t_minishell *mini);
+int		ft_get_commandline_input(t_single_linked_node **env, t_minishell *mini);
 static void	initiate_tokenization(char *input, t_single_linked_node **env, t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
-int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
+int	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 {
 	char	*input;
 
@@ -41,7 +41,7 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		else if (input[0])
 		{
 			add_history(input);
-			initiate_tokenization(input, &env, mini);
+			initiate_tokenization(input, env, mini);
 			free(input);
 //			delete_hd_files();
 		}

@@ -189,7 +189,7 @@ typedef struct s_minishell
 
 //beginning of minishell
 int						initializing_minishell(char **envp);
-int						get_commandline_input(t_single_linked_node *env, t_minishell *mini);
+int						get_commandline_input(t_single_linked_node **env, t_minishell *mini);
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
@@ -250,6 +250,7 @@ void	delete_hd_files();
 void    free_command_struct(t_single_linked_node *cmd_lst);
 void	close_fd(int	*fd);
 void	close_all_fds(t_minishell  *mini);
+void    free_all(t_single_linked_node *env, t_minishell *mini);
 
 // parsing
 int		initiate_parsing(t_single_linked_node **env, t_minishell *mini,

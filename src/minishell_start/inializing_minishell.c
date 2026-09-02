@@ -18,27 +18,29 @@ t_single_linked_node	*creating_fake_env(void);
 
 int	initializing_minishell(char **envp)
 {
-	t_single_linked_node	*env;
+	t_single_linked_node	**env;
+	t_single_linked_node	*env_head;
 	t_minishell				mini;
 
 	ft_bzero(&mini, sizeof(t_minishell));
 	if (!envp || !envp[0])
 	{
-		env = default_env();
-		if (!env)
+		env_head = default_env();
+		if (!env_head)
 			return (1);
 	}
 	else
 	{
-		env = env_to_lst(envp);
-		if (!env)
+		env_head = env_to_lst(envp);
+		if (!env_head)
 			return (1);
-		if (update_shell_level(env))
-			return (free_env_lst(env), 1);
+		if (update_shell_level(env_head))
+			return (free_env_lst(env_head), 1);
 	}
 //	testing_parsing(env);
+	env = &env_head;
 	get_commandline_input(env, &mini);
-	free_env_lst(env);
+	free_env_lst(*env);
 	return (mini.exit_status);
 }
 
@@ -69,7 +71,7 @@ static int	update_shell_level(t_single_linked_node *env)
 	tmp->value = curr_shlvl;
 	return (0);
 }
-
+/*
 t_single_linked_node	*creating_fake_env(void)
 {
 	t_env_var				*env_struct;
@@ -79,3 +81,4 @@ t_single_linked_node	*creating_fake_env(void)
 	env_struct->value = strdup("Hamster cage");
 	return (ft_single_lstnew(env_struct));
 }
+*/

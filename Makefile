@@ -27,7 +27,8 @@ FORK_MANAGEMENT = src/fork_management/redirections.c \
 CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
 				src/err_and_cleanup_funcs/free_env_lst.c \
 				src/err_and_cleanup_funcs/close_all_fds.c \
-				src/err_and_cleanup_funcs/exec_err_msg.c
+				src/err_and_cleanup_funcs/exec_err_msg.c \
+				src/err_and_cleanup_funcs/free_all.c
 
 EXEC_MAIN = src/exec_main.c
 
