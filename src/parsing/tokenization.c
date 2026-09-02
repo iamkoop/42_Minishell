@@ -27,7 +27,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 	while (input[iteri->i])
 	{
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
-			|| input[iteri->i] == '|')
+				|| input[iteri->i] == '|')
 		{
 			if (operators1(input, *env, mini, iteri))
 				return (1);
@@ -45,7 +45,8 @@ int	tokenization(char *input, t_single_linked_node **env,
 		}
 		iteri->i++;
 	}
-	delimit_token(input, *env, mini, iteri);
+	if (delimit_token(input, *env, mini, iteri))
+				return (1);
 //	tokenization_testing(token_lst, env);
 	if(initiate_parsing(env, mini, iteri))
 		return (1);
@@ -73,7 +74,10 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 			return (1);
 		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
 			|| input[iteri->i + 1] == '|')
-			delimit_token(input, env, mini, iteri);
+		{
+			if (delimit_token(input, env, mini, iteri))
+				return (1);
+		}
 		return (0);
 	}
 	else

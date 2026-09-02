@@ -25,4 +25,5 @@ void    free_env_lst(t_single_linked_node *env)
 		free(curr_node);
 		curr_node = next_node;
 	}
+	env = NULL;
 }

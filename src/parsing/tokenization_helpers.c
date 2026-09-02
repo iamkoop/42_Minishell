@@ -49,7 +49,8 @@ int	delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
 		&& (iteri->tok - 2)->token_type == HERE_DOC)
 	{
 		printf("Heredoc entered\n");
-		here_doc(input, env, mini, iteri);
+		if (here_doc(input, env, mini, iteri))
+			return (1);
 	}
 	return (0);
 }

@@ -27,18 +27,20 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 
 	while (42)
 	{
-		heredoc_input = readline("> ");
+		write(STDERR_FILENO, "> ", 2);
+		heredoc_input = get_next_line(STDIN_FILENO);
 		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
 			g_signal = 0;
+			write(1, "\n", 1);
             free(heredoc_input);
 			return (1);
 		}
 		if (!heredoc_input)
 			return (error("warning: here-document delimited by end-of-file "
 						"instead of delimiter"), 0);
-		if (!ft_strncmp(delimiter, heredoc_input, HD_DELIMITER_LEN))
+		if (!ft_strcmp(delimiter, heredoc_input))
 			return (free(heredoc_input), 0);
 		if (expansion)
 		{
@@ -82,8 +84,8 @@ static int	write_heredoc_line(char *heredoc_input, int fd)
 	
 	if (ft_write(fd, heredoc_input, ft_strlen(heredoc_input)))
 		return (1);
-	if (ft_write(fd, "\n", 1))
-		return (1);
+	//if (ft_write(fd, "\n", 1))
+	//	return (1);
 	return (0);
 }
 

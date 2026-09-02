@@ -1,34 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   del_env_node_content.c                             :+:      :+:    :+:   */
+/*   free_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/22 18:54:48 by nilsdruon        ###   ########.fr       */
+/*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
+/*   Updated: 2026/08/21 18:53:40 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void del_env_node_content(void	*content)
+void    free_all(t_single_linked_node *env, t_minishell *mini)
 {
-	t_env_var *node;
-
-	node = (t_env_var	*)content;
-	if(!content)
-		return	;
-	if (node->key)
-	{
-		free(node->key);
-		node->key = NULL;
-	}
-	if (node->value)
-	{
-		free(node->value);
-		node->value = NULL;
-	}
-	free(node);
-	node = NULL;
+    free_command_struct(mini->cmd_lst);
+    free_env_lst(env);
 }

@@ -12,29 +12,31 @@
 
 #include "../../minishell.h"
 
-int		ft_get_commandline_input(t_single_linked_node *env, t_minishell *mini);
+int		ft_get_commandline_input(t_single_linked_node **env, t_minishell *mini);
 static void	initiate_tokenization(char *input, t_single_linked_node **env, t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
-int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
+int	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 {
 	char	*input;
 
+	rl_outstream = stderr;
 	while (42)
 	{
 		if(mini->exe_exit)
 		{
-			ft_single_lstclear(&env, del_env_node_content);
+			ft_single_lstclear(env, del_env_node_content);
 			rl_clear_history();
 			exit(mini->exit_status);
 		}
-		input = readline("Minishell> ");
+		if(isatty(STDIN_FILENO))
+            input = readline("Minishell> ");
+        else
+            input = readline(NULL);
 		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
 			g_signal = 0;
-            //free(input);
-			//continue ;
 		}
 		if (!input)
 		{
@@ -45,12 +47,15 @@ int	get_commandline_input(t_single_linked_node *env, t_minishell *mini)
 		else if (input[0])
 		{
 			add_history(input);
-			initiate_tokenization(input, &env, mini);
+			initiate_tokenization(input, env, mini);
 			free(input);
 //			delete_hd_files();
 		}
 	}
 }
+
+// Without isatty it would print exit even when the input comes through a pipe
+// or is read from a file. But it should only do it when ctrl+d is pressed.
 
 static void	initiate_tokenization(char *input, t_single_linked_node **env,
 			t_minishell *mini)
@@ -62,6 +67,7 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 	arena_init_all(mini);
 	start_first_token(mini, &iteri);
 	tokenization(input, env, mini, &iteri);
+	close_heredoc_fds(mini);
 }
 
 void	reset_mini(t_minishell *mini)

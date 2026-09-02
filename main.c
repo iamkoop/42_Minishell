@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 
 	ft_bzero(&c, sizeof(struct sigaction));
 	c.sa_handler = handler_c;
-	c.sa_flags = SA_RESTART;
+	//c.sa_flags = SA_RESTART;
 	sigemptyset(&c.sa_mask);
 	if (sigaction(SIGINT, &c, NULL))
 		return (perror("minishell: SIGINT failed"), 1);
