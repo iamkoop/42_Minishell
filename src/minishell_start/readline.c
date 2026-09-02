@@ -23,16 +23,16 @@ int	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 	rl_outstream = stderr;
 	while (42)
 	{
+		if(mini->exe_exit)
+		{
+			ft_single_lstclear(env, del_env_node_content);
+			rl_clear_history();
+			exit(mini->exit_status);
+		}
 		if(isatty(STDIN_FILENO))
             input = readline("Minishell> ");
         else
             input = readline(NULL);
-		if(mini->exe_exit)
-		{
-			ft_single_lstclear(&env, del_env_node_content);
-			rl_clear_history();
-			exit(mini->exit_status);
-		}
 		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
