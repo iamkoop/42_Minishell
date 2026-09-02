@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/27 16:56:51 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static int	prepare_delimiter(char *delimiter, t_token_iteri *iteri,
 		return (1);
 	}
 	ft_strlcpy(delimiter, (iteri->tok - 1)->token_str, len +1);
-	if (strchr(delimiter, '\"') || strchr(delimiter, '\''))
+	if (ft_strchr(delimiter, '\"') || ft_strchr(delimiter, '\''))
 		quote_removal(delimiter);
 	else
 		*expansion = true;
@@ -103,7 +103,7 @@ static int	heredoc_filename_creation(char *filename, char *input,
 	char		*start;
 
 	start = ".hd/File_";
-	memcpy(filename, start, 9);
+	ft_memcpy(filename, start, 9);
 	if (num > 99)
 	{
 		error("limit of amount of heredocs reached");

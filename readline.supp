@@ -1,0 +1,32 @@
+{
+   ignore_readline_leaks
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:readline
+   ...
+}
+{
+   ignore_add_history_leaks
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   fun:add_history
+   ...
+}
+{
+   ignore_libreadline
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   obj:*/libreadline.so*
+   ...
+}
+{
+   ignore_libhistory
+   Memcheck:Leak
+   match-leak-kinds: reachable,definite,indirect,possible
+   ...
+   obj:*/libhistory.so*
+   ...
+}

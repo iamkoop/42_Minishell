@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 01:35:58 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/01 16:43:06 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,21 @@ static int	num_is_valid_help(char *str, int is_negative)
 	int		len;
 
 	ll_max = "9223372036854775807";
-	ll_min = "-9223372036854775808";
+	ll_min = "9223372036854775808";
 	i = -1;
-	if (is_negative)
-		i++;
+	while (*str && *str == '0')
+		str++;
+	if(!*str)
+		return(1);
 	len = ft_strlen(str);
-	if ((!is_negative && len < 19) || (is_negative && len < 20))
+	if(len < 19)
 		return (1);
 	while (str[++i])
 	{
-		if (is_negative && (str[i] > ll_min[i]))
-			return (0);
-		if (!is_negative && (str[i] > ll_max[i]))
+		if(!ft_isdigit(str[i]))
+			break ;
+		if ((is_negative && (str[i] > ll_min[i])) ||
+			(!is_negative && (str[i] > ll_max[i])))
 			return (0);
 	}
 	return (1);
@@ -43,21 +46,32 @@ static int	num_is_valid(char *str)
 	int	is_negative;
 
 	i = 0;
-	if (str[i] == '-')
+	while (*str && *str == ' ')
+		str++;
+	if (str[i] == '-' || str[i] == '+' || ft_isdigit(str[i]))
+		i++;
+	else
+		return(0);
+	if(!ft_isdigit(str[0]) && !str[1])
+		return(0);
+	while (str[i] && ft_isdigit(str[i]))
 		i++;
 	while (str[i])
 	{
-		if (!ft_isalnum(str[i++]))
+		if(str[i] != ' ')
 			return (0);
+		i++;
 	}
 	if (str[0] == '-')
 		is_negative = 1;
 	else
 		is_negative = 0;
+	if(str[0] == '+' || str[0] == '-')
+		str++;
 	return (num_is_valid_help(str, is_negative));
 }
 
-static void	error_msg(char *arg)
+static void	exit_error_msg(char *arg)
 {
 	ft_putstr_fd("minishell: exit: ", 2);
 	if (arg)
@@ -69,27 +83,30 @@ static void	error_msg(char *arg)
 		ft_putendl_fd("too many arguments", 2);
 }
 
-void	builtin_exit(char **input)
+int	builtin_exit(char **input, t_minishell	*mini)
 {
 	int	len;
 
-	len = 0;
-	ft_putendl_fd("exit", 1);
+	mini->exit_status = -42;
+	mini->exe_exit = 1;
 	if (!input[1])
-		exit(0);
+		mini->exit_status = 0;
 	len = 1;
 	while (input[len])
 	{
 		if (len > 1)
-		{
-			error_msg(NULL);
-		}
+			return (exit_error_msg(NULL), 1);
 		if (!num_is_valid(input[len]))
 		{
-			error_msg(input[len]);
-			exit(2);
+			exit_error_msg(input[len]);
+			mini->exit_status = 2;
+			break;
 		}
 		len++;
 	}
-	exit((unsigned char) ft_atoll(input[1]));
+	if(mini->exit_status == -42)
+		mini->exit_status = (unsigned char)ft_atoll(input[1]);
+	ft_putendl_fd("exit", 1);
+	mini->exe_exit = 1;
+	return(mini->exit_status);
 }

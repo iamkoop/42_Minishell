@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 01:23:00 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 14:51:33 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/08/30 17:13:59 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static int	update_env(char *pwd, char *to_find, t_single_linked_node *envp)
 		if (!new_node)
 			return (free(new_env_var), del_env_node_content(tmp), 0);
 		ft_lstadd_back_single_linked(&envp, new_node);
+		free(new_env_var);
 		return (1);
 	}
 	free(tmp->value);
