@@ -67,7 +67,7 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 	arena_init_all(mini);
 	start_first_token(mini, &iteri);
 	tokenization(input, env, mini, &iteri);
-	close_heredoc_fds(mini);
+	// close_heredoc_fds(mini);
 }
 /*
 int	check_for_heredoc_syntax_error(char *input, t_minishell *mini)

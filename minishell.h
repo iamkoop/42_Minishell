@@ -236,15 +236,17 @@ int		redirections(char *input, t_single_linked_node *env,
 			t_minishell *mini, t_token_iteri *iteri);
 int		start_first_token(t_minishell *mini, t_token_iteri *iteri);
 int		add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
-int		delimit_token(char *input, t_single_linked_node *env, t_minishell *mini,
-				t_token_iteri *iteri);
+int		delimit_token(t_minishell *mini, t_token_iteri *iteri);
 
 //here_doc
 char	*quote_removal(char *delimiter);
-int		here_doc(char *input, t_single_linked_node *env, t_minishell *mini,
-			t_token_iteri *iteri);
+int		here_doc(t_single_linked_node *env, t_minishell *mini,
+			t_redir_list *redir_content);
 int		adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
-				t_single_linked_node *env);
+			t_single_linked_node *env);
+int		check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
+        t_single_linked_node **env);
+
 //error and exit functions
 void	error(char *message);
 void	delete_hd_files();
@@ -282,7 +284,7 @@ int		add_to_word(char c, t_minishell *mini, t_quote_iteri *iteri);
 int		delimit_word_array(t_minishell *mini, t_quote_iteri *iteri);
 
 //TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void    	tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
+void    tokenization_testing(t_token_node *token_lst, t_single_linked_node *env);
 void    printing_struct_content(t_cmd_data *cmd_data);
 void    main_testing(char **argv, char **env);
 void    testing_parsing(t_single_linked_node *env);

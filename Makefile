@@ -48,6 +48,7 @@ PARSING = src/parsing/tokenization.c \
 		  src/parsing/heredoc.c \
 		  src/parsing/heredoc_reading_writing.c \
 		  src/parsing/heredoc_quote_removal.c \
+		  src/parsing/heredoc_checker.c \
 		  src/parsing/error.c \
 		  src/parsing/delete_heredocs.c \
 		  src/parsing/free_command_struct.c \

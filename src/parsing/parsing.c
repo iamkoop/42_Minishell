@@ -67,6 +67,8 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 		iteri->tok++;
 	}
 //	printing_struct_content(cmd_data);
+	if (check_for_heredoc(mini, cmd_data, env))
+		return (1);
 	exec_main(mini, cmd_data->head, env);
 	return (0);
 }
