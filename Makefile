@@ -59,7 +59,10 @@ PARSING = src/parsing/tokenization.c \
 		  src/parsing/quote_removal_var_expansion.c \
 		  src/parsing/var_expansion_dollar_found.c \
 		  src/parsing/find_var_and_expand.c \
-		  src/parsing/qrve_helpers.c
+		  src/parsing/qrve_helpers.c \
+		  testing/parsing_tests/printing_struct_content.c
+
+############ delete ^ ######################################
 
 CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA)
 OFILES = $(CFILES:.c=.o)

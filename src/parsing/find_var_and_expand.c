@@ -47,13 +47,14 @@ static int	variable_expansion(t_minishell *mini,
 	int	i;
 
 	i = 0;
+	iteri->has_char = true;
 	while (tmp_content->value && tmp_content->value[i])
 	{
 		if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
 			|| tmp_content->value[i] == '\n') && iteri->quoted == false
 			&& iteri->heredoc == false)
 		{
-			if (iteri->has_char == true)
+			if (iteri->has_char == true && iteri->str_pos != 0)
 			{
 				if (field_splitting(mini, iteri))
 					return (1);

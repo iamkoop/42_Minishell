@@ -89,12 +89,6 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 	}
 	return (0);
 }
-/*
-int	is_eof()
-{
-	
-}
-*/
 
 static int	var_expansion(char **heredoc_input,
 				t_minishell *mini,

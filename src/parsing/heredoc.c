@@ -32,7 +32,7 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
 	if (prepare_delimiter(delimiter, redir_content, &expansion))
 		return (1);
-	filename = ".hd/tmpfile";
+	filename = "/tmp/tmp.JuvA2Vpt5q";
 //	if (heredoc_filename_creation(filename, input, iteri))
 //		return (1);
 //	mini->heredoc_write_fd = open(".", O_TMPFILE | O_WRONLY |
@@ -40,11 +40,11 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY |
 		O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (mini->heredoc_write_fd == -1)
-		return (perror(NULL), 1);
+		return (perror("minshell"), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (unlink(filename), close(mini->heredoc_write_fd), 1);
 	if (creating_read_fd(filename, redir_content, mini))
-		return (close(mini->heredoc_write_fd), 1);
+		return (unlink(filename), close(mini->heredoc_write_fd), 1);
 	close(mini->heredoc_write_fd);
 	unlink(filename);
 	return (0);
