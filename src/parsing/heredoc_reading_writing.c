@@ -24,10 +24,16 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env)
 {
 	char	*heredoc_input;
+	char	*eof_input;
+	char	*tmp;
+	bool	eof_nonempty_line;
 
+	eof_nonempty_line = false;
+	eof_input = NULL;
 	while (42)
 	{
-		write(STDERR_FILENO, "> ", 2);
+		if(isatty(STDIN_FILENO) && eof_nonempty_line == false)
+			write(STDERR_FILENO, "> ", 2);
 		heredoc_input = get_next_line(STDIN_FILENO);
 		if (g_signal == SIGINT)
 		{
@@ -35,11 +41,41 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			g_signal = 0;
 			write(1, "\n", 1);
             free(heredoc_input);
+			free(eof_input);
 			return (1);
 		}
-		if (!heredoc_input)
-			return (error("warning: here-document delimited by end-of-file "
-						"instead of delimiter"), 0);
+		if (!heredoc_input && eof_nonempty_line == false)
+			return (write(2, "\nminishell: warning: here-document delimited by end-of-file "
+						"instead of delimiter\n", 81), 0);
+		if (!heredoc_input && eof_nonempty_line == true)
+				continue ;
+		if (heredoc_input[ft_strlen(heredoc_input) - 1] != '\n')
+		{
+			if (eof_input)
+			{
+				tmp = eof_input;
+				eof_input = ft_strjoin(tmp, heredoc_input);
+				free(tmp);
+				free(heredoc_input);
+				heredoc_input = NULL;
+			}
+			else
+			{
+				eof_input = heredoc_input;
+				heredoc_input = NULL;
+			}
+			eof_nonempty_line = true;
+			continue ;
+		}
+		if (eof_input)
+		{
+			tmp = heredoc_input;
+			heredoc_input = ft_strjoin(eof_input, tmp);
+			free(tmp);
+			free(eof_input);
+			eof_input = NULL;
+			eof_nonempty_line = false;
+		}
 		if (!ft_strcmp(delimiter, heredoc_input))
 			return (free(heredoc_input), 0);
 		if (expansion)
@@ -53,6 +89,12 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 	}
 	return (0);
 }
+/*
+int	is_eof()
+{
+	
+}
+*/
 
 static int	var_expansion(char **heredoc_input,
 				t_minishell *mini,
