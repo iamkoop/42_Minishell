@@ -29,7 +29,7 @@ int	initiate_parsing(t_single_linked_node **env,
 
 	cmd = ft_calloc(1, sizeof(t_command));
 	if (!cmd)
-		return (1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	cmd_data.head = ft_single_lstnew(cmd);
 	if (!cmd_data.head)
 		return (free(cmd), 1);
@@ -57,8 +57,10 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 			is_redir = 1;
 		}
 		if (is_syntax_error(&mini->arena_tokens, iteri))
+		{
 			return (mini->exit_status = 2,
 				error("syntax error unexpected token"), 1);
+		}
 		if (!is_redir)
 		{
 			if (word_or_pipe(*env, mini, iteri, cmd_data))
@@ -117,7 +119,7 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 			return (1);
 		if (add_word_to_struct(cmd_data, mini))
 		{
-			perror("minishell: Malloc for argv in parsing failed");
+			perror("minishell: malloc for argv in parsing failed");
 			mini->exit_status = 1;
 			return (1);
 		}
@@ -125,7 +127,7 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 	else if (iteri->tok->token_type == PIPE)
 	{
 		if (delimit_command(cmd_data))
-			return (1);
+			return (mini->exit_status = 1, 1);
 	}
 	return (0);
 }
@@ -137,7 +139,7 @@ static int	delimit_command(t_cmd_data *cmd_data)
 
 	new_cmd = ft_calloc(1, sizeof(t_command));
 	if (!new_cmd)
-		return (1);
+		return (perror("minishell: malloc failed"), 1);
 	new_node_ptr = ft_single_lstnew(new_cmd);
 	if (!new_node_ptr)
 		return (1);

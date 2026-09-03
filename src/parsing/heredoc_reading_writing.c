@@ -58,7 +58,7 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				eof_input = ft_strjoin(tmp, heredoc_input);
 				if (!eof_input)
 				{
-					return (mini->exit_status = 1, perror("malloc failure"),
+					return (mini->exit_status = 1, perror("minishell: malloc failure"),
 						free(tmp), free(heredoc_input), 1);
 				}
 				free(tmp);
@@ -79,7 +79,7 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			heredoc_input = NULL;
 			heredoc_input = ft_strjoin(eof_input, tmp);
 			if (!heredoc_input)
-				return (mini->exit_status = 1, perror("malloc failure"),
+				return (mini->exit_status = 1, perror("minishell: malloc failure"),
 					free(tmp), free(eof_input), 1);
 			free(tmp);
 			free(eof_input);
@@ -118,7 +118,7 @@ static int	var_expansion(char **heredoc_input,
 	assert(word[1] == NULL); 
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
-		return (1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	ft_strlcpy(tmp_heredoc_input, word[0], ft_strlen(word[0]) + 1);
 	free(*heredoc_input);
 	*heredoc_input = tmp_heredoc_input;

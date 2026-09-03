@@ -45,7 +45,7 @@ int	redirect(t_single_linked_node *env,
 	tmp_cmd = (t_command *)cmd_data->tail->content;
 	curr_redir = ft_calloc(1, sizeof(t_redir_list));
 	if (!curr_redir)
-		return (1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	redir_type_assignment(curr_redir, iteri);
 	if (add_redir_to_struct(env, iteri, curr_redir, mini))
 		return (1);
@@ -88,7 +88,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		curr_redir->filename = iteri->tok->token_str;
 		curr_redir->filename = ft_calloc(1, ft_strlen(iteri->tok->token_str) + 1);
 		if (!curr_redir->filename)
-			return (1);
+			return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 		ft_strlcpy(curr_redir->filename, iteri->tok->token_str,
 			ft_strlen(iteri->tok->token_str) + 1);
 		curr_redir->fd = -42;
@@ -102,7 +102,10 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 			return (error("ambiguous redirect"), mini->exit_status = 1, 1);
 		curr_redir->filename = ft_calloc(1, ft_strlen(word[0]) + 1);
 		if (!curr_redir->filename)
-			return (1);
+		{
+			return (perror("minishell: malloc failed"),
+				mini->exit_status = 1, 1);
+		}
 		ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
 		curr_redir->fd = -42;
 	}
