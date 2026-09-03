@@ -112,13 +112,13 @@ static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
 	exv.exit_status = mini->exit_status;
 	if (iteri->tok->token_type == WORD)
 	{
-//		printf("word before quote removal: %s\n", iteri->tok->token_str);
 		if (quote_rm_var_expan(iteri->tok->token_str, mini, env,
 				&exv))
 			return (1);
 		if (add_word_to_struct(cmd_data, mini))
 		{
 			perror("minishell: Malloc for argv in parsing failed");
+			mini->exit_status = 1;
 			return (1);
 		}
 	}

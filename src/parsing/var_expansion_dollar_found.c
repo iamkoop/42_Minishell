@@ -98,7 +98,7 @@ static int	dollar_questionmark(t_minishell *mini,
 
 	exit_status_word = ft_itoa(iteri->exit_status);
 	if (!exit_status_word)
-		return (perror("minishell: malloc for exit status failed"), 1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	i = 0;
 	while (exit_status_word[i])
 	{

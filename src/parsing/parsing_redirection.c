@@ -79,14 +79,12 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 	t_quote_iteri   exv;
 	char			**word;
 
-
 	init_qrve_arena(mini);
 	ft_bzero(&exv, sizeof(t_quote_iteri));
 	start_first_word(mini, &exv);
 	word = (char **)&mini->arena_split_tokens.data;
 	if ((iteri->tok - 1)->token_type == HERE_DOC)
 	{
-
 		curr_redir->filename = iteri->tok->token_str;
 		curr_redir->filename = ft_calloc(1, ft_strlen(iteri->tok->token_str) + 1);
 		if (!curr_redir->filename)
@@ -94,9 +92,6 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		ft_strlcpy(curr_redir->filename, iteri->tok->token_str,
 			ft_strlen(iteri->tok->token_str) + 1);
 		curr_redir->fd = -42;
-//		curr_redir->fd = iteri->tok->hd_fd;
-//		printf("heredoc fd in parsing: %d\n", curr_redir->fd);
-//		printf("redir type in parsing: %d\n", curr_redir->redir_type);
 	}
 	else
 	{
@@ -104,7 +99,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 			&exv))
 			return (1);
 		if (word[1] != NULL)
-			return (error("ambiguous redirect"), 1);
+			return (error("ambiguous redirect"), mini->exit_status = 1, 1);
 		curr_redir->filename = ft_calloc(1, ft_strlen(word[0]) + 1);
 		if (!curr_redir->filename)
 			return (1);

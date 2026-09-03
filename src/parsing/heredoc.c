@@ -40,7 +40,7 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY |
 		O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (mini->heredoc_write_fd == -1)
-		return (perror("minshell"), 1);
+		return (perror("minshell: open heredoc failed"), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (unlink(filename), close(mini->heredoc_write_fd), 1);
 	if (creating_read_fd(filename, redir_content, mini))
@@ -62,10 +62,8 @@ static int	creating_read_fd(char *filename, t_redir_list *redir_content,
 	(void)mini;
 	read_fd = open((const char *) filename, O_RDONLY);
 	if (read_fd == -1)
-		return (unlink(filename), perror(NULL), 1);
+		return (unlink(filename), perror("minishell: open heredoc failed"), 1);
 	redir_content->fd = read_fd;
-//	printf("token str -1: %s\n", (iteri->tok - 1)->token_str);
-//	printf("token hd_fd -1: %d\n", (iteri->tok - 1)->hd_fd);
 	return (0);
 }
 /*

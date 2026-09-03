@@ -94,7 +94,7 @@ int	add_char(t_minishell *mini, char *s,
 
 	arena_split_strings = &mini->arena_split_strings;
 	if(!grow_arena_element(arena_split_strings, 1))
-		return (1);
+		return (mini->exit_status = 1, 1);
 	iteri->field[0][iteri->str_pos] = s[iteri->i];
 	iteri->str_pos++;
 	iteri->i++;

@@ -54,7 +54,13 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			if (eof_input)
 			{
 				tmp = eof_input;
+				eof_input = NULL;
 				eof_input = ft_strjoin(tmp, heredoc_input);
+				if (!eof_input)
+				{
+					return (mini->exit_status = 1, perror("malloc failure"),
+						free(tmp), free(heredoc_input), 1);
+				}
 				free(tmp);
 				free(heredoc_input);
 				heredoc_input = NULL;
@@ -70,7 +76,11 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 		if (eof_input)
 		{
 			tmp = heredoc_input;
+			heredoc_input = NULL;
 			heredoc_input = ft_strjoin(eof_input, tmp);
+			if (!heredoc_input)
+				return (mini->exit_status = 1, perror("malloc failure"),
+					free(tmp), free(eof_input), 1);
 			free(tmp);
 			free(eof_input);
 			eof_input = NULL;
@@ -81,10 +91,10 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 		if (expansion)
 		{
 			if (var_expansion(&heredoc_input, mini, env))
-				return (free(heredoc_input), 1);
+				return (free(heredoc_input), mini->exit_status = 1, 1);
 		}
 		if (write_heredoc_line(heredoc_input, mini->heredoc_write_fd))
-			return (free(heredoc_input), 1);
+			return (free(heredoc_input), mini->exit_status = 1, 1);
 		free(heredoc_input);
 	}
 	return (0);

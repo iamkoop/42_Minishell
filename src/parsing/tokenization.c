@@ -82,7 +82,7 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 		return (0);
 	}
 	else
-		return (error("Quotation not closed"), 1);
+		return (error("Quotation not closed"), mini->exit_status = 2, 1);
 }
 
 static int	space_or_word(char *input, t_single_linked_node *env,

@@ -83,7 +83,7 @@ static int	field_splitting(t_minishell *mini,
 	add_to_word(0, mini, iteri);
 	iteri->field = get_arena_element_start(arena_split_tokens);
 	if(!grow_arena_element(arena_split_tokens, sizeof(char *)))
-		return (1);
+		return (mini->exit_status = 1, 1);
 	iteri->field[0] = get_arena_element_start(arena_split_strings);
 	iteri->split_count++;
 	iteri->str_pos = 0;
@@ -103,7 +103,7 @@ static int	add_variable_char(t_minishell *mini,
 
 	arena_split_strings = &mini->arena_split_strings;
 	if(!grow_arena_element(arena_split_strings, 1))
-		return (1);
+		return (mini->exit_status = 1, 1);
 	iteri->field[0][iteri->str_pos] = tmp_content->value[i];
 	iteri->str_pos++;
 	return (0);
