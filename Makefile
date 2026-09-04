@@ -34,8 +34,6 @@ CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
 
 EXEC_MAIN = src/exec_main.c
 
-ARENA = src/arena/arena.c
-
 MAIN = main.c
 
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)
@@ -43,10 +41,13 @@ EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) 
 START = src/minishell_start/inializing_minishell.c \
 		src/minishell_start/readline.c
 
-PARSING = src/parsing/tokenization.c \
-		  src/parsing/tokenization_operators.c \
-		  src/parsing/tokenization_helpers.c \
-		  src/parsing/heredoc.c \
+ARENA = src/arena/arena.c
+
+TOKENIZATION =	src/tokenization/tokenization.c \
+				src/tokenization/tokenization_operators.c \
+				src/tokenization/tokenization_helpers.c
+
+PARSING = src/parsing/heredoc.c \
 		  src/parsing/heredoc_reading_writing.c \
 		  src/parsing/heredoc_quote_removal.c \
 		  src/parsing/heredoc_checker.c \
@@ -62,7 +63,7 @@ PARSING = src/parsing/tokenization.c \
 
 ############ delete ^ ######################################
 
-CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA)
+CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION)
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 
