@@ -252,6 +252,8 @@ int		here_doc(t_single_linked_node *env, t_minishell *mini,
 			t_redir_list *redir_content);
 int		adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			t_single_linked_node *env);
+int		expand_n_write(t_heredoc_data *hd_data,
+				t_minishell *mini, t_single_linked_node *env);
 int		check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
         t_single_linked_node **env);
 

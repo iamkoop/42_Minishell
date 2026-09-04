@@ -60,7 +60,8 @@ PARSING = src/parsing/parsing.c \
 ############ delete ^ ######################################
 
 HEREDOC =	src/heredoc/heredoc.c \
-			src/heredoc/heredoc_reading_writing.c \
+			src/heredoc/heredoc_reading_writing1.c \
+			src/heredoc/heredoc_reading_writing2.c \
 			src/heredoc/heredoc_quote_removal.c \
 			src/heredoc/heredoc_checker.c
 
