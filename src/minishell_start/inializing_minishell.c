@@ -37,7 +37,6 @@ int	initializing_minishell(char **envp)
 		if (update_shell_level(env_head))
 			return (free_env_lst(env_head), 1);
 	}
-//	testing_parsing(env);
 	env = &env_head;
 	get_commandline_input(env, &mini);
 	free_env_lst(*env);
@@ -71,14 +70,3 @@ static int	update_shell_level(t_single_linked_node *env)
 	tmp->value = curr_shlvl;
 	return (0);
 }
-/*
-t_single_linked_node	*creating_fake_env(void)
-{
-	t_env_var				*env_struct;
-
-	env_struct = malloc(sizeof(t_env_var));
-	env_struct->key = ft_strdup("VAR");
-	env_struct->value = ft_strdup("Hamster cage");
-	return (ft_single_lstnew(env_struct));
-}
-*/

@@ -12,49 +12,69 @@
 
 #include "../../minishell.h"
 
-int			ft_get_commandline_input(t_single_linked_node **env, t_minishell *mini);
-static void	initiate_tokenization(char *input, t_single_linked_node **env, t_minishell *mini);
+void		ft_get_commandline_input(t_single_linked_node **env,
+				t_minishell *mini);
+static void	put_prompt_get_line(char **input);
+static int	handle_input(t_single_linked_node **env, t_minishell *mini,
+				char *input);
+static void	initiate_tokenization(char *input, t_single_linked_node **env,
+				t_minishell *mini);
 void		reset_mini(t_minishell *mini);
 
-int	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
+void	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 {
 	char	*input;
 
 	rl_outstream = stderr;
 	while (42)
 	{
-		if(mini->exe_exit)
+		if (mini->exe_exit)
 		{
 			ft_single_lstclear(env, del_env_node_content);
 			rl_clear_history();
 			exit(mini->exit_status);
 		}
-		if(isatty(STDIN_FILENO))
-            input = readline("Minishell> ");
-        else
-            input = readline(NULL);
+		put_prompt_get_line(&input);
 		if (g_signal == SIGINT)
 		{
 			mini->exit_status = 130;
 			g_signal = 0;
 		}
-		if (!input)
+		if (handle_input(env, mini, input))
 		{
-			if (isatty(STDIN_FILENO))
-				write(2, "exit\n", 5);
-			return (0);
-		}
-		else if (input[0])
-		{
-			add_history(input);
-			initiate_tokenization(input, env, mini);
-			free(input);
+//			mini->exit_status = 0;
+			return ;
 		}
 	}
 }
-
 // Without isatty it would print exit even when the input comes through a pipe
 // or is read from a file. But it should only do it when ctrl+d is pressed.
+
+static void	put_prompt_get_line(char **input)
+{
+	if (isatty(STDIN_FILENO))
+		*input = readline("Minishell> ");
+	else
+		*input = readline(NULL);
+}
+
+static int	handle_input(t_single_linked_node **env, t_minishell *mini,
+				char *input)
+{
+	if (!input)
+	{
+		if (isatty(STDIN_FILENO))
+			write(2, "exit\n", 5);
+		return (1);
+	}
+	else if (input[0])
+	{
+		add_history(input);
+		initiate_tokenization(input, env, mini);
+		free(input);
+	}
+	return (0);
+}
 
 static void	initiate_tokenization(char *input, t_single_linked_node **env,
 			t_minishell *mini)
@@ -66,7 +86,6 @@ static void	initiate_tokenization(char *input, t_single_linked_node **env,
 	arena_init_all(mini);
 	start_first_token(mini, &iteri);
 	tokenization(input, env, mini, &iteri);
-	// close_heredoc_fds(mini);
 }
 
 void	reset_mini(t_minishell *mini)
