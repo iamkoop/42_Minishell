@@ -47,11 +47,7 @@ TOKENIZATION =	src/tokenization/tokenization.c \
 				src/tokenization/tokenization_operators.c \
 				src/tokenization/tokenization_helpers.c
 
-PARSING = src/parsing/heredoc.c \
-		  src/parsing/heredoc_reading_writing.c \
-		  src/parsing/heredoc_quote_removal.c \
-		  src/parsing/heredoc_checker.c \
-		  src/parsing/parsing.c \
+PARSING = src/parsing/parsing.c \
 		  src/parsing/parsing_redirection.c \
 		  src/parsing/parsing_word.c \
 		  src/parsing/parsing_helpers.c \
@@ -63,7 +59,12 @@ PARSING = src/parsing/heredoc.c \
 
 ############ delete ^ ######################################
 
-CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION)
+HEREDOC =	src/heredoc/heredoc.c \
+			src/heredoc/heredoc_reading_writing.c \
+			src/heredoc/heredoc_quote_removal.c \
+			src/heredoc/heredoc_checker.c
+
+CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION) $(HEREDOC)
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 
