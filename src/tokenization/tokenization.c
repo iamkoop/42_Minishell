@@ -12,10 +12,10 @@
 
 #include "../../minishell.h"
 
-int		tokenization(char *input, t_single_linked_node **env,
+int			tokenization(char *input, t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
-static int	quotation_mode(char *input, t_single_linked_node *env,
-				t_minishell *mini, t_token_iteri *iteri);
+static int	quotation_mode(char *input, t_minishell *mini,
+				t_token_iteri *iteri);
 static int	space_or_word(char *input, t_single_linked_node *env,
 				t_minishell *mini, t_token_iteri *iteri);
 static int	word(char *input, t_single_linked_node *env,
@@ -27,7 +27,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 	while (input[iteri->i])
 	{
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
-				|| input[iteri->i] == '|')
+			|| input[iteri->i] == '|')
 		{
 			if (operators1(input, *env, mini, iteri))
 				return (1);
@@ -35,33 +35,28 @@ int	tokenization(char *input, t_single_linked_node **env,
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
 		{
 			iteri->tok->token_type = WORD;
-			if (quotation_mode(input, *env, mini, iteri))
+			if (quotation_mode(input, mini, iteri))
 				return (1);
 		}
-		else
-		{
-			if (space_or_word(input, *env, mini, iteri))
-				return (1);
-		}
+		else if (space_or_word(input, *env, mini, iteri))
+			return (1);
 		iteri->i++;
 	}
 	if (delimit_token(mini, iteri))
-				return (1);
-//	tokenization_testing(token_lst, env);
-	if(initiate_parsing(env, mini, iteri))
+		return (1);
+	if (initiate_parsing(env, mini, iteri))
 		return (1);
 	return (0);
 }
 
-static int	quotation_mode(char *input, t_single_linked_node *env,
-		t_minishell *mini, t_token_iteri *iteri)
+static int	quotation_mode(char *input, t_minishell *mini,
+				t_token_iteri *iteri)
 {
 	char	c;
 
-	(void)env;
 	c = input[iteri->i];
 	if (add_to_token(input[iteri->i], mini, iteri))
-			return (1);
+		return (1);
 	iteri->i++;
 	while (input[iteri->i] != c && input[iteri->i] != 0)
 	{
@@ -69,20 +64,17 @@ static int	quotation_mode(char *input, t_single_linked_node *env,
 			return (1);
 		iteri->i++;
 	}
-	if (input[iteri->i] == c)
-	{
-		if (add_to_token(input[iteri->i], mini, iteri))
-			return (1);
-		if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
-			|| input[iteri->i + 1] == '|')
-		{
-			if (delimit_token(mini, iteri))
-				return (1);
-		}
-		return (0);
-	}
-	else
+	if (input[iteri->i] != c)
 		return (error("Quotation not closed"), mini->exit_status = 2, 1);
+	if (add_to_token(input[iteri->i], mini, iteri))
+		return (1);
+	if (input[iteri->i + 1] == '>' || input[iteri->i + 1] == '<'
+		|| input[iteri->i + 1] == '|')
+	{
+		if (delimit_token(mini, iteri))
+			return (1);
+	}
+	return (0);
 }
 
 static int	space_or_word(char *input, t_single_linked_node *env,

@@ -21,7 +21,7 @@ int	add_to_token(char c, t_minishell *mini, t_token_iteri *iteri)
 	t_arena	*arena_strings;
 
 	arena_strings = &mini->arena_strings;
-	if(!grow_arena_element(arena_strings, 1))
+	if (!grow_arena_element(arena_strings, 1))
 		return (mini->exit_status = 1, 1);
 	iteri->tok->token_str[iteri->str_pos] = c;
 	iteri->str_pos++;
@@ -35,23 +35,13 @@ int	delimit_token(t_minishell *mini, t_token_iteri *iteri)
 
 	arena_strings = &mini->arena_strings;
 	arena_tokens = &mini->arena_tokens;
-	if(!grow_arena_element(arena_strings, 1))
+	if (!grow_arena_element(arena_strings, 1))
 		return (mini->exit_status = 1, 1);
 	iteri->tok = get_arena_element_start(arena_tokens);
-	if(!grow_arena_element(arena_tokens, sizeof(t_token_node)))
+	if (!grow_arena_element(arena_tokens, sizeof(t_token_node)))
 		return (mini->exit_status = 1, 1);
 	iteri->tok->token_str = get_arena_element_start(arena_strings);
 	iteri->str_pos = 0;
-	/*
-	if (arena_tokens->pos >= 2 * sizeof(t_token_node)
-		&& (iteri->tok - 1)->token_type == WORD
-		&& (iteri->tok - 2)->token_type == HERE_DOC)
-	{
-	//	printf("Heredoc entered\n");
-		if (here_doc(input, env, mini, iteri))
-			return (1);
-	}
-	*/
 	return (0);
 }
 
@@ -63,7 +53,7 @@ int	start_first_token(t_minishell *mini, t_token_iteri *iteri)
 	arena_strings = &mini->arena_strings;
 	arena_tokens = &mini->arena_tokens;
 	iteri->tok = get_arena_element_start(arena_tokens);
-	if(!grow_arena_element(arena_tokens, sizeof(t_token_node)))
+	if (!grow_arena_element(arena_tokens, sizeof(t_token_node)))
 		return (mini->exit_status = 1, 1);
 	iteri->tok->token_str = get_arena_element_start(arena_strings);
 	iteri->str_pos = 0;
