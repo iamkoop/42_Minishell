@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/03 18:50:11 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/04 17:55:49 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 	return (NULL);
 }
 
-static char	*colons(char	*path_var, int	*to_move, t_minishell	*mini)
+static char	*colons(char	*path_var,char	*cmd, int	*to_move, t_minishell	*mini)
 {
 	char	*full_cmd;
 	int middle;
@@ -61,7 +61,7 @@ static char	*colons(char	*path_var, int	*to_move, t_minishell	*mini)
 	i = 0;
 	while ((!middle && i < *to_move) || (middle && i < *to_move -1))
 	{
-		full_cmd = ft_strjoin("./", path_var);
+		full_cmd = ft_strjoin("./", cmd);
 		if(!full_cmd)
 		{
 			ft_putendl_fd("minishell: malloc fail in colons", 2);
@@ -70,6 +70,7 @@ static char	*colons(char	*path_var, int	*to_move, t_minishell	*mini)
 		if(check_access(full_cmd, mini, 0))
 			return(full_cmd);
 		free(full_cmd);
+		i++;
 	}
 	return(NULL);
 }
@@ -107,12 +108,14 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 	int		to_move;
 
 	to_move = -1337;
+	if(!ft_strlen(path_var))
+		return (err_msg(NULL, cmd, "No such file or directory"), NULL);
 	while (*path_var)
 	{
 		if(to_move != -1337)
 			to_move = 0;
 		if(*path_var == ':')
-			full_cmd = colons(path_var, &to_move, mini);
+			full_cmd = colons(path_var, cmd, &to_move, mini);
 		else
 			full_cmd = normal_dir(path_var, cmd, &to_move, mini);
 		if(to_move == -42)
@@ -122,34 +125,39 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 		while (to_move-- > 0)
 			path_var++;
 	}
-	return (NULL);
+	return (err_msg(NULL, cmd, "command not found"), NULL);
 }
 
 char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 {
+	struct stat stats;
 	t_env_var	*content;
 	char		*path;
 	
     mini->exit_status = 127;
 	if (!cmd || !*cmd)
-		return(ft_putstr_fd("Minishell: command not found\n", 2), NULL);
+		return(err_msg(NULL, cmd, "command not found"), NULL);
 	path = ft_strdup(cmd);
 	if(!path)
 		return (ft_putendl_fd("minishell: malloc fail in get_path", 2), NULL);
 	if(ft_strchr(cmd, '/') && check_access(cmd, mini, 1))
-		return(path);
-	free(path);
-	while (envp && !ft_strchr(cmd, '/'))
 	{
-		content = (t_env_var	*)envp->content;
-		if (ft_strncmp(content->key, "PATH", 4) == 0)
+		if(stat(cmd, &stats) == 0)
 		{
-			path = find_exacutable(content->value, cmd, mini);
-			if (!path || !*path)
-				return(NULL);
-			return (path);
+			if(S_ISDIR(stats.st_mode))
+				return(err_msg(NULL, cmd, "Is a directory"), mini->exit_status = 126, NULL);
 		}
-		envp = envp->next;
+		else
+			return(free(path), perror("minishell: stat func failed"), NULL);
+		return(path);
 	}
-	return (NULL);
+	free(path);
+	envp = get_env_from_lst("PATH", envp);
+	if(!envp)
+		return(err_msg(NULL, cmd, "No such file or directory"), NULL);
+	content = (t_env_var	*)envp->content;
+	path = find_exacutable(content->value, cmd, mini);
+	if (!path || !*path)
+		return(NULL);
+	return (path);
 }
