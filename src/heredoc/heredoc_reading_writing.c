@@ -12,13 +12,15 @@
 
 #include "../../minishell.h"
 
-int			adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
-				t_single_linked_node *env);
+int			adding_heredoc_into_file(t_minishell *mini, bool expansion,
+				char *delimiter, t_single_linked_node *env);
+static int	input_handling_after_eof(char **eof_input, char **heredoc_input,
+				bool *eof_nonempty_line, t_minishell *mini);
+static int	sigint_check(t_minishell *mini, char *heredoc_input, char *eof_input);
 static int	var_expansion(char **heredoc_input,
-				t_minishell *mini,
-				t_single_linked_node *env);
+				t_minishell *mini, t_single_linked_node *env);
 static int	write_heredoc_line(char *heredoc_input, int fd);
-int			ft_write(int fd, char *line, size_t len);
+static int	ft_write(int fd, char *line, size_t len);
 
 int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env)
@@ -32,45 +34,21 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 	eof_input = NULL;
 	while (42)
 	{
-		if(isatty(STDIN_FILENO) && eof_nonempty_line == false)
+		if (isatty(STDIN_FILENO) && eof_nonempty_line == false)
 			write(STDERR_FILENO, "> ", 2);
 		heredoc_input = get_next_line(STDIN_FILENO);
-		if (g_signal == SIGINT)
-		{
-			mini->exit_status = 130;
-			g_signal = 0;
-			write(1, "\n", 1);
-            free(heredoc_input);
-			free(eof_input);
+		if (sigint_check(mini, heredoc_input, eof_input))
 			return (1);
-		}
 		if (!heredoc_input && eof_nonempty_line == false)
-			return (write(2, "\nminishell: warning: here-document delimited by end-of-file "
-						"instead of delimiter\n", 81), 0);
+			return (write(2, "\nminishell: warning: here-document delimited by"
+					" end-of-file instead of delimiter\n", 81), 0);
 		if (!heredoc_input && eof_nonempty_line == true)
-				continue ;
+			continue ;
 		if (heredoc_input[ft_strlen(heredoc_input) - 1] != '\n')
 		{
-			if (eof_input)
-			{
-				tmp = eof_input;
-				eof_input = NULL;
-				eof_input = ft_strjoin(tmp, heredoc_input);
-				if (!eof_input)
-				{
-					return (mini->exit_status = 1, perror("minishell: malloc failure"),
-						free(tmp), free(heredoc_input), 1);
-				}
-				free(tmp);
-				free(heredoc_input);
-				heredoc_input = NULL;
-			}
-			else
-			{
-				eof_input = heredoc_input;
-				heredoc_input = NULL;
-			}
-			eof_nonempty_line = true;
+			if (input_handling_after_eof(&eof_input, &heredoc_input,
+				&eof_nonempty_line, mini))
+					return (1);
 			continue ;
 		}
 		if (eof_input)
@@ -79,8 +57,8 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 			heredoc_input = NULL;
 			heredoc_input = ft_strjoin(eof_input, tmp);
 			if (!heredoc_input)
-				return (mini->exit_status = 1, perror("minishell: malloc failure"),
-					free(tmp), free(eof_input), 1);
+				return (mini->exit_status = 1, free(tmp), free(eof_input),
+					perror("minishell: malloc failure"), 1);
 			free(tmp);
 			free(eof_input);
 			eof_input = NULL;
@@ -100,12 +78,50 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 	return (0);
 }
 
-static int	var_expansion(char **heredoc_input,
-				t_minishell *mini,
+static int	input_handling_after_eof(char **eof_input, char **heredoc_input,
+				bool *eof_nonempty_line, t_minishell *mini)
+{
+	char	*tmp;
+
+	if (*eof_input)
+	{
+		tmp = *eof_input;
+		*eof_input = ft_strjoin(tmp, *heredoc_input);
+		free(tmp);
+		free(*heredoc_input);
+		if (!*eof_input)
+			return (mini->exit_status = 1,
+				perror("minishell: malloc failure"), 1);
+		*heredoc_input = NULL;
+	}
+	else
+	{
+		*eof_input = *heredoc_input;
+		*heredoc_input = NULL;
+	}
+	*eof_nonempty_line = true;
+	return (0);
+}
+
+static int	sigint_check(t_minishell *mini, char *heredoc_input, char *eof_input)
+{
+	if (g_signal == SIGINT)
+	{
+		mini->exit_status = 130;
+		g_signal = 0;
+		write(STDERR_FILENO, "\n", 1);
+		free(heredoc_input);
+		free(eof_input);
+		return (1);
+	}
+	return (0);
+}
+
+static int	var_expansion(char **heredoc_input, t_minishell *mini,
 				t_single_linked_node *env)
 {
 	char			*tmp_heredoc_input;
-	t_quote_iteri   exv;
+	t_quote_iteri	exv;
 	char			**word;
 
 	init_qrve_arena(mini);
@@ -115,7 +131,7 @@ static int	var_expansion(char **heredoc_input,
 	exv.heredoc = true;
 	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1] == NULL); 
+	assert(word[1] == NULL);
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
@@ -127,15 +143,12 @@ static int	var_expansion(char **heredoc_input,
 
 static int	write_heredoc_line(char *heredoc_input, int fd)
 {
-	
 	if (ft_write(fd, heredoc_input, ft_strlen(heredoc_input)))
 		return (1);
-	//if (ft_write(fd, "\n", 1))
-	//	return (1);
 	return (0);
 }
 
-int	ft_write(int fd, char *line, size_t len)
+static int	ft_write(int fd, char *line, size_t len)
 {
 	ssize_t	c_written;
 
