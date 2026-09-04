@@ -32,12 +32,15 @@ int	dollar_found(char *s, t_minishell *mini,
 	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;
-	while (s[iteri->i] && is_name(v, s[iteri->i]))
+	while (s[iteri->i] && is_name(v, s[iteri->i]) && v < VAR_SIZE)
 	{
 		var[v] = s[iteri->i];
 		iteri->i++;
 		v++;
 	}
+	if (v >= VAR_SIZE)
+		return (error("exceeding memory limit: Variable name \
+				\nRaise VAR_SIZE in minishell.h"), 1);
 	if (v != 0)
 	{
 		var[v] = 0;
@@ -45,10 +48,7 @@ int	dollar_found(char *s, t_minishell *mini,
 			return (1);
 	}
 	else
-	{
-		if (no_variable(s, mini, iteri))
-			return (1);
-	}
+		return (no_variable(s, mini, iteri));
 	return (0);
 }
 // no safety net for max v needed cause s is maximum WORD_STR_SIZE 
