@@ -99,6 +99,15 @@ typedef struct	s_cmd_data
 	t_single_linked_node	*tail;
 }		t_cmd_data;
 
+//Heredoc
+typedef struct s_heredoc_data
+{
+	char	*heredoc_input;
+	char	*eof_input;
+	bool	eof_nonempty_line;
+	bool	expansion;
+}		t_heredoc_data;
+
 //Adding word to command struct
 typedef struct s_word_iteri
 {
