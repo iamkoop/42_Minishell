@@ -37,8 +37,8 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 //		return (1);
 //	mini->heredoc_write_fd = open(".", O_TMPFILE | O_WRONLY |
 //		O_CLOEXEC, 0600);
-	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY |
-		O_CLOEXEC | O_EXCL | O_CREAT, 0600);
+	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY
+			| O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (mini->heredoc_write_fd == -1)
 		return (perror("minshell: open heredoc failed"), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
