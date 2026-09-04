@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/04 18:28:53 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:47:07 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,22 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 	return (err_msg(NULL, cmd, "command not found"), NULL);
 }
 
-char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
+static char	*check_for_dir(char	*path, t_minishell	*mini)
 {
 	struct stat stats;
+
+	if(stat(path, &stats) == 0)
+		{
+			if(S_ISDIR(stats.st_mode))
+				return(free(path), err_msg(NULL, path, "Is a directory"), mini->exit_status = 126, NULL);
+		}
+		else
+			return(free(path), perror("minishell: stat func failed"), NULL);
+		return(path);
+}
+
+char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
+{
 	t_env_var	*content;
 	char		*path;
 	
@@ -157,16 +170,7 @@ char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
 	if(!path)
 		return (ft_putendl_fd("minishell: malloc fail in get_path", 2), NULL);
 	if(ft_strchr(cmd, '/') && check_access(cmd, mini, 1))
-	{
-		if(stat(cmd, &stats) == 0)
-		{
-			if(S_ISDIR(stats.st_mode))
-				return(err_msg(NULL, cmd, "Is a directory"), mini->exit_status = 126, NULL);
-		}
-		else
-			return(free(path), perror("minishell: stat func failed"), NULL);
-		return(path);
-	}
+		return(check_for_dir(path, mini));
 	free(path);
 	envp = get_env_from_lst("PATH", envp);
 	if(!envp)
