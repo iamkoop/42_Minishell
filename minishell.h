@@ -30,11 +30,8 @@
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include <assert.h>
 
-# define TOKEN_AMOUNT 100
-# define TOKEN_STR_SIZE 5000
 # define HD_DELIMITER_LEN 50 
-# define WORD_AMOUNT 100
-# define WORD_STR_SIZE 1000
+# define VAR_SIZE 1000
 # define ARENA_SIZE 40096
 
 extern volatile sig_atomic_t g_signal;

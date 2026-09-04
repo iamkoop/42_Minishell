@@ -25,10 +25,10 @@ static int	dollar_no_var(t_minishell *mini,
 int	dollar_found(char *s, t_minishell *mini,
 		t_quote_iteri *iteri, t_single_linked_node *env)
 {
-	char	var[WORD_STR_SIZE];
+	char	var[VAR_SIZE];
 	int		v;
 
-	ft_bzero(var, WORD_STR_SIZE - 1);
+	ft_bzero(var, VAR_SIZE - 1);
 	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;
