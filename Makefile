@@ -28,8 +28,7 @@ CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
 				src/err_and_cleanup_funcs/free_env_lst.c \
 				src/err_and_cleanup_funcs/close_all_fds.c \
 				src/err_and_cleanup_funcs/exec_err_msg.c \
-				src/err_and_cleanup_funcs/free_all.c \
-				src/err_and_cleanup_funcs/close_heredoc_fds.c
+				src/err_and_cleanup_funcs/free_all.c
 
 EXEC_MAIN = src/exec_main.c
 
@@ -50,7 +49,6 @@ PARSING = src/parsing/tokenization.c \
 		  src/parsing/heredoc_quote_removal.c \
 		  src/parsing/heredoc_checker.c \
 		  src/parsing/error.c \
-		  src/parsing/delete_heredocs.c \
 		  src/parsing/free_command_struct.c \
 		  src/parsing/parsing.c \
 		  src/parsing/parsing_redirection.c \

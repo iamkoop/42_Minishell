@@ -49,7 +49,6 @@ int	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 			add_history(input);
 			initiate_tokenization(input, env, mini);
 			free(input);
-//			delete_hd_files();
 		}
 	}
 }

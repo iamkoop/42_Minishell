@@ -248,7 +248,6 @@ int		check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
 
 //error and exit functions
 void	error(char *message);
-void	delete_hd_files();
 void    free_command_struct(t_single_linked_node *cmd_lst);
 void	close_fd(int	*fd);
 void	close_all_fds(t_minishell  *mini);
