@@ -33,7 +33,7 @@ int	add_word_to_struct(t_cmd_data *cmd_data,
 	ft_bzero(&w, sizeof(t_word_iteri));
 	curr_cmd = (t_command *)cmd_data->tail->content;
 	tmp_argv = ft_calloc(ft_2darraylen(word) + ft_strarraylen(curr_cmd->argv)
-		+ 1, sizeof(char *));
+			+ 1, sizeof(char *));
 	if (!tmp_argv)
 		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	if (transfer_existing_word(curr_cmd, tmp_argv, &w))
@@ -75,7 +75,7 @@ static int	transfer_existing_word(t_command *curr_cmd, char **tmp_argv,
 	while (curr_cmd->argv && curr_cmd->argv[w->argv_i])
 	{
 		tmp_argv[w->argv_i] = ft_calloc(ft_strlen(curr_cmd->argv[w->argv_i])
-					+ 1, 1);
+				+ 1, 1);
 		if (!tmp_argv[w->argv_i])
 		{
 			perror("minishell: malloc failed");

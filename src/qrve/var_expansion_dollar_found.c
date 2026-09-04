@@ -46,7 +46,6 @@ int	dollar_found(char *s, t_minishell *mini,
 	}
 	else
 	{
-		assert(v == 0);
 		if (no_variable(s, mini, iteri))
 			return (1);
 	}
@@ -94,7 +93,7 @@ static int	dollar_questionmark(t_minishell *mini,
 				t_quote_iteri *iteri)
 {
 	char	*exit_status_word;
-	int	i;
+	int		i;
 
 	exit_status_word = ft_itoa(iteri->exit_status);
 	if (!exit_status_word)

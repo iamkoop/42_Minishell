@@ -18,7 +18,7 @@ int			parsing(t_single_linked_node **env, t_minishell *mini,
 				t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	is_syntax_error(t_arena *arena_tokens, t_token_iteri *iteri);
 static int	word_or_pipe(t_single_linked_node *env, t_minishell *mini,
-			t_token_iteri *iteri, t_cmd_data *cmd_data);
+				t_token_iteri *iteri, t_cmd_data *cmd_data);
 static int	delimit_command(t_cmd_data *cmd_data);
 
 int	initiate_parsing(t_single_linked_node **env,
@@ -57,10 +57,8 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 			is_redir = 1;
 		}
 		if (is_syntax_error(&mini->arena_tokens, iteri))
-		{
 			return (mini->exit_status = 2,
 				error("syntax error unexpected token"), 1);
-		}
 		if (!is_redir)
 		{
 			if (word_or_pipe(*env, mini, iteri, cmd_data))

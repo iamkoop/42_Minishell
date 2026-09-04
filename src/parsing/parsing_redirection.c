@@ -12,7 +12,6 @@
 
 #include "../../minishell.h"
 
-int			is_redirection(t_arena *arena_tokens, t_token_iteri *iteri);
 int			redirect(t_single_linked_node *env,
 				t_token_iteri *iteri, t_cmd_data *cmd_data,
 				t_minishell *mini);
@@ -21,18 +20,11 @@ static void	redir_type_assignment(t_redir_list *curr_redir,
 static int	add_redir_to_struct(t_single_linked_node *env,
 				t_token_iteri *iteri, t_redir_list *curr_redir,
 				t_minishell *mini);
-
-int	is_redirection(t_arena *arena_tokens, t_token_iteri *iteri)
-{
-	if (arena_tokens->pos != 0
-		&& ((iteri->tok - 1)->token_type == REDIR_IN
-			|| (iteri->tok - 1)->token_type == REDIR_OUT
-			|| (iteri->tok - 1)->token_type == REDIR_OUT_A
-			|| (iteri->tok - 1)->token_type == HERE_DOC)
-		&& iteri->tok->token_type == WORD)
-		return (1);
-	return (0);
-}
+static int	add_heredoc_to_struct(t_redir_list *curr_redir,
+				t_token_iteri *iteri, t_minishell *mini);
+static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env, 
+				t_redir_list *curr_redir, t_token_iteri *iteri,
+				t_minishell *mini);
 
 int	redirect(t_single_linked_node *env,
 		t_token_iteri *iteri, t_cmd_data *cmd_data,
@@ -76,38 +68,57 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 		t_token_iteri *iteri, t_redir_list *curr_redir,
 		t_minishell *mini)
 {
-	t_quote_iteri   exv;
+	if ((iteri->tok - 1)->token_type == HERE_DOC)
+	{
+		if (add_heredoc_to_struct(curr_redir, iteri, mini))
+			return (1);
+	}
+	else
+	{
+		if (qrve_n_add_other_redirs_to_struct(env, curr_redir, iteri, mini))
+			return (1);
+	}
+	return (0);
+}
+
+static int	add_heredoc_to_struct(t_redir_list *curr_redir,
+				t_token_iteri *iteri, t_minishell *mini)
+{
+	curr_redir->filename = iteri->tok->token_str;
+	curr_redir->filename = ft_calloc(1,
+			ft_strlen(iteri->tok->token_str) + 1);
+	if (!curr_redir->filename)
+		return (perror("minishell: malloc failed"),
+			mini->exit_status = 1, 1);
+	ft_strlcpy(curr_redir->filename, iteri->tok->token_str,
+		ft_strlen(iteri->tok->token_str) + 1);
+	curr_redir->fd = -42;
+	return (0);
+}
+
+static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env, 
+				t_redir_list *curr_redir, t_token_iteri *iteri,
+				t_minishell *mini)
+{
+	t_quote_iteri	exv;
 	char			**word;
 
 	init_qrve_arena(mini);
 	ft_bzero(&exv, sizeof(t_quote_iteri));
 	start_first_word(mini, &exv);
 	word = (char **)&mini->arena_split_tokens.data;
-	if ((iteri->tok - 1)->token_type == HERE_DOC)
-	{
-		curr_redir->filename = iteri->tok->token_str;
-		curr_redir->filename = ft_calloc(1, ft_strlen(iteri->tok->token_str) + 1);
-		if (!curr_redir->filename)
-			return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
-		ft_strlcpy(curr_redir->filename, iteri->tok->token_str,
-			ft_strlen(iteri->tok->token_str) + 1);
-		curr_redir->fd = -42;
-	}
-	else
-	{
-		if (quote_rm_var_expan(iteri->tok->token_str, mini, env,
+	if (quote_rm_var_expan(iteri->tok->token_str, mini, env,
 			&exv))
-			return (1);
-		if (word[1] != NULL)
-			return (error("ambiguous redirect"), mini->exit_status = 1, 1);
-		curr_redir->filename = ft_calloc(1, ft_strlen(word[0]) + 1);
-		if (!curr_redir->filename)
-		{
-			return (perror("minishell: malloc failed"),
-				mini->exit_status = 1, 1);
-		}
-		ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
-		curr_redir->fd = -42;
+		return (1);
+	if (word[1] != NULL)
+		return (error("ambiguous redirect"), mini->exit_status = 1, 1);
+	curr_redir->filename = ft_calloc(1, ft_strlen(word[0]) + 1);
+	if (!curr_redir->filename)
+	{
+		return (perror("minishell: malloc failed"),
+			mini->exit_status = 1, 1);
 	}
+	ft_strlcpy(curr_redir->filename, word[0], ft_strlen(word[0]) + 1);
+	curr_redir->fd = -42;
 	return (0);
 }

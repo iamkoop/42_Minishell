@@ -24,10 +24,10 @@ int	add_char(t_minishell *mini, char *s,
 int	quote_rm_var_expan(char *s, t_minishell *mini,
 		t_single_linked_node *env, t_quote_iteri *iteri)
 {
-//	init_qrve(mini);
 	while (s[iteri->i])
 	{
-		if ((s[iteri->i] == '\'' || s[iteri->i] == '\"') && iteri->heredoc == false)
+		if ((s[iteri->i] == '\'' || s[iteri->i] == '\"')
+			&& iteri->heredoc == false)
 		{
 			if (quote_mode(s, mini, iteri, env))
 				return (1);
@@ -38,7 +38,6 @@ int	quote_rm_var_expan(char *s, t_minishell *mini,
 				return (1);
 		}
 	}
-//	word[iteri->wi][iteri->wj] = 0;
 	return (0);
 }
 
@@ -93,7 +92,7 @@ int	add_char(t_minishell *mini, char *s,
 	t_arena	*arena_split_strings;
 
 	arena_split_strings = &mini->arena_split_strings;
-	if(!grow_arena_element(arena_split_strings, 1))
+	if (!grow_arena_element(arena_split_strings, 1))
 		return (mini->exit_status = 1, 1);
 	iteri->field[0][iteri->str_pos] = s[iteri->i];
 	iteri->str_pos++;
