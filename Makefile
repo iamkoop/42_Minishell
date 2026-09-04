@@ -51,11 +51,12 @@ PARSING = src/parsing/parsing.c \
 		  src/parsing/parsing_redirection.c \
 		  src/parsing/parsing_word.c \
 		  src/parsing/parsing_helpers.c \
-		  src/parsing/quote_removal_var_expansion.c \
-		  src/parsing/var_expansion_dollar_found.c \
-		  src/parsing/find_var_and_expand.c \
-		  src/parsing/qrve_helpers.c \
 		  testing/parsing_tests/printing_struct_content.c
+
+QRVE = src/qrve/quote_removal_var_expansion.c \
+		src/qrve/var_expansion_dollar_found.c \
+		src/qrve/find_var_and_expand.c \
+		src/qrve/qrve_helpers.c
 
 ############ delete ^ ######################################
 
@@ -65,7 +66,7 @@ HEREDOC =	src/heredoc/heredoc.c \
 			src/heredoc/heredoc_quote_removal.c \
 			src/heredoc/heredoc_checker.c
 
-CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION) $(HEREDOC)
+CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION) $(HEREDOC) $(QRVE)
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 
