@@ -73,8 +73,6 @@ static int	file_path_read_fd()
 }
 */
 
-// read_fd is stored in hd_fd from token that is "word" token_type
-
 static int	prepare_delimiter(char *delimiter, t_redir_list *redir_content,
 				bool *expansion)
 {
