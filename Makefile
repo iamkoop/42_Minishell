@@ -53,12 +53,12 @@ PARSING = src/parsing/parsing.c \
 		  src/parsing/parsing_helpers.c \
 		  testing/parsing_tests/printing_struct_content.c
 
+############ delete ^ ######################################
+
 QRVE = src/qrve/quote_removal_var_expansion.c \
 		src/qrve/var_expansion_dollar_found.c \
 		src/qrve/find_var_and_expand.c \
 		src/qrve/qrve_helpers.c
-
-############ delete ^ ######################################
 
 HEREDOC =	src/heredoc/heredoc.c \
 			src/heredoc/heredoc_reading_writing1.c \

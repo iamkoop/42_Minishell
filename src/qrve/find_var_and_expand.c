@@ -16,6 +16,8 @@ int			find_var(char *var, t_minishell *mini,
 				t_quote_iteri *iteri, t_single_linked_node *env);
 static int	variable_expansion(t_minishell *mini,
 				t_quote_iteri *iteri, t_env_var *tmp_content);
+static int	is_whitespace_not_quoted_no_heredoc(t_env_var *tmp_content,
+				t_quote_iteri *iteri, int i);
 static int	field_splitting(t_minishell *mini,
 				t_quote_iteri *iteri);
 static int	add_variable_char(t_minishell *mini,
@@ -50,9 +52,7 @@ static int	variable_expansion(t_minishell *mini,
 	iteri->has_char = true;
 	while (tmp_content->value && tmp_content->value[i])
 	{
-		if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
-			|| tmp_content->value[i] == '\n') && iteri->quoted == false
-			&& iteri->heredoc == false)
+		if (is_whitespace_not_quoted_no_heredoc(tmp_content, iteri, i))
 		{
 			if (iteri->has_char == true && iteri->str_pos != 0)
 			{
@@ -72,6 +72,16 @@ static int	variable_expansion(t_minishell *mini,
 	return (0);
 }
 
+static int	is_whitespace_not_quoted_no_heredoc(t_env_var *tmp_content,
+				t_quote_iteri *iteri, int i)
+{
+	if ((tmp_content->value[i] == ' ' || tmp_content->value[i] == '\t'
+			|| tmp_content->value[i] == '\n') && iteri->quoted == false
+		&& iteri->heredoc == false)
+		return (1);
+	return (0);
+}
+
 static int	field_splitting(t_minishell *mini,
 		t_quote_iteri *iteri)
 {
@@ -80,9 +90,10 @@ static int	field_splitting(t_minishell *mini,
 
 	arena_split_tokens = &mini->arena_split_tokens;
 	arena_split_strings = &mini->arena_split_strings;
-	add_to_word(0, mini, iteri);
+	if (add_to_word(0, mini, iteri))
+		return (1);
 	iteri->field = get_arena_element_start(arena_split_tokens);
-	if(!grow_arena_element(arena_split_tokens, sizeof(char *)))
+	if (!grow_arena_element(arena_split_tokens, sizeof(char *)))
 		return (mini->exit_status = 1, 1);
 	iteri->field[0] = get_arena_element_start(arena_split_strings);
 	iteri->split_count++;
@@ -90,19 +101,13 @@ static int	field_splitting(t_minishell *mini,
 	return (0);
 }
 
-//iteri->field = get_arena_element_start(arena_split_tokens);
-	//if(!grow_arena_element(arena_split_tokens, sizeof(char *)))
-	//	return (1);
-	//iteri->field[iteri->split_count] = get_arena_element_start(arena_split_strings);
-	//iteri->split_count++;
-
 static int	add_variable_char(t_minishell *mini,
 		t_quote_iteri *iteri, int i, t_env_var *tmp_content)
 {
 	t_arena	*arena_split_strings;
 
 	arena_split_strings = &mini->arena_split_strings;
-	if(!grow_arena_element(arena_split_strings, 1))
+	if (!grow_arena_element(arena_split_strings, 1))
 		return (mini->exit_status = 1, 1);
 	iteri->field[0][iteri->str_pos] = tmp_content->value[i];
 	iteri->str_pos++;
