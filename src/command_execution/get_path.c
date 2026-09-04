@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/04 17:55:49 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:28:53 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,22 @@ static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 		mini->exit_status = 127;
 	}
 	return (NULL);
+}
+
+static char	*build_full_cmd(char	*cmd_path, char	*cmd, t_minishell	*mini, int	*to_move)
+{
+	char	*full_cmd;
+
+	full_cmd = ft_strjoin_three(cmd_path, "/", cmd);
+	if(!full_cmd)
+	{
+		ft_putendl_fd("minishell: malloc fail in build_full_cmd", 2);
+		return (*to_move = -42, NULL);
+	}
+	if(check_access(full_cmd, mini, 0))
+			return(full_cmd);
+	free(full_cmd);
+	return(NULL);
 }
 
 static char	*colons(char	*path_var,char	*cmd, int	*to_move, t_minishell	*mini)
@@ -109,7 +125,7 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 
 	to_move = -1337;
 	if(!ft_strlen(path_var))
-		return (err_msg(NULL, cmd, "No such file or directory"), NULL);
+		return(build_full_cmd(".", cmd, mini, &to_move));
 	while (*path_var)
 	{
 		if(to_move != -1337)
