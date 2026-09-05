@@ -3,59 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/01 17:19:37 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/05 14:05:26 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int execute_builtin(char   **cmd_and_args, t_single_linked_node  **envp, t_minishell *mini)
+static int	execute_builtin(char	**cmd_and_args,
+		t_single_linked_node	**envp, t_minishell	*mini)
 {
-	if (ft_strncmp(cmd_and_args[0], "cd", ft_get_biggest_s(cmd_and_args[0], "cd")) == 0)
+	if (!ft_strcmp(cmd_and_args[0], "cd"))
 		return (cd(cmd_and_args, *envp));
-	if (ft_strncmp(cmd_and_args[0], "echo", ft_get_biggest_s(cmd_and_args[0], "echo")) == 0)
-	  	return (echo(cmd_and_args));
-	if (ft_strncmp(cmd_and_args[0], "env", ft_get_biggest_s(cmd_and_args[0], "env")) == 0)
-			return (env(cmd_and_args, envp));
-    if (ft_strncmp(cmd_and_args[0], "exit", ft_get_biggest_s(cmd_and_args[0], "exit")) == 0)
-			return (builtin_exit(cmd_and_args, mini));
-    if (ft_strncmp(cmd_and_args[0], "export", ft_get_biggest_s(cmd_and_args[0], "export")) == 0)
+	if (!ft_strcmp(cmd_and_args[0], "echo"))
+		return (echo(cmd_and_args));
+	if (!ft_strcmp(cmd_and_args[0], "env"))
+		return (env(cmd_and_args, envp));
+	if (!ft_strcmp(cmd_and_args[0], "exit"))
+		return (builtin_exit(cmd_and_args, mini));
+	if (!ft_strcmp(cmd_and_args[0], "export"))
 		return (export(cmd_and_args, envp));
-    if (ft_strncmp(cmd_and_args[0], "pwd", ft_get_biggest_s(cmd_and_args[0], "pwd")) == 0)
+	if (!ft_strcmp(cmd_and_args[0], "pwd"))
 		return (pwd(cmd_and_args));
-    if (ft_strncmp(cmd_and_args[0], "unset", ft_get_biggest_s(cmd_and_args[0], "unset")) == 0)
+	if (!ft_strcmp(cmd_and_args[0], "unset"))
 		return (unset(cmd_and_args, envp));
 	return (1);
 }
 
-// TODO: copy argv and free then the whole cmdlst!!!!
-
-void exec_command(char   **cmd_and_args, t_single_linked_node    **envp, t_minishell *mini)
+void	exec_command(char	**cmd_and_args, t_single_linked_node	**envp,
+	t_minishell	*mini)
 {
-    char            **converted_envp;
-	char    		*path;
+	char	**converted_envp;
+	char	*path;
 
-	if(!cmd_and_args)
+	if (!cmd_and_args)
 		return ;
-    mini->exit_status = 1;
-    if(is_builtin(cmd_and_args[0]))
-    {
+	mini->exit_status = 1;
+	if (is_builtin(cmd_and_args[0]))
+	{
 		mini->exit_status = execute_builtin(cmd_and_args, envp, mini);
 		return ;
 	}
-    path = get_path(cmd_and_args[0], *envp, mini);
-    if(!path)
+	path = get_path(cmd_and_args[0], *envp, mini);
+	if (!path)
 		return ;
-    converted_envp = env_to_char_arr(*envp);
-    if(!converted_envp)
-        ft_putendl_fd("minishell: exec_command: conversion failed", 2);
-    else
+	converted_envp = env_to_char_arr(*envp);
+	if (!converted_envp)
+		ft_putendl_fd("minishell: exec_command: conversion failed", 2);
+	else
 		execve(path, cmd_and_args, converted_envp);
 	free(path);
-    ft_free_the_split(converted_envp);
-    mini->exit_status = 1;
+	ft_free_the_split(converted_envp);
+	mini->exit_status = 1;
 	return ;
 }
