@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/08/31 13:50:30 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/05 12:59:47 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-//TODO: Parsing from what comes (not a valid identifier) IMPORTANT!!!!!
-//TODO: (BONUS) if you export a an existing var then suould replace the value with the new value
-//TODO: (BONUS) could appending (+=)
-//TODO: add the sorted print and fix 2 cases from tester
 
 static int	is_valid_identifier(char *input)
 {
@@ -47,7 +42,7 @@ t_env_var	*fill_var_content(char *input)
 	len = 0;
 	while (input[len] && input[len] != '=')
 		len++;
-	env_var->key = malloc(sizeof(char)*len + 1);
+	env_var->key = malloc(sizeof(char) * len + 1);
 	if (!env_var->key)
 		return (free(env_var), NULL);
 	ft_strlcpy(env_var->key, input, len + 1);
@@ -80,7 +75,7 @@ static t_single_linked_node	*create_var(char *input)
 	node->content = fill_var_content(input);
 	if (!node->content)
 	{
-		ft_putendl_fd("minishell: export: malloc in fill_var_content failed", 2);
+		err_msg("export", NULL, "malloc in fill_var_content failed");
 		return (free(node), NULL);
 	}
 	node->next = NULL;
@@ -89,13 +84,13 @@ static t_single_linked_node	*create_var(char *input)
 
 static int	print_sorted(t_single_linked_node *envp)
 {
-	//search for next string to print
 	if (envp)
 		printf("sorted");
 	return (0);
 }
 
-static int	search_for_node(t_single_linked_node *node, t_single_linked_node *envp)
+static int	search_for_node(t_single_linked_node *node,
+	t_single_linked_node *envp)
 {
 	t_env_var	*curr_content;
 	t_env_var	*node_content;
@@ -106,7 +101,7 @@ static int	search_for_node(t_single_linked_node *node, t_single_linked_node *env
 		curr_content = (t_env_var *) envp->content;
 		if (ft_strcmp(node_content->key, curr_content->key) == 0)
 		{
-			if(node_content->value)
+			if (node_content->value)
 			{
 				free(curr_content->value);
 				curr_content->value = ft_strdup(node_content->value);

@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 01:23:00 by username          #+#    #+#             */
-/*   Updated: 2026/08/30 17:13:59 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/05 12:56:41 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ static int	update_env(char *pwd, char *to_find, t_single_linked_node *envp)
 	return (1);
 }
 
-static int	above_dir_del_case(t_pwds_vars *pwds, t_single_linked_node *envp, char *cmd_arg)
+static int	above_dir_del_case(t_pwds_vars	*pwds, t_single_linked_node	*envp,
+	char	*cmd_arg)
 {
 	char	*new_pwd;
 
@@ -71,7 +72,8 @@ static int	above_dir_del_case(t_pwds_vars *pwds, t_single_linked_node *envp, cha
 	return (0);
 }
 
-static void	copy_pwd_from_env(t_pwds_vars *pwds, char *to_find, t_single_linked_node *envp)
+static void	copy_pwd_from_env(t_pwds_vars *pwds, char *to_find,
+	t_single_linked_node *envp)
 {
 	t_env_var	*tmp;
 

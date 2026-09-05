@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:32 by username          #+#    #+#             */
-/*   Updated: 2026/08/26 18:33:03 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/05 12:52:55 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	echo(char **input)
 	print_nl = 1;
 	i = 1;
 	while (input[i] && is_valid_flag(input[i], &print_nl))
-			i++;
+		i++;
 	while (input && input[i])
 	{
 		ft_putstr_fd(input[i], 1);
