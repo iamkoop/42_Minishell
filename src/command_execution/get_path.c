@@ -6,7 +6,7 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/05 14:27:29 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/06 12:30:38 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ static char	*check_for_dir(char	*path, t_minishell	*mini)
 		if (S_ISDIR(stats.st_mode))
 		{
 			mini->exit_status = 126;
-			return (free(path), err_msg(NULL, path, "Is a directory"), NULL);
+			return (err_msg(NULL, path, "Is a directory"), free(path), NULL);
 		}
 	}
 	else
