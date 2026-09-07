@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 11:51:03 by username          #+#    #+#             */
-/*   Updated: 2026/08/31 16:33:16 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/07 11:42:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,10 @@ int	main(int argc, char **argv, char **envp)
 
 	ft_bzero(&c, sizeof(struct sigaction));
 	c.sa_handler = handler_c;
-	//c.sa_flags = SA_RESTART;
 	sigemptyset(&c.sa_mask);
 	if (sigaction(SIGINT, &c, NULL))
 		return (perror("minishell: SIGINT failed"), 1);
-	//	rl_catch_signals = 0;
 	rl_signal_event_hook = rl_signal_hook_ctrl_c;
-	/*if (argv && argv[0] && ft_strnstr(argv[0], "test", ft_strlen(argv[0])))
-	{
-		(void) exit_status;
-		(void) argc;
-		main_testing(argv, envp);
-		return (0);
-	}*/
 	if (argc != 1)
 		return (write(2, "minishell: program takes no arguments\n", 38), 1);
 	if (argv[0])

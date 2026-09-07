@@ -6,15 +6,14 @@
 /*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:54 by username          #+#    #+#             */
-/*   Updated: 2026/08/25 01:41:04 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/05 13:01:46 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static void remove_node(t_single_linked_node * *curr,
-	t_single_linked_node	**prev,
-t_single_linked_node	**envp)
+static void	remove_node(t_single_linked_node	**curr,
+	t_single_linked_node	**prev, t_single_linked_node	**envp)
 {
 	t_single_linked_node	*tmp;
 

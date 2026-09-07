@@ -3,24 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/08/21 18:56:39 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/06 12:30:38 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static void print_error(char	*cmd)
-{
-	ft_putstr_fd("minishell: ", 2);
-	perror(cmd);
-}
-
 static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 {
 	int	access_valid;
+
 	access_valid = access(cmd, F_OK);
 	if (!access_valid)
 	{
@@ -30,115 +25,157 @@ static char	*check_access(char	*cmd, t_minishell	*mini, int send_perror)
 		else
 		{
 			if (send_perror)
-				print_error(cmd);
+				err_msg(NULL, NULL, NULL);
 			mini->exit_status = 126;
 		}
 	}
 	else
 	{
 		if (send_perror)
-			print_error(cmd);
+			err_msg(NULL, NULL, NULL);
 		mini->exit_status = 127;
 	}
 	return (NULL);
 }
 
-static char	*colon_edge_case(char *env, t_minishell	*mini)
+static char	*build_full_cmd(char	*cmd_path, char	*cmd, t_minishell	*mini,
+	int	*to_move)
 {
-	int		i;
-	int		len;
-	char	*joined;
+	char	*full_cmd;
 
-	i = 0;
-	len = ft_strlen(env);
-	joined = NULL;
-	while (env[i])
+	full_cmd = ft_strjoin_three(cmd_path, "/", cmd);
+	if (!full_cmd)
 	{
-		if (env[0] == ':' || env[len -1] == ':'
-			|| (env[i + 1] && ft_strncmp(&env[i], "::", 2) == 0))
-		{
-			joined = ft_strjoin("./", env);
-			if (!joined)
-			{
-				ft_putendl_fd("minishell: colon_edge_case: join failed", 2);
-				mini->exit_status = 1;
-				return(NULL);
-			}
-			if (check_access(joined, 0, 0))
-				return (joined);
-		}
-		i++;
+		ft_putendl_fd("minishell: malloc fail in build_full_cmd", 2);
+		return (*to_move = -42, NULL);
 	}
-	if (joined)
-		free(joined);
+	if (check_access(full_cmd, mini, 0))
+		return (full_cmd);
+	free(full_cmd);
 	return (NULL);
 }
 
-static char	*find_exacutable(char *cmd, char *env, t_minishell	*mini)
+static char	*colons(char	*path_var, char	*cmd, int	*to_move,
+	t_minishell	*mini)
 {
-	char	*command;
-	char	**splitted;
+	char	*full_cmd;
+	int		middle;
 	int		i;
 
-	command = colon_edge_case(env, mini);
-	if (command)
-		return (command);
-	splitted = ft_split(env, ':');
-	if (!splitted)
-		return (ft_putendl_fd("minishell: find_exacutable: split alloc fail", 2), NULL);
-	i = 0;
-	while (splitted[i])
+	i = *to_move;
+	*to_move = 0;
+	while (path_var[*to_move] && path_var[*to_move] == ':')
+		(*to_move)++;
+	middle = 1;
+	if (!path_var[*to_move] || i == -1337)
+		middle = 0;
+	i = -1;
+	while (++i < *to_move - middle)
 	{
-		command = ft_strjoin_three(splitted[i], "/", cmd);
-		if (!command)
-			return (ft_putstr_fd("cmd alloc fail\n", 2),
-				ft_free_the_split(splitted), NULL);
-		if (check_access(command, mini, 0))
-			return (ft_free_the_split(splitted), command);
-		free(command);
-		i++;
+		full_cmd = ft_strjoin("./", cmd);
+		if (!full_cmd)
+		{
+			ft_putendl_fd("minishell: malloc fail in colons", 2);
+			return (*to_move = -42, NULL);
+		}
+		if (check_access(full_cmd, mini, 0))
+			return (full_cmd);
+		free(full_cmd);
 	}
-	return (ft_free_the_split(splitted), print_error(cmd), NULL);
+	return (NULL);
 }
 
-static char	*check_if_its_a_path(char *cmd, t_minishell *mini, int *iterate)
+static char	*normal_dir(char	*path_var, char	*cmd, int	*to_move,
+	t_minishell	*mini)
 {
-	if (ft_strchr(cmd, '/'))
+	char	*cmd_path;
+	char	*full_cmd;
+
+	*to_move = 0;
+	while (path_var[*to_move] && path_var[*to_move] != ':')
+		(*to_move)++;
+	cmd_path = ft_calloc(*to_move + 1, sizeof(char));
+	if (!cmd_path)
 	{
-		if (check_access(cmd, mini, 1))
-			return (cmd);
+		ft_putendl_fd("minishell: malloc fail in normal_dir", 2);
+		return (*to_move = -42, NULL);
+	}
+	ft_strlcpy(cmd_path, path_var, *to_move + 1);
+	full_cmd = ft_strjoin_three(cmd_path, "/", cmd);
+	if (!full_cmd)
+	{
+		ft_putendl_fd("minishell: malloc fail in normal_dir", 2);
+		return (*to_move = -42, NULL);
+	}
+	if (check_access(full_cmd, mini, 0))
+		return (full_cmd);
+	free(full_cmd);
+	return (NULL);
+}
+
+static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
+{
+	char	*full_cmd;
+	int		to_move;
+
+	to_move = -1337;
+	if (!ft_strlen(path_var))
+		return (build_full_cmd(".", cmd, mini, &to_move));
+	while (*path_var)
+	{
+		if (to_move != -1337)
+			to_move = 0;
+		if (*path_var == ':')
+			full_cmd = colons(path_var, cmd, &to_move, mini);
 		else
-		{
-			*iterate = 0;
-			return(NULL);
-		}
+			full_cmd = normal_dir(path_var, cmd, &to_move, mini);
+		if (to_move == -42)
+			return (NULL);
+		if (full_cmd)
+			return (full_cmd);
+		while (to_move-- > 0)
+			path_var++;
 	}
-	*iterate = 1;
-	return (NULL);
+	return (err_msg(NULL, cmd, "command not found"), NULL);
 }
 
-char	*get_path(char *cmd, t_single_linked_node   *envp, t_minishell *mini)
+static char	*check_for_dir(char	*path, t_minishell	*mini)
+{
+	struct stat	stats;
+
+	if (stat(path, &stats) == 0)
+	{
+		if (S_ISDIR(stats.st_mode))
+		{
+			mini->exit_status = 126;
+			return (err_msg(NULL, path, "Is a directory"), free(path), NULL);
+		}
+	}
+	else
+		return (free(path), perror("minishell: stat func failed"), NULL);
+	return (path);
+}
+
+char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 {
 	t_env_var	*content;
 	char		*path;
-	int			iterate_envp;
-	
-    mini->exit_status = 127;
+
+	mini->exit_status = 127;
 	if (!cmd || !*cmd)
-		return(ft_putstr_fd("Minishell: command not found\n", 2), NULL);
-	if(check_if_its_a_path(cmd, mini, &iterate_envp))
-		return(ft_strdup(cmd));
-	while (envp && iterate_envp)
-	{
-		content = (t_env_var	*)envp->content;
-		if (ft_strncmp(content->key, "PATH", 4) == 0)
-		{
-			path = find_exacutable(cmd, content->value, mini);
-			if (!path || !*path)
-				break;
-			return (path);
-		}
-		envp = envp->next;
-	}
-	return (NULL);
+		return (err_msg(NULL, cmd, "command not found"), NULL);
+	path = ft_strdup(cmd);
+	if (!path)
+		return (ft_putendl_fd("minishell: malloc fail in get_path", 2), NULL);
+	if (ft_strchr(cmd, '/') && check_access(cmd, mini, 1))
+		return (check_for_dir(path, mini));
+	free(path);
+	envp = get_env_from_lst("PATH", envp);
+	if (!envp)
+		return (err_msg(NULL, cmd, "No such file or directory"), NULL);
+	content = (t_env_var *)envp->content;
+	path = find_exacutable(content->value, cmd, mini);
+	if (!path || !*path)
+		return (NULL);
+	return (path);
 }
