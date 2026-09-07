@@ -30,11 +30,18 @@
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include <assert.h>
 
-# define HD_DELIMITER_LEN 50 
-# define VAR_SIZE 1000
-# define ARENA_SIZE 40096
+# define HD_DELIMITER_LEN 100
+# define VAR_SIZE 1024
+# define ARENA_SIZE 65536 // 64 KB
 
 extern volatile sig_atomic_t g_signal;
+// sig_atomic_t: An integer type that can be accessed as an atomic entity: the
+// computer can read or write this variable in a single, uninterruptible
+// machine instruction
+// extern: Variable is declared here and defined 
+// volatile: without it the value of the variable might be chached, with it
+// each time the variable is used the actual memory is being read
+
 
 //Tokenization:
 enum e_token_type
