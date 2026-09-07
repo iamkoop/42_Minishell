@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 15:36:56 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/07 18:11:25 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ static int	*create_id_array(int size)
 
 static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 {
-	int	i;
-	int	status;
+	int		i;
+	int		status;
+	bool	printed_nl;
 
+	printed_nl = false;
 	i = 0;
 	status = 0;
 	while (i < size)
@@ -34,17 +36,34 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 		waitpid(fork_id[i], &status, 0);
 		if (WIFEXITED(status))
 			mini->exit_status = WEXITSTATUS(status);
+	//	printf("exit status: %d", mini->exit_status);
+	if (printed_nl == false)
+	{
+		if (mini->exit_status == 130)
+		{
+			ft_putendl_fd("", 1);
+			printed_nl = true;
+		}
+		if (mini->exit_status == 131)
+		{
+			ft_putendl_fd("", 1);
+			printed_nl = true;
+		}
+	}
 		i++;
 	}
 }
 
-static int	fork_options(int fork_id, int size, t_minishell	*mini,
+static int	fork_options(int *fork_id, int size, t_minishell	*mini,
 				t_single_linked_node	**envp)
 {
-	if (fork_id == -1)
+
+	if (fork_id[size] == -1)
 		return (mini->exit_status = 1, perror("fork in parent failed"), 0);
-	if (fork_id == 0)
+	if (fork_id[size] == 0)
 	{
+		set_sigquit_to_default();
+		set_sigint_to_default();
 		free(fork_id);
 		mini->curr_cmd = (t_command *)mini->cmd_lst->content;
 		if (mini->cmd_lst_size == 1)
@@ -81,12 +100,14 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 			perror("pipe: ");
 			exit(1);
 		}
+		ignore_sigint();
 		fork_id[size] = fork();
-		if (!fork_options(fork_id[size], size, mini, envp))
+		if (!fork_options(fork_id, size, mini, envp))
 			break ;
 		mini->cmd_lst = mini->cmd_lst->next;
 		size++;
 	}
 	wait_for_children(mini, fork_id, size);
+	signal_strl_c();
 	free(fork_id);
 }
