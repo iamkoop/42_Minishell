@@ -29,11 +29,10 @@ CLEANUP_FUNCS = src/err_and_cleanup_funcs/close.c \
 				src/err_and_cleanup_funcs/close_all_fds.c \
 				src/err_and_cleanup_funcs/exec_err_msg.c \
 				src/err_and_cleanup_funcs/free_all.c \
-				src/err_and_cleanup_funcs/close_heredoc_fds.c
+				src/err_and_cleanup_funcs/error.c \
+				src/err_and_cleanup_funcs/free_command_struct.c
 
 EXEC_MAIN = src/exec_main.c
-
-ARENA = src/arena/arena.c
 
 MAIN = main.c
 
@@ -42,25 +41,32 @@ EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) 
 START = src/minishell_start/inializing_minishell.c \
 		src/minishell_start/readline.c
 
-PARSING = src/parsing/tokenization.c \
-		  src/parsing/tokenization_operators.c \
-		  src/parsing/tokenization_helpers.c \
-		  src/parsing/heredoc.c \
-		  src/parsing/heredoc_reading_writing.c \
-		  src/parsing/heredoc_quote_removal.c \
-		  src/parsing/error.c \
-		  src/parsing/delete_heredocs.c \
-		  src/parsing/free_command_struct.c \
-		  src/parsing/parsing.c \
+ARENA = src/arena/arena.c
+
+TOKENIZATION =	src/tokenization/tokenization.c \
+				src/tokenization/tokenization_operators.c \
+				src/tokenization/tokenization_helpers.c
+
+PARSING = src/parsing/parsing.c \
 		  src/parsing/parsing_redirection.c \
 		  src/parsing/parsing_word.c \
 		  src/parsing/parsing_helpers.c \
-		  src/parsing/quote_removal_var_expansion.c \
-		  src/parsing/var_expansion_dollar_found.c \
-		  src/parsing/find_var_and_expand.c \
-		  src/parsing/qrve_helpers.c
+		  testing/parsing_tests/printing_struct_content.c
 
-CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA)
+############ delete ^ ######################################
+
+QRVE = src/qrve/quote_removal_var_expansion.c \
+		src/qrve/var_expansion_dollar_found.c \
+		src/qrve/find_var_and_expand.c \
+		src/qrve/qrve_helpers.c
+
+HEREDOC =	src/heredoc/heredoc.c \
+			src/heredoc/heredoc_reading_writing1.c \
+			src/heredoc/heredoc_reading_writing2.c \
+			src/heredoc/heredoc_quote_removal.c \
+			src/heredoc/heredoc_checker.c
+
+CFILES = $(MAIN) $(START) $(EXECFILES) $(PARSING) $(ARENA) $(TOKENIZATION) $(HEREDOC) $(QRVE)
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 

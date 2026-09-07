@@ -31,14 +31,17 @@
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # include <assert.h>
 
-# define TOKEN_AMOUNT 100
-# define TOKEN_STR_SIZE 5000
-# define HD_DELIMITER_LEN 50 
-# define WORD_AMOUNT 100
-# define WORD_STR_SIZE 1000
-# define ARENA_SIZE 40096
+# define HD_DELIMITER_LEN 100
+# define VAR_SIZE 1024
+# define ARENA_SIZE 65536 // 64 KB
 
 extern volatile sig_atomic_t	g_signal;
+// sig_atomic_t: An integer type that can be accessed as an atomic entity: the
+// computer can read or write this variable in a single, uninterruptible
+// machine instruction
+// extern: Variable is declared here and defined 
+// volatile: without it the value of the variable might be chached, with it
+// each time the variable is used the actual memory is being read
 
 //Tokenization:
 enum e_token_type
@@ -63,7 +66,6 @@ typedef struct s_token_node
 {
 	enum e_token_type	token_type;
 	char				*token_str;
-	int					hd_fd;
 }		t_token_node;
 
 typedef struct s_token_iteri
@@ -100,6 +102,15 @@ typedef struct s_cmd_data
 	t_single_linked_node	*head;
 	t_single_linked_node	*tail;
 }		t_cmd_data;
+
+//Heredoc
+typedef struct s_heredoc_data
+{
+	char	*heredoc_input;
+	char	*eof_input;
+	bool	eof_nonempty_line;
+	bool	expansion;
+}		t_heredoc_data;
 
 //Adding word to command struct
 typedef struct s_word_iteri
@@ -234,8 +245,8 @@ void					err_msg(char	*func, char *value,
 
 //PARSING PART
 //tokenization
-int						tokenization(char *input, t_single_linked_node **env,
-							t_minishell *mini, t_token_iteri *iteri);
+int						tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
+							t_token_iteri *iteri);
 int						here_or_append(char *input, t_single_linked_node *env,
 							t_minishell *mini, t_token_iteri *iteri);
 int						operators1(char *input, t_single_linked_node *env,
@@ -244,29 +255,28 @@ int						operators2(char *input, t_single_linked_node *env,
 							t_minishell *mini, t_token_iteri *iteri);
 int						redirections(char *input, t_single_linked_node *env,
 							t_minishell *mini, t_token_iteri *iteri);
-int						start_first_token(t_minishell *mini,
-							t_token_iteri *iteri);
-int						add_to_token(char c, t_minishell *mini,
-							t_token_iteri *iteri);
-int						delimit_token(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
+int						start_first_token(t_minishell *mini, t_token_iteri *iteri);
+int						add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
+int						delimit_token(t_minishell *mini, t_token_iteri *iteri);
 
 //here_doc
-char					*quote_removal(char	*delimiter);
-int						here_doc(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
-int						adding_heredoc_into_file(t_minishell *mini,
-							bool expansion, char *delimiter,
+char					*quote_removal(char *delimiter);
+int						here_doc(t_single_linked_node *env, t_minishell *mini,
+							t_redir_list *redir_content);
+int						adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 							t_single_linked_node *env);
+int						expand_n_write(t_heredoc_data *hd_data,
+							t_minishell *mini, t_single_linked_node *env);
+int						check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
+        					t_single_linked_node **env);
+
 //error and exit functions
 void					error(char *message);
-void					delete_hd_files(void);
-void					free_command_struct(t_single_linked_node *cmd_lst);
+void    				free_command_struct(t_single_linked_node *cmd_lst);
 void					close_fd(int	*fd);
-void					close_all_fds(t_minishell	*mini);
-void					free_all(t_single_linked_node *env,
-							t_minishell *mini);
-void					close_heredoc_fds(t_minishell *mini);
+void					close_all_fds(t_minishell  *mini);
+void    				free_all(t_single_linked_node *env, t_minishell *mini);
+void    				close_heredoc_fds(t_minishell *mini);
 
 // parsing
 int						initiate_parsing(t_single_linked_node **env,

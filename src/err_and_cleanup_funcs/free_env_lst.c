@@ -12,7 +12,11 @@
 
 #include "../../minishell.h"
 
+<<<<<<< HEAD
+void	free_env_lst(t_single_linked_node *env)
+=======
 void	free_env_lst(t_single_linked_node	*env)
+>>>>>>> main
 {
 	t_single_linked_node	*curr_node;
 	t_single_linked_node	*next_node;

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_reading+writing.c                          :+:      :+:    :+:   */
+/*   heredoc_reading+writing1.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,54 +12,32 @@
 
 #include "../../minishell.h"
 
-int			adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
-				t_single_linked_node *env);
+int			expand_n_write(t_heredoc_data *hd_data,
+				t_minishell *mini, t_single_linked_node *env);
 static int	var_expansion(char **heredoc_input,
-				t_minishell *mini,
-				t_single_linked_node *env);
+				t_minishell *mini, t_single_linked_node *env);
 static int	write_heredoc_line(char *heredoc_input, int fd);
-int			ft_write(int fd, char *line, size_t len);
+static int	ft_write(int fd, char *line, size_t len);
 
-int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
-				t_single_linked_node *env)
+int	expand_n_write(t_heredoc_data *hd_data,
+				t_minishell *mini, t_single_linked_node *env)
 {
-	char	*heredoc_input;
-
-	while (42)
+	if (hd_data->expansion)
 	{
-		write(STDERR_FILENO, "> ", 2);
-		heredoc_input = get_next_line(STDIN_FILENO);
-		if (g_signal == SIGINT)
-		{
-			mini->exit_status = 130;
-			g_signal = 0;
-			write(1, "\n", 1);
-            free(heredoc_input);
-			return (1);
-		}
-		if (!heredoc_input)
-			return (error("warning: here-document delimited by end-of-file "
-						"instead of delimiter"), 0);
-		if (!ft_strcmp(delimiter, heredoc_input))
-			return (free(heredoc_input), 0);
-		if (expansion)
-		{
-			if (var_expansion(&heredoc_input, mini, env))
-				return (free(heredoc_input), 1);
-		}
-		if (write_heredoc_line(heredoc_input, mini->heredoc_write_fd))
-			return (free(heredoc_input), 1);
-		free(heredoc_input);
+		if (var_expansion(&(hd_data->heredoc_input), mini, env))
+			return (free(hd_data->heredoc_input), mini->exit_status = 1, 1);
 	}
+	if (write_heredoc_line(hd_data->heredoc_input, mini->heredoc_write_fd))
+		return (free(hd_data->heredoc_input), mini->exit_status = 1, 1);
+	free(hd_data->heredoc_input);
 	return (0);
 }
 
-static int	var_expansion(char **heredoc_input,
-				t_minishell *mini,
+static int	var_expansion(char **heredoc_input, t_minishell *mini,
 				t_single_linked_node *env)
 {
 	char			*tmp_heredoc_input;
-	t_quote_iteri   exv;
+	t_quote_iteri	exv;
 	char			**word;
 
 	init_qrve_arena(mini);
@@ -69,10 +47,10 @@ static int	var_expansion(char **heredoc_input,
 	exv.heredoc = true;
 	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1] == NULL); 
+	assert(word[1] == NULL);
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
-		return (1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	ft_strlcpy(tmp_heredoc_input, word[0], ft_strlen(word[0]) + 1);
 	free(*heredoc_input);
 	*heredoc_input = tmp_heredoc_input;
@@ -81,15 +59,12 @@ static int	var_expansion(char **heredoc_input,
 
 static int	write_heredoc_line(char *heredoc_input, int fd)
 {
-	
 	if (ft_write(fd, heredoc_input, ft_strlen(heredoc_input)))
 		return (1);
-	//if (ft_write(fd, "\n", 1))
-	//	return (1);
 	return (0);
 }
 
-int	ft_write(int fd, char *line, size_t len)
+static int	ft_write(int fd, char *line, size_t len)
 {
 	ssize_t	c_written;
 

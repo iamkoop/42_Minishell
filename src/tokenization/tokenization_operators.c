@@ -53,7 +53,7 @@ int	operators2(char *input, t_single_linked_node *env,
 	else if (input[iteri->i] == '|')
 	{
 		iteri->tok->token_type = PIPE;
-		if (delimit_token(input, env, mini, iteri))
+		if (delimit_token(mini, iteri))
 			return (1);
 	}
 	return (0);
@@ -62,12 +62,13 @@ int	operators2(char *input, t_single_linked_node *env,
 int	here_or_append(char *input, t_single_linked_node *env,
 		t_minishell *mini, t_token_iteri *iteri)
 {
+	(void)env;
 	if (input[iteri->i - 1] == '>' && input[iteri->i] == '>')
 	{
 		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		iteri->tok->token_type = REDIR_OUT_A;
-		if (delimit_token(input, env, mini, iteri))
+		if (delimit_token(mini, iteri))
 			return (1);
 	}
 	else if (input[iteri->i - 1] == '<' && input[iteri->i] == '<')
@@ -75,7 +76,7 @@ int	here_or_append(char *input, t_single_linked_node *env,
 		if (add_to_token(input[iteri->i], mini, iteri))
 			return (1);
 		iteri->tok->token_type = HERE_DOC;
-		if (delimit_token(input, env, mini, iteri))
+		if (delimit_token(mini, iteri))
 			return (1);
 	}
 	return (0);
@@ -84,12 +85,13 @@ int	here_or_append(char *input, t_single_linked_node *env,
 int	redirections(char *input, t_single_linked_node *env,
 		t_minishell *mini, t_token_iteri *iteri)
 {
+	(void)env;
 	if (input[iteri->i] == '<')
 	{
 		iteri->tok->token_type = REDIR_IN;
 		if (input[iteri->i + 1] != '<')
 		{
-			if (delimit_token(input, env, mini, iteri))
+			if (delimit_token(mini, iteri))
 				return (1);
 		}
 	}
@@ -98,7 +100,7 @@ int	redirections(char *input, t_single_linked_node *env,
 		iteri->tok->token_type = REDIR_OUT;
 		if (input[iteri->i + 1] != '>')
 		{
-			if (delimit_token(input, env, mini, iteri))
+			if (delimit_token(mini, iteri))
 				return (1);
 		}
 	}

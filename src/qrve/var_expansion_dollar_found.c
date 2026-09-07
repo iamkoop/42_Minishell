@@ -25,19 +25,22 @@ static int	dollar_no_var(t_minishell *mini,
 int	dollar_found(char *s, t_minishell *mini,
 		t_quote_iteri *iteri, t_single_linked_node *env)
 {
-	char	var[WORD_STR_SIZE];
+	char	var[VAR_SIZE];
 	int		v;
 
-	ft_bzero(var, WORD_STR_SIZE - 1);
+	ft_bzero(var, VAR_SIZE - 1);
 	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;
-	while (s[iteri->i] && is_name(v, s[iteri->i]))
+	while (s[iteri->i] && is_name(v, s[iteri->i]) && v < VAR_SIZE)
 	{
 		var[v] = s[iteri->i];
 		iteri->i++;
 		v++;
 	}
+	if (v >= VAR_SIZE)
+		return (error("exceeding memory limit: Variable name \
+				\nRaise VAR_SIZE in minishell.h"), 1);
 	if (v != 0)
 	{
 		var[v] = 0;
@@ -45,11 +48,7 @@ int	dollar_found(char *s, t_minishell *mini,
 			return (1);
 	}
 	else
-	{
-		assert(v == 0);
-		if (no_variable(s, mini, iteri))
-			return (1);
-	}
+		return (no_variable(s, mini, iteri));
 	return (0);
 }
 // no safety net for max v needed cause s is maximum WORD_STR_SIZE 
@@ -94,11 +93,11 @@ static int	dollar_questionmark(t_minishell *mini,
 				t_quote_iteri *iteri)
 {
 	char	*exit_status_word;
-	int	i;
+	int		i;
 
 	exit_status_word = ft_itoa(iteri->exit_status);
 	if (!exit_status_word)
-		return (perror("minishell: malloc for exit status failed"), 1);
+		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
 	i = 0;
 	while (exit_status_word[i])
 	{

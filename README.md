@@ -1,72 +1,142 @@
-# 42_Minishell
+*This project has been created as part of the 42 curriculum by bastalze, nildruon.*
 
-## Start of minishell
+# Description
+
+Minishell is a minimalist Unix shell implementation written in C. The project aims to recreate a simplified version of Bash, providing a command-line interface where users can run commands, execute programs, navigate the filesystem and utilize built-in shell functionalities.
+
+The minishell features: 
+- A custom prompt displaying "minishell> "
+- Command history which can be navigated with arrow keys
+- Command execution with absolute or relative paths or via the PATH environment variable
+- Built-in commands: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
+- Input/Output redirections and heredoc (<, >, >>, <<)
+- Pipes (|) connecting multiple commands
+- Environment variable expansion ($VAR)
+- Signal handling (Ctrl+C, Ctrl+D, Ctrl+)
+
+This project provided us with a deeper understanding of process creation, file descriptors, signal handling and the inner workings of a command-line interpreter including input parsing.
+
+---
+
+# Instructions
+
+## Install and run
+
+1. Clone repository
+2. To compile code run
+```
+make
+```
+and then to run the program type
+```
+./minishell
+```
+in the root of the minishell repository.
 The program takes no arguments.
 
-## Names in data structure for the parsed data
-cmd_data - struct of type t_cmd_data, holds the pointers to the "head" and the "tail" of the parsing data structure
-cmd_data.head - points to head of linked list made of nodes of the type t_slingle_lined_node from libft (which contains a pointer to content and a pointer to the next node)
-cmd - (content of linked list) the struct of type t_command that holds all information for one command inkluding the argv (array whos first string is the command and the next ones are the flags) and a pointer to the head of the linked list of redirections (redir)
-redir - points to the head of redirection list of type t_single_linked_node
-curr_redir - content that redir node points to (of type t_redir_list) that contains filename, fd (which will be filled by Nilsin the execution part) and redirection type (in, out, out + append, heredoc)
+To exit minishell press either trl+D (EOF) or use the `exit` command.
 
-cmd_data(head(node), tail(node) - linked list) t_cmd_data (stack)
-node(content, next - node of linked list) t_single_linked_node (heap)
-cmd(argv, redir(node)) t_command (heap)
-node(content, next - node of linked list) t_single_linked_node (heap)
-curr_redir(filename, fd, redir_type) t_redir_list (heap)
-filename() char * (heap)
+## Usage Guide
 
-## Quote removal and variable expansion
-Posix (Shell variables IFS) "...the value of IFS is <space> <tab> <newline>..." - when to do field splitting
-Posix (Field splitting) "...the shell shall scan the results of expansions and substitutions that did not occur in double-quotes for field splitting and multiple fields can result."
-Posix (Name) "In the shell command language, a word consisting solely of underscores, digits, and alphabetics from the portable character set. The first character of a name is not a digit." - valid variable name
-Posix (Parameter expansion) "If the parameter is not enclosed in braces, and is a name, the expansion shall use the longest valid name (see XBD Name), whether or not the variable represented by that name exists."
-Decision: Every "word" has to go through the quote_rm_var_expan() function. No special cases for strings that don't contain quotes or $ to keep the code more simple.
-### WORD
-If single quote found - enter single quote mode (everything up to the next single quote gets added to the word)
-if double quote found - enter double quote mode (var expansion gets added to the same word)
-if $VAR found - expand and create mutiple words (field splitting only outside of quotes)
-### REDIRECTION FILENAME
-Same as above
-Bash manual (Redirections) "If it expands to more than one word, Bash reports an error."
-### HEREDOC
-Posix (Here-Document) "If no part of word is quoted, all lines of the here-document shall be expanded for parameter expansion[...]"
+### Basic Commands:
+- Type any command and press Enter to execute it
+- Commands can be absolute paths (/bin/ls) or relative paths (./myprogram)
+- Commands without a path are searched for in directories listed in the $PATH environment variable
 
-## Syntax error in parsing
-"syntax error near unexpected token"
-- redirection token or pipe token is the last
-- pipe token is the first
-- two redirection tokens come in a row
-- two pipe tokens come in a row
+### Command History
+- Press ↑ and ↓ arrow keys to navigate through previously executed commands
+- Press Enter to re-execute a selected command
 
-!!!!!!!Still to do!!!!!!!!!!!!!!!!!!!!!
-- "$?" has to be implemented correctly (has a comment in it so it's easier to find)
-- testing whether the whole quote removal and field splitting/var expansion works
-- testing if the entire parsing works
-- function to free the entire struct
-- where are testfiles and quote removal and delete heredoc
-
-## Signals
+### Signals / key press combinations
 
 Ctrl+C - SIGINT
 Ctrl+\ - SIGQUIT
 
-### ctrl backslash
-signal SIGQUIT ignored with signal() in main.c
+#### ctrl+\\
+Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts the current running command and produces a core dump. With exit status of 131 (128 + sigal number of 3).
 
-### ctrl d
-as in bash: when pressed on empty line in interactive mode it exits, in heredoc it delimits and prints a warning because it wasn't delimited correctly but command runs
+#### ctrl+c
+Sends SIGINT. Interrupts the current running command, hereodc mode or half written command and displays a new prompt on a new line. With exit status of 130 (128 + sigal number of 2).
 
-### ctrl c
-sig_atomic_t: An integer type which can be accessed as an atomic entity even in the presence of asynchronous interrupts made by signals.
-An int might require two separate CPU instructions that can be interrupted by a signal.
-The volatile keyword is used to inform the compiler that the value of a variable may change at any time, so it should read the value from memory every time it is used.
+#### ctrl d
+Sends EOF. In interactive and heredoc mode: When pressed on a non empty line nothing happens. On an empty line it delimits the heredoc and it exists the minishell in interactive mode.
 
-Variable: rl_hook_func_t * rl_signal_event_hook
+### Built-in Commands
+- echo [-n] [text...] - Display text. The -n option suppresses the trailing newline
+- cd [directory] - Change the current working directory. Without arguments, changes to $HOME
+- pwd - Print the current working directory
+- export [VAR[=value]...] - Set environment variables
+- unset [VAR...] - Remove environment variables
+- env - Display all environment variables
+- exit [code] - Exit the shell with an optional status code
 
-    If non-zero, this is the address of a function to call if a read system call is interrupted by a signal when Readline is reading terminal input. 
+### Environment variables
+- Can be set using export as written above
+- Variables are expanded with $VAR syntax
+    Example: echo $HOME displays the home directory path
+- Rules for variable name:
+    - First character: Can be an alphabetic character (A-Z or a-z) or an underscore (_)
+    - Subsequent characters: Can be alphanumeric (A-Z, a-z, 0-9) or an underscore (_)
+- Exit status of the last command is available via $?
+- When a variable expands to multiple words the word gets split into multiple words if it's not in a heredoc or between double quotes
 
+### Redirections
+- < file - Redirect input from a file
+- > file - Redirect output to a file (overwrites)
+- >> file - Redirect output to a file (appends)
+- << delimiter - Heredoc: read input until a line containing delimiter is encountered
+- If the filename expands to more than one word, minishell reports an error.
+
+### Heredoc
+- << delimiter - if no part of delimiter is quoated all lines of the here-document are expanded for parameter expansion
+
+### Pipes
+- command1 | command2 - Connect the output of command1 to the input of command2
+- Multiple pipes are supported: cmd1 | cmd2 | cmd3
+
+### Syntax Errors
+The shell detects basic syntax errors such as:
+- Unclosed quotes
+- Consecutive operators (||, <<<, etc.)
+- Operators at the start or end of a command
+
+### Limitations
+- This shell is designed for interactive use with single-line commands. Pasting multi-line commands as well as piping content into the shell may result in undefined behavior.
+- The minishell uses four dedicated memory arenas (64 KB each) to organize memory allocation by purpose:
+    - Token structs with token type and pointer to word
+    - Strings for word in token
+    - Pointers to strings for variable expansions and field splitting
+    - Strings for variable expansions and field splitting
+- Heredoc delimiter is max 100 bytes which accommodates any realistic delimiter length
+- Environment variable name is max 1 KB, anything longer would be impractical
+- The temporary file used for heredoc input must not be deleted while the heredoc is being written. Deleting it during input collection will result in undefined behavior.
+
+### Surpressed environment
+When you start the minishell with the command "env -i ./minishell" a default environment is set in place. It contains:
+- PWD
+- PATH=/usr/local/bin:/usr/bin:/bin
+- SHLVL=1
+If the environment doesn't get surpressed, SHLVL gets updated with every new call of a shell within a shell.
+
+# Resources
+
+## Online
+- [Bash Manual](https://www.gnu.org/software/bash/manual/bash.html)
+- [POSIX: The Open Group Base Specifications Issue 7, Chapter 2. Shell Command Language](https://pubs.opengroup.org/onlinepubs/9699919799/)
+- 
+
+## Help from peers
+- We were discussing concepts with Kian, David, Stefan A., Stefan L. and Dorian
+- Got help debugging from Kian, Myron, Veja, David Stefan A.
+- Stefan A. also helped with implementing the arenas in an already existing data structure for tokenization and variable expansion
+
+## AI usage
+- llms used: 
+    - deepseek.com
+    - gemini.com 
+- To discuss concepts and get explainations
+- Clear up confusions with minor issues in code like if conditions
+- Help create the structure of this README
 
 ## debugging
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell
