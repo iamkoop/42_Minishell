@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 12:44:47 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/07 15:36:56 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,32 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 	}
 }
 
+static int	fork_options(int fork_id, int size, t_minishell	*mini,
+				t_single_linked_node	**envp)
+{
+	if (fork_id == -1)
+		return (mini->exit_status = 1, perror("fork in parent failed"), 0);
+	if (fork_id == 0)
+	{
+		free(fork_id);
+		mini->curr_cmd = (t_command *)mini->cmd_lst->content;
+		if (mini->cmd_lst_size == 1)
+			child_process(mini, envp, 0, 3);
+		if (size == 0)
+			child_process(mini, envp, 1, 0);
+		else if (!mini->cmd_lst->next)
+			child_process(mini, envp, 0, 2);
+		else
+			child_process(mini, envp, 1, 1);
+		exit(0);
+	}
+	if (mini->cmd_lst->next)
+		close_fd(&mini->next_pipe_fds[1]);
+	if (size > 0)
+		close_fd(&mini->prev_read_fd);
+	return (1);
+}
+
 void	parent(t_minishell *mini, t_single_linked_node	**envp)
 {
 	int	size;
@@ -56,33 +82,8 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 			exit(1);
 		}
 		fork_id[size] = fork();
-		if (fork_id[size] == -1)
-		{
-			mini->exit_status = -1337;
-			perror("fork in parent failed");
+		if (!fork_options(fork_id[size], size, mini, envp))
 			break ;
-		}
-		if (fork_id[size] == 0)
-		{
-			free(fork_id);
-			mini->curr_cmd = (t_command *)mini->cmd_lst->content;
-			if (mini->cmd_lst_size == 1)
-				child_process(mini, envp, 0, 3);
-			if (size == 0)
-				child_process(mini, envp, 1, 0);
-			else if (!mini->cmd_lst->next)
-				child_process(mini, envp, 0, 2);
-			else
-				child_process(mini, envp, 1, 1);
-			exit(0);
-		}
-		else
-		{
-			if (mini->cmd_lst->next)
-				close_fd(&mini->next_pipe_fds[1]);
-			if (size > 0)
-				close_fd(&mini->prev_read_fd);
-		}
 		mini->cmd_lst = mini->cmd_lst->next;
 		size++;
 	}
