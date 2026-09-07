@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:45 by username          #+#    #+#             */
-/*   Updated: 2026/09/02 14:33:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/06 12:38:09 by nilsdruon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,11 @@ int	builtin_exit(char **input, t_minishell	*mini)
 	if (!input[1])
 		mini->exit_status = 0;
 	len = 1;
+	ft_putendl_fd("exit", 2);
 	while (input[len])
 	{
 		if (len > 1)
-			return (exit_error_msg(NULL), 1);
+			return (mini->exe_exit = 0, exit_error_msg(NULL), 1);
 		if (!num_is_valid(input[len]))
 		{
 			exit_error_msg(input[len]);
@@ -104,7 +105,6 @@ int	builtin_exit(char **input, t_minishell	*mini)
 	}
 	if (mini->exit_status == -42)
 		mini->exit_status = (unsigned char)ft_atoll(input[1]);
-	ft_putendl_fd("exit", 1);
 	mini->exe_exit = 1;
 	return (mini->exit_status);
 }
