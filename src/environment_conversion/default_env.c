@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   default_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bastalze <bastalze@student.42vienna.c      +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 10:31:50 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/17 12:33:03 by bastalze         ###   ########.fr       */
+/*   Updated: 2026/09/07 12:53:06 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-t_single_linked_node	*default_env();
+t_single_linked_node	*default_env(void);
 static int				add_to_list(t_single_linked_node **env, char *str);
 
-t_single_linked_node	*default_env()
+t_single_linked_node	*default_env(void)
 {
 	char					*cwd;
 	char					*pwd_as_var;
@@ -41,20 +41,20 @@ t_single_linked_node	*default_env()
 
 static int	add_to_list(t_single_linked_node **env, char *str)
 {
-	t_single_linked_node    *new_node;
+	t_single_linked_node	*new_node;
 	t_env_var				*content;
 
 	content = create_env_node(str);
 	if (!content)
 	{
 		return (perror("minishell: malloc for env list failed"),
-				free_env_lst(*env), 1);
+			free_env_lst(*env), 1);
 	}
 	new_node = ft_single_lstnew(content);
 	if (!new_node)
 	{
 		return (perror("minishell: malloc for env list failed"),
-				free_env_lst(*env), 1);
+			free_env_lst(*env), 1);
 	}
 	if (*env)
 		ft_lstadd_back_single_linked(env, new_node);

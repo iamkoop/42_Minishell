@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   del_env_node_content.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
-/*   Updated: 2026/08/22 18:54:48 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/07 12:49:23 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void del_env_node_content(void	*content)
+void	del_env_node_content(void	*content)
 {
-	t_env_var *node;
+	t_env_var	*node;
 
-	node = (t_env_var	*)content;
-	if(!content)
-		return	;
+	node = (t_env_var *)content;
+	if (!content)
+		return ;
 	if (node->key)
 	{
 		free(node->key);
