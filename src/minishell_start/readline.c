@@ -6,13 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/01 16:53:13 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/07 14:16:18 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void		ft_get_commandline_input(t_single_linked_node **env,
+void		get_commandline_input(t_single_linked_node **env,
 				t_minishell *mini);
 static void	put_prompt_get_line(char **input);
 static int	handle_input(t_single_linked_node **env, t_minishell *mini,

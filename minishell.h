@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 12:22:09 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/07 14:17:10 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ typedef struct s_minishell
 
 //beginning of minishell
 int						initializing_minishell(char **envp);
-int						get_commandline_input(t_single_linked_node **env,
+void					get_commandline_input(t_single_linked_node **env,
 							t_minishell *mini);
 
 //environment stuff

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/06 12:30:38 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/07 15:07:48 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ static char	*normal_dir(char	*path_var, char	*cmd, int	*to_move,
 	}
 	ft_strlcpy(cmd_path, path_var, *to_move + 1);
 	full_cmd = ft_strjoin_three(cmd_path, "/", cmd);
+	free(cmd_path);
 	if (!full_cmd)
 	{
 		ft_putendl_fd("minishell: malloc fail in normal_dir", 2);
