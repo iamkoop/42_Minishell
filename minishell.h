@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 17:42:52 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 11:45:06 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,7 @@ typedef struct s_minishell
 	int						heredoc_write_fd;
 	bool					quote_mode_entered;
 	t_single_linked_node	*cmd_lst;
+	t_single_linked_node	*cmd_lst_iteri;
 	t_command				*curr_cmd;
 	int						exit_status;
 	bool					exe_exit;

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 18:11:25 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 12:19:56 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,18 @@ static int	fork_options(int *fork_id, int size, t_minishell	*mini,
 		set_sigquit_to_default();
 		set_sigint_to_default();
 		free(fork_id);
-		mini->curr_cmd = (t_command *)mini->cmd_lst->content;
+		mini->curr_cmd = (t_command *)mini->cmd_lst_iteri->content;
 		if (mini->cmd_lst_size == 1)
 			child_process(mini, envp, 0, 3);
 		if (size == 0)
 			child_process(mini, envp, 1, 0);
-		else if (!mini->cmd_lst->next)
+		else if (!mini->cmd_lst_iteri->next)
 			child_process(mini, envp, 0, 2);
 		else
 			child_process(mini, envp, 1, 1);
 		exit(0);
 	}
-	if (mini->cmd_lst->next)
+	if (mini->cmd_lst_iteri->next)
 		close_fd(&mini->next_pipe_fds[1]);
 	if (size > 0)
 		close_fd(&mini->prev_read_fd);
@@ -89,13 +89,14 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 	int	*fork_id;
 
 	size = 0;
+	mini->cmd_lst_iteri = mini->cmd_lst;
 	mini->cmd_lst_size = ft_single_lstsize(mini->cmd_lst);
 	fork_id = create_id_array(mini->cmd_lst_size);
-	while (mini->cmd_lst)
+	while (mini->cmd_lst_iteri)
 	{
 		if (size > 0)
 			mini->prev_read_fd = mini->next_pipe_fds[0];
-		if (mini->cmd_lst->next && pipe(mini->next_pipe_fds) == -1)
+		if (mini->cmd_lst_iteri->next && pipe(mini->next_pipe_fds) == -1)
 		{
 			perror("pipe: ");
 			exit(1);
@@ -104,7 +105,7 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 		fork_id[size] = fork();
 		if (!fork_options(fork_id, size, mini, envp))
 			break ;
-		mini->cmd_lst = mini->cmd_lst->next;
+		mini->cmd_lst_iteri = mini->cmd_lst_iteri->next;
 		size++;
 	}
 	wait_for_children(mini, fork_id, size);
