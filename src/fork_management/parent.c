@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/08 16:51:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 16:57:08 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,12 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 	while (i < size)
 	{
 		waitpid(fork_id[i], &status, 0);
-		printf("exit status %d\n", status);
 		if (WIFSIGNALED(status))
 			mini->exit_status = WTERMSIG(status) + 128;
 		else
 			mini->exit_status = WEXITSTATUS(status);
-		printf("exit status %d\n", mini->exit_status);
-	//	printf("exit status: %d", mini->exit_status);
-	if (printed_nl == false)
-	{
-		if (mini->exit_status == 130)
 		if (printed_nl == false)
 		{
-			ft_putendl_fd("", 1);
-			printed_nl = true;
 			if (mini->exit_status == 130)
 			{
 				ft_putendl_fd("", 1);
@@ -59,12 +51,6 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 				printed_nl = true;
 			}
 		}
-		if (mini->exit_status == 131)
-		{
-			ft_putendl_fd("", 1);
-			printed_nl = true;
-		}
-	}
 		i++;
 	}
 }
@@ -77,8 +63,6 @@ static int	fork_options(int *fork_id, int size, t_minishell	*mini,
 		return (mini->exit_status = 1, perror("fork in parent failed"), 0);
 	if (fork_id[size] == 0)
 	{
-		//set_sigquit_to_default();
-		//set_sigint_to_default();
 		set_sigquit_to_default();
 		set_sigint_to_default();
 		free(fork_id);
@@ -118,7 +102,6 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 			perror("pipe: ");
 			exit(1);
 		}
-		//ignore_sigint();
 		fork_id[size] = fork();
 		if (!fork_options(fork_id, size, mini, envp))
 			break ;
