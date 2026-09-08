@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 14:16:18 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 10:53:58 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	handle_input(t_single_linked_node **env, t_minishell *mini,
 	{
 		add_history(input);
 		initiate_tokenization(input, env, mini);
-		free(input);
+		//free(input);
 	}
 	return (0);
 }
