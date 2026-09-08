@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 17:11:31 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 18:01:52 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 16:51:28 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,28 @@ void	ignore_sigint(void)
 		perror("minishell: error in signal when ignoring SIGINT");
 }
 
+static void	handler_quit(int sigquit)
+{
+	(void)sigquit;
+}
+
 void	ignore_sigquit(void)
 {
+	struct sigaction	quit;
+
+	ft_bzero(&quit, sizeof(struct sigaction));
+	quit.sa_handler = handler_quit;
+	quit.sa_handler = SIG_IGN;
+	sigemptyset(&quit.sa_mask);
+	if (sigaction(SIGQUIT, &quit, NULL))
+		perror("minishell: SIGQUIT failed");
+	/*
 	__sighandler_t	sig_return;
 
 	sig_return = signal(SIGQUIT, SIG_IGN);
 	if (sig_return == SIG_ERR)
 		perror("minishell: error in signal when ignoring SIGQUIT");
+	*/
 }
 
 static void	handler_c(int signo)
@@ -57,6 +72,7 @@ static int	rl_signal_hook_ctrl_c(void)
 {
 	if (g_signal == SIGINT)
 	{
+		/*
 		//write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -64,6 +80,11 @@ static int	rl_signal_hook_ctrl_c(void)
 		rl_redisplay();
 		//ioctl(1, '\n');
 		return (1);
+	*/
+		if (ioctl(STDIN_FILENO, TIOCSTI, "\n") == -1)
+			error("ioctl error");
+		rl_replace_line("", 0);
+		return (0);
 	}
 	return (0);
 }
