@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/08 12:48:17 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 14:24:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 	free(path);
 	envp = get_env_from_lst("PATH", envp);
 	if (!envp)
-		return (err_msg(NULL, cmd, "No such file or directory"), NULL);
+		return (ft_strjoin_three(".", "/", cmd));
 	content = (t_env_var *)envp->content;
 	path = find_exacutable(content->value, cmd, mini);
 	if (!path || !*path)
