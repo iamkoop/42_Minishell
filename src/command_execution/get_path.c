@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/07 15:07:48 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 12:48:17 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,22 +140,7 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 	return (err_msg(NULL, cmd, "command not found"), NULL);
 }
 
-static char	*check_for_dir(char	*path, t_minishell	*mini)
-{
-	struct stat	stats;
 
-	if (stat(path, &stats) == 0)
-	{
-		if (S_ISDIR(stats.st_mode))
-		{
-			mini->exit_status = 126;
-			return (err_msg(NULL, path, "Is a directory"), free(path), NULL);
-		}
-	}
-	else
-		return (free(path), perror("minishell: stat func failed"), NULL);
-	return (path);
-}
 
 char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 {
@@ -168,8 +153,8 @@ char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 	path = ft_strdup(cmd);
 	if (!path)
 		return (ft_putendl_fd("minishell: malloc fail in get_path", 2), NULL);
-	if (ft_strchr(cmd, '/') && check_access(cmd, mini, 1))
-		return (check_for_dir(path, mini));
+	if (ft_strchr(path, '/'))
+		return (path);
 	free(path);
 	envp = get_env_from_lst("PATH", envp);
 	if (!envp)
