@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/27 16:08:16 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 15:00:38 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,18 @@ int	initializing_minishell(char **envp)
 	return (mini.exit_status);
 }
 
+static int	create_shlvl_in_env(t_single_linked_node *env)
+{
+	char *args[3];
+
+	args[0] = "export";
+	args[1] = "SHLVL=1";
+	args[2] = NULL;
+	if (export(args, &env))
+		return (1);
+	return (0);	
+}
+
 static int	update_shell_level(t_single_linked_node *env)
 {
 	t_single_linked_node	*shlvl_node;
@@ -53,7 +65,11 @@ static int	update_shell_level(t_single_linked_node *env)
 
 	shlvl_node = get_env_from_lst("SHLVL", env);
 	if (!shlvl_node)
-		return (error("shell level couldn't be updated"), 0);
+	{
+		if (create_shlvl_in_env(env))
+			return (1);
+		return (0);
+	}
 	tmp = (t_env_var *)shlvl_node->content;
 	i = 0;
 	while (tmp->value[i])

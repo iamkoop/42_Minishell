@@ -39,7 +39,8 @@ MAIN = main.c
 EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) $(FORK_MANAGEMENT) $(EXEC_MAIN) $(CLEANUP_FUNCS)
 
 START = src/minishell_start/inializing_minishell.c \
-		src/minishell_start/readline.c
+		src/minishell_start/readline.c \
+		src/minishell_start/signals.c
 
 ARENA = src/arena/arena.c
 

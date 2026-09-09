@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:07:04 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 10:56:03 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,20 @@ int	tokenization(char *input, t_single_linked_node **env,
 			|| input[iteri->i] == '|')
 		{
 			if (operators1(input, *env, mini, iteri))
-				return (1);
+				return (free (input), input = NULL, 1);
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
 		{
 			iteri->tok->token_type = WORD;
 			if (quotation_mode(input, mini, iteri))
-				return (1);
+				return (free (input), input = NULL, 1);
 		}
 		else if (space_or_word(input, *env, mini, iteri))
-			return (1);
+			return (free (input), input = NULL, 1);
 		iteri->i++;
 	}
+	free (input);
+	input = NULL;
 	if (delimit_token(mini, iteri))
 		return (1);
 	if (initiate_parsing(env, mini, iteri))
