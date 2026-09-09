@@ -61,9 +61,11 @@ static int	creating_read_fd(t_redir_list *redir_content,
 	if (!full_path)
 		return (perror("minishell: malloc failure"), mini->exit_status = 1, 1);
 	read_fd = open(full_path, O_CLOEXEC, O_RDONLY);
+	free (full_path);
 	if (read_fd == -1)
 		return (perror("minishell: open heredoc failed"), 1);
 	redir_content->fd = read_fd;
+
 	return (0);
 }
 
