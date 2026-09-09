@@ -1,5 +1,26 @@
 *This project has been created as part of the 42 curriculum by bastalze, nildruon.*
 
+# Table of content
+1. [Description](#description)
+2. [Instructions](#instructions)
+    - [Install and run](#install-and-run)
+    - [Usage Guide](#usage-guide)
+        - [Basic Commands](#basic-commands)
+        - [Command History](#command-history)
+        - [Signals and EOF](#signals-and-eof)
+        - [Built-in Commands](#built-in-commands)
+        - [Environment variables](#environment-variables)
+        - [Redirections](#redirections)
+        - [Heredoc](#heredoc)
+        - [Pipes](#pipes)
+        - [Syntax Errors](#syntax-errors)
+        - [Limitations](#limitations)
+        - [Surpressed environment](#surpressed-environment)
+3. [Resources](#resources)
+    - [Online](#online)
+    - [Help from peers](#help-from-peers)
+    - [AI usage](#ai-usage)
+
 # Description
 
 Minishell is a minimalist Unix shell implementation written in C. The project aims to recreate a simplified version of Bash, providing a command-line interface where users can run commands, execute programs, navigate the filesystem and utilize built-in shell functionalities.
@@ -38,7 +59,7 @@ To exit minishell press either trl+D (EOF) or use the `exit` command.
 
 ## Usage Guide
 
-### Basic Commands:
+### Basic Commands
 - Type any command and press Enter to execute it
 - Commands can be absolute paths (/bin/ls) or relative paths (./myprogram)
 - Commands without a path are searched for in directories listed in the $PATH environment variable
@@ -47,10 +68,7 @@ To exit minishell press either trl+D (EOF) or use the `exit` command.
 - Press ↑ and ↓ arrow keys to navigate through previously executed commands
 - Press Enter to re-execute a selected command
 
-### Signals / key press combinations
-
-Ctrl+C - SIGINT
-Ctrl+\ - SIGQUIT
+### Signals and EOF
 
 #### ctrl+\\
 Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts the current running command and produces a core dump. With exit status of 131 (128 + sigal number of 3).
@@ -59,7 +77,7 @@ Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts t
 Sends SIGINT. Interrupts the current running command, hereodc mode or half written command and displays a new prompt on a new line. With exit status of 130 (128 + sigal number of 2).
 
 #### ctrl d
-Sends EOF. In interactive and heredoc mode: When pressed on a non empty line nothing happens. On an empty line it delimits the heredoc and it exists the minishell in interactive mode.
+Sends EOF (not a signal). In interactive and heredoc mode: When pressed on a non empty line nothing happens. On an empty line it delimits the heredoc and it exists the minishell in interactive mode.
 
 ### Built-in Commands
 - echo [-n] [text...] - Display text. The -n option suppresses the trailing newline
@@ -118,6 +136,8 @@ When you start the minishell with the command "env -i ./minishell" a default env
 - SHLVL=1
 If the environment doesn't get surpressed, SHLVL gets updated with every new call of a shell within a shell.
 
+---
+
 # Resources
 
 ## Online
@@ -137,6 +157,3 @@ If the environment doesn't get surpressed, SHLVL gets updated with every new cal
 - To discuss concepts and get explainations
 - Clear up confusions with minor issues in code like if conditions
 - Help create the structure of this README
-
-## debugging
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell
