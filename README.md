@@ -7,10 +7,7 @@
     - [Usage Guide](#usage-guide)
         - [Basic Commands](#basic-commands)
         - [Command History](#command-history)
-        - [Signals / key press combinations](#signals--key-press-combinations)
-            - [ctrl+\\](#ctrl)
-            - [ctrl+c](#ctrlc)
-            - [ctrl d](#ctrl-d)
+        - [Signals and EOF](#signals-and-eof)
         - [Built-in Commands](#built-in-commands)
         - [Environment variables](#environment-variables)
         - [Redirections](#redirections)
@@ -71,10 +68,7 @@ To exit minishell press either trl+D (EOF) or use the `exit` command.
 - Press ↑ and ↓ arrow keys to navigate through previously executed commands
 - Press Enter to re-execute a selected command
 
-### Signals / key press combinations
-
-Ctrl+C - SIGINT
-Ctrl+\ - SIGQUIT
+### Signals and EOF
 
 #### ctrl+\\
 Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts the current running command and produces a core dump. With exit status of 131 (128 + sigal number of 3).
