@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 17:50:30 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:16:32 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 # include <sys/stat.h>
 # include <sys/ioctl.h>
 # include <termios.h>
-//Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# include <assert.h>
 
 # define HD_DELIMITER_LEN 100
 # define VAR_SIZE 1024
@@ -196,7 +194,6 @@ typedef struct s_minishell
 	int						redir_out;
 	int						in;
 	int						out;
-	int						builtin_has_been_redir;
 	int						prev_in;
 	int						prev_out;
 }				t_minishell;
@@ -316,14 +313,6 @@ int						add_to_word(char c, t_minishell *mini,
 							t_quote_iteri *iteri);
 int						delimit_word_array(t_minishell *mini,
 							t_quote_iteri *iteri);
-
-//TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void					tokenization_testing(t_token_node *token_lst,
-							t_single_linked_node *env);
-void					printing_struct_content(t_cmd_data *cmd_data);
-void					main_testing(char **argv, char **env);
-void					testing_parsing(t_single_linked_node *env);
-void					main_testing(char **argv, char **envp);
 
 //arenas
 t_arena					arena_init(void);

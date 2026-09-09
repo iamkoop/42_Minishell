@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 16:27:55 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:45 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:13:04 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	quote_mode(char *s, t_minishell *mini,
 	mini->quote_mode_entered = true;
 	c = s[iteri->i];
 	iteri->quoted = true;
-	assert(s[iteri->i] == '\'' || s[iteri->i] == '\"');
 	iteri->i++;
 	while (s[iteri->i] && s[iteri->i] != c)
 	{
@@ -64,7 +63,6 @@ int	quote_mode(char *s, t_minishell *mini,
 				return (1);
 		}
 	}
-	assert(s[iteri->i] == '\'' || s[iteri->i] == '\"');
 	iteri->i++;
 	iteri->quoted = false;
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 12:23:42 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:12:46 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	initiate_parsing(t_single_linked_node **env,
 	if (!cmd_data.head)
 		return (free(cmd), 1);
 	cmd_data.tail = cmd_data.head;
-	assert(cmd_data.head != NULL);
 	ft_bzero(iteri, sizeof(t_token_iteri));
 	iteri->tok = (t_token_node *)mini->arena_tokens.data;
 	if (parsing(env, mini, iteri, &cmd_data))

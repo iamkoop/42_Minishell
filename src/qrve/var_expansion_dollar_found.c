@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:24:32 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/27 16:12:59 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:13:12 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	dollar_found(char *s, t_minishell *mini,
 	int		v;
 
 	ft_bzero(var, VAR_SIZE - 1);
-	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;
 	while (s[iteri->i] && is_name(v, s[iteri->i]) && v < VAR_SIZE)

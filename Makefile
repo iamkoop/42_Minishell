@@ -51,10 +51,7 @@ TOKENIZATION =	src/tokenization/tokenization.c \
 PARSING = src/parsing/parsing.c \
 		  src/parsing/parsing_redirection.c \
 		  src/parsing/parsing_word.c \
-		  src/parsing/parsing_helpers.c \
-		  testing/parsing_tests/printing_struct_content.c
-
-############ delete ^ ######################################
+		  src/parsing/parsing_helpers.c
 
 QRVE = src/qrve/quote_removal_var_expansion.c \
 		src/qrve/var_expansion_dollar_found.c \
@@ -102,31 +99,3 @@ clean: test_clean
 re: fclean all
 
 .PHONY: all clean fclean re test test_clean test_fclean
-
-# ============================================================================ #
-#  TESTING CONFIGURATION (DELETE / COMMENT THIS ENTIRE BLOCK FOR DEFENSE)      #
-# ============================================================================ #
-
-TEST_NAME   = test
-TEST_FLAGS  = -Itesting -DTESTING=1
-
-# 1. DEEP SEARCH: Finds execution tests and main_testing.c inside testing/
-TEST_SRCS   = $(shell find testing/execution_tests -name "*.c") testing/main_testing.c
-TEST_OFILES = $(TEST_SRCS:.c=.o)
-
-# 2. UNIVERSAL RULE: Compiles ANY .o file located anywhere inside the testing/ tree.
-# (21.6.2026 Barbara removed $(HEADER) to make the testing.h file work)
-$(TEST_OFILES): %.o: %.c testing/testing.h $(HEADER)
-	$(CC) $(CFLAGS) $(TEST_FLAGS) -c $< -o $@
-
-# Test execution target
-test: $(OFILES) $(TEST_OFILES)
-	make -C $(LIBFT)
-	$(CC) $(CFLAGS) $(TEST_FLAGS) $(OFILES) $(TEST_OFILES) $(LIBFT_A) $(LDFLAGS) -o $(TEST_NAME)
-
-# Dedicated cleanup rules for the testing suite
-test_clean:
-	$(REMOVE) $(TEST_OFILES)
-
-test_fclean:
-	$(REMOVE) $(TEST_NAME)

@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 10:53:58 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:15:43 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ void	reset_mini(t_minishell *mini)
 	mini->redir_out = -42;
 	mini->in = -42;
 	mini->out = -42;
-	mini->builtin_has_been_redir = -42;
 	mini->prev_in = -42;
 	mini->prev_out = -42;
 }

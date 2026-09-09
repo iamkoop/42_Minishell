@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_reading+writing1.c                         :+:      :+:    :+:   */
+/*   heredoc_reading_writing2.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:12:39 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static int	var_expansion(char **heredoc_input, t_minishell *mini,
 	exv.heredoc = true;
 	if (quote_rm_var_expan(*heredoc_input, mini, env, &exv))
 		return (1);
-	assert(word[1] == NULL);
 	tmp_heredoc_input = ft_calloc(1, ft_strlen(word[0]) + 1);
 	if (!tmp_heredoc_input)
 		return (perror("minishell: malloc failed"), mini->exit_status = 1, 1);
