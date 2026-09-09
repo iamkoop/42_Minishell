@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 15:00:38 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:38:15 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int						initializing_minishell(char **envp);
 static int				update_shell_level(t_single_linked_node *env);
-t_single_linked_node	*creating_fake_env(void);
 
 int	initializing_minishell(char **envp)
 {

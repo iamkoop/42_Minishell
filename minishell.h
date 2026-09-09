@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:16:32 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:50:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,16 +125,12 @@ typedef struct s_word_iteri
 typedef struct s_quote_iteri
 {
 	int		i;
-	int		wi;
-	int		wj;
 	char	**field;
 	int		str_pos;
-	int		split_count;
 	bool	has_char;
 	bool	quoted;
 	bool	heredoc;
 	int		exit_status;
-	size_t	word_count;
 }		t_quote_iteri;
 
 //vars structs that will need to goo
@@ -155,24 +151,7 @@ typedef struct s_pwds_vars
 {
 	char				old_pwd[4096];
 	char				new_pwd[4096];
-	int					is_dash;
 }					t_pwds_vars;
-
-typedef struct s_print_sorted_env_vars
-{
-	t_single_linked_node	*tmp_lst;
-	t_env_var				*tmp_env_var;
-	t_single_linked_node	*curr_smllst_alpha;
-	t_single_linked_node	*prev_smllst_alpha;
-	int						lst_len;
-	int						curr_cnt;
-}				t_print_sorted_env_vars;
-
-typedef struct s_export_vars
-{
-	t_single_linked_node	*node;
-
-}				t_export_vars;
 
 typedef struct s_minishell
 {
@@ -252,13 +231,13 @@ void					err_msg(char	*func, char *value,
 //tokenization
 int						tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
 							t_token_iteri *iteri);
-int						here_or_append(char *input, t_single_linked_node *env,
+int						here_or_append(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
-int						operators1(char *input, t_single_linked_node *env,
+int						operators1(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
-int						operators2(char *input, t_single_linked_node *env,
+int						operators2(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
-int						redirections(char *input, t_single_linked_node *env,
+int						redirections(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
 int						start_first_token(t_minishell *mini, t_token_iteri *iteri);
 int						add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
@@ -280,8 +259,6 @@ void					error(char *message);
 void    				free_command_struct(t_single_linked_node *cmd_lst);
 void					close_fd(int	*fd);
 void					close_all_fds(t_minishell  *mini);
-void    				free_all(t_single_linked_node *env, t_minishell *mini);
-void    				close_heredoc_fds(t_minishell *mini);
 
 // parsing
 int						initiate_parsing(t_single_linked_node **env,
@@ -310,8 +287,6 @@ void					init_qrve_arena(t_minishell *mini);
 int						start_first_word(t_minishell *mini,
 							t_quote_iteri *iteri);
 int						add_to_word(char c, t_minishell *mini,
-							t_quote_iteri *iteri);
-int						delimit_word_array(t_minishell *mini,
 							t_quote_iteri *iteri);
 
 //arenas

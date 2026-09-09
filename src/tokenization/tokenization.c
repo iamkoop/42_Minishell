@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 10:56:03 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 18:50:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ int			tokenization(char *input, t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
 static int	quotation_mode(char *input, t_minishell *mini,
 				t_token_iteri *iteri);
-static int	space_or_word(char *input, t_single_linked_node *env,
+static int	space_or_word(char *input,
 				t_minishell *mini, t_token_iteri *iteri);
-static int	word(char *input, t_single_linked_node *env,
+static int	word(char *input,
 				t_minishell *mini, t_token_iteri *iteri);
 
 int	tokenization(char *input, t_single_linked_node **env,
@@ -29,7 +29,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 		if (input[iteri->i] == '<' || input[iteri->i] == '>'
 			|| input[iteri->i] == '|')
 		{
-			if (operators1(input, *env, mini, iteri))
+			if (operators1(input, mini, iteri))
 				return (free (input), input = NULL, 1);
 		}
 		else if (input[iteri->i] == '\'' || input[iteri->i] == '\"')
@@ -38,7 +38,7 @@ int	tokenization(char *input, t_single_linked_node **env,
 			if (quotation_mode(input, mini, iteri))
 				return (free (input), input = NULL, 1);
 		}
-		else if (space_or_word(input, *env, mini, iteri))
+		else if (space_or_word(input, mini, iteri))
 			return (free (input), input = NULL, 1);
 		iteri->i++;
 	}
@@ -79,7 +79,7 @@ static int	quotation_mode(char *input, t_minishell *mini,
 	return (0);
 }
 
-static int	space_or_word(char *input, t_single_linked_node *env,
+static int	space_or_word(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
 	if (input[iteri->i] == ' ' || input[iteri->i] == '\t'
@@ -93,16 +93,15 @@ static int	space_or_word(char *input, t_single_linked_node *env,
 	}
 	else
 	{
-		if (word(input, env, mini, iteri))
+		if (word(input, mini, iteri))
 			return (1);
 	}
 	return (0);
 }
 
-int	word(char *input, t_single_linked_node *env,
+static int	word(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
-	(void)env;
 	if (iteri->str_pos != 0)
 	{
 		if (add_to_token(input[iteri->i], mini, iteri))
