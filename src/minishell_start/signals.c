@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 17:11:31 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/08 16:57:08 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 12:30:02 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	rl_signal_hook_ctrl_c(void)
 {
 	if (g_signal == SIGINT)
 	{
-		/*
+	
 		//write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -67,11 +67,12 @@ static int	rl_signal_hook_ctrl_c(void)
 		rl_redisplay();
 		//ioctl(1, '\n');
 		return (1);
-	*/
+	/*
 		if (ioctl(STDIN_FILENO, TIOCSTI, "\n") == -1)
 			error("ioctl error");
 		rl_replace_line("", 0);
 		return (0);
+		*/
 	}
 	return (0);
 }

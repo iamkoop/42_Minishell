@@ -31,7 +31,7 @@ int	check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
 			if (redir_content->redir_type == HERE)
 			{
 				if (here_doc(*env, mini, redir_content))
-					return (mini->exit_status = 1, 1);
+					return (1);
 			}
 			redir_node = redir_node->next;
 		}
