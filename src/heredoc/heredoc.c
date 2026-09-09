@@ -18,35 +18,34 @@ static int	prepare_delimiter(char *delimiter, t_redir_list *redir_content,
 				bool *expansion);
 //static int	heredoc_filename_creation(char *filename, char *input,
 //				t_token_iteri *iteri);
-static int	creating_read_fd(char *filename, t_redir_list *redir_content,
+static int	creating_read_fd(t_redir_list *redir_content,
 				t_minishell *mini);
 
 int	here_doc(t_single_linked_node *env, t_minishell *mini,
 		t_redir_list *redir_content)
 {
 	char	delimiter[HD_DELIMITER_LEN];
-	char	*filename;
+	//char	*filename;
 	bool	expansion;
 
 	expansion = false;
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
 	if (prepare_delimiter(delimiter, redir_content, &expansion))
 		return (1);
-	filename = "/tmp/tmp.JuvA2Vpt5q";
+	//filename = "/tmp/tmp.JuvA2Vpt5q";
 //	if (heredoc_filename_creation(filename, input, iteri))
 //		return (1);
-//	mini->heredoc_write_fd = open(".", O_TMPFILE | O_WRONLY |
-//		O_CLOEXEC, 0600);
-	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY
-			| O_CLOEXEC | O_EXCL | O_CREAT, 0600);
+	mini->heredoc_write_fd = open("/tmp", O_TMPFILE | O_WRONLY, 0600);
+//	mini->heredoc_write_fd = open((const char *)filename, O_WRONLY
+//			| O_CLOEXEC | O_EXCL | O_CREAT, 0600);
 	if (mini->heredoc_write_fd == -1)
 		return (perror("minshell: open heredoc failed"), 1);
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
-		return (unlink(filename), close(mini->heredoc_write_fd), 1);
-	if (creating_read_fd(filename, redir_content, mini))
-		return (unlink(filename), close(mini->heredoc_write_fd), 1);
+		return (close(mini->heredoc_write_fd), 1);
+	if (creating_read_fd(redir_content, mini))
+		return (close(mini->heredoc_write_fd), 1);
 	close(mini->heredoc_write_fd);
-	unlink(filename);
+	//unlink(filename);
 	return (0);
 }
 
@@ -54,24 +53,30 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 //where the last thing is written and then read would continue reading there.
 //This way with the read fd you start reading from the beginning of the file.
 
-static int	creating_read_fd(char *filename, t_redir_list *redir_content,
+static int	creating_read_fd(t_redir_list *redir_content,
 				t_minishell *mini)
 {
 	int		read_fd;
+	char	*path_to_write_fd;
+	char	*full_path;
+	char	*write_fd_char;
 
-	(void)mini;
-	read_fd = open((const char *) filename, O_RDONLY);
+	path_to_write_fd = "/proc/self/fd/";
+	write_fd_char = ft_itoa(mini->heredoc_write_fd);
+	full_path = ft_strjoin(path_to_write_fd, write_fd_char);
+	free(write_fd_char);
+	if (!full_path)
+		return (perror("minishell: malloc failure"), mini->exit_status = 1, 1);
+	read_fd = open(full_path, O_CLOEXEC, O_RDONLY);
 	if (read_fd == -1)
-		return (unlink(filename), perror("minishell: open heredoc failed"), 1);
+		return (perror("minishell: open heredoc failed"), 1);
 	redir_content->fd = read_fd;
 	return (0);
 }
-/*
-static int	file_path_read_fd()
-{
 
-}
-*/
+// The /proc/self/fd is a symlink to the 
+// /proc/[process id of current process]/fd which is a symlink to the that 
+// points to an inode (data block) on the /tmp filesystem
 
 static int	prepare_delimiter(char *delimiter, t_redir_list *redir_content,
 				bool *expansion)
