@@ -116,7 +116,7 @@ Sends EOF (not a signal). In interactive and heredoc mode: When pressed on a non
 The shell detects basic syntax errors such as:
 - Unclosed quotes
 - Consecutive operators (||, <<<, etc.)
-- Operators at the start or end of a command
+- Operators at the start or end of a command (no multiline input)
 
 ### Limitations
 - This shell is designed for interactive use with single-line commands. Pasting multi-line commands as well as piping content into the shell may result in undefined behavior.

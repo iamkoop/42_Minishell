@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/05 14:05:26 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/08 14:18:01 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,29 @@ static int	execute_builtin(char	**cmd_and_args,
 	return (1);
 }
 
+static char	*check_for_dir(char	*path, t_minishell	*mini)
+{
+	struct stat	stats;
+
+	if (stat(path, &stats) == 0)
+	{
+		if (S_ISDIR(stats.st_mode))
+		{
+			mini->exit_status = 126;
+			return (err_msg(NULL, path, "Is a directory"), path);
+		}
+		else if (ft_strchr(path, '/'))
+		{
+			mini->exit_status = 126;
+			err_msg(NULL, path, NULL);
+			return (path);
+		}
+	}
+	else
+		return (NULL);
+	return (path);
+}
+
 void	exec_command(char	**cmd_and_args, t_single_linked_node	**envp,
 	t_minishell	*mini)
 {
@@ -54,8 +77,9 @@ void	exec_command(char	**cmd_and_args, t_single_linked_node	**envp,
 		ft_putendl_fd("minishell: exec_command: conversion failed", 2);
 	else
 		execve(path, cmd_and_args, converted_envp);
+	if(!check_for_dir(path, mini))
+		err_msg(path, NULL, NULL);
 	free(path);
 	ft_free_the_split(converted_envp);
-	mini->exit_status = 1;
 	return ;
 }

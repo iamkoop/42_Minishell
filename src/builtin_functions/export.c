@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/09/05 12:59:47 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/08 15:27:14 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,6 @@ static t_single_linked_node	*create_var(char *input)
 	return (node);
 }
 
-static int	print_sorted(t_single_linked_node *envp)
-{
-	if (envp)
-		printf("sorted");
-	return (0);
-}
-
 static int	search_for_node(t_single_linked_node *node,
 	t_single_linked_node *envp)
 {
@@ -127,7 +120,7 @@ int	export(char **input, t_single_linked_node **envp)
 	i = 1;
 	ret = 0;
 	if (!input[1])
-		return (print_sorted(*envp));
+		return (err_msg("export", NULL, "not enough arguments"), 2);
 	while (input[i])
 	{
 		node = create_var(input[i]);

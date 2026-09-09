@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 15:22:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/06 12:30:38 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/08 14:24:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ static char	*normal_dir(char	*path_var, char	*cmd, int	*to_move,
 	}
 	ft_strlcpy(cmd_path, path_var, *to_move + 1);
 	full_cmd = ft_strjoin_three(cmd_path, "/", cmd);
+	free(cmd_path);
 	if (!full_cmd)
 	{
 		ft_putendl_fd("minishell: malloc fail in normal_dir", 2);
@@ -139,22 +140,7 @@ static char	*find_exacutable(char *path_var, char	*cmd, t_minishell	*mini)
 	return (err_msg(NULL, cmd, "command not found"), NULL);
 }
 
-static char	*check_for_dir(char	*path, t_minishell	*mini)
-{
-	struct stat	stats;
 
-	if (stat(path, &stats) == 0)
-	{
-		if (S_ISDIR(stats.st_mode))
-		{
-			mini->exit_status = 126;
-			return (err_msg(NULL, path, "Is a directory"), free(path), NULL);
-		}
-	}
-	else
-		return (free(path), perror("minishell: stat func failed"), NULL);
-	return (path);
-}
 
 char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 {
@@ -167,12 +153,12 @@ char	*get_path(char *cmd, t_single_linked_node	*envp, t_minishell	*mini)
 	path = ft_strdup(cmd);
 	if (!path)
 		return (ft_putendl_fd("minishell: malloc fail in get_path", 2), NULL);
-	if (ft_strchr(cmd, '/') && check_access(cmd, mini, 1))
-		return (check_for_dir(path, mini));
+	if (ft_strchr(path, '/'))
+		return (path);
 	free(path);
 	envp = get_env_from_lst("PATH", envp);
 	if (!envp)
-		return (err_msg(NULL, cmd, "No such file or directory"), NULL);
+		return (ft_strjoin_three(".", "/", cmd));
 	content = (t_env_var *)envp->content;
 	path = find_exacutable(content->value, cmd, mini);
 	if (!path || !*path)

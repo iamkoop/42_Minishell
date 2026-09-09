@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 12:22:09 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/08 17:50:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include <signal.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <sys/ioctl.h>
+# include <termios.h>
 //Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # include <assert.h>
 
@@ -183,6 +185,7 @@ typedef struct s_minishell
 	int						heredoc_write_fd;
 	bool					quote_mode_entered;
 	t_single_linked_node	*cmd_lst;
+	t_single_linked_node	*cmd_lst_iteri;
 	t_command				*curr_cmd;
 	int						exit_status;
 	bool					exe_exit;
@@ -202,6 +205,11 @@ typedef struct s_minishell
 int						initializing_minishell(char **envp);
 void					get_commandline_input(t_single_linked_node **env,
 							t_minishell *mini);
+void					set_sigquit_to_default(void);
+void					set_sigint_to_default(void);
+void					ignore_sigquit(void);
+void					signal_strl_c(void);
+void					ignore_sigint(void);
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
