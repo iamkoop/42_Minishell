@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:12:46 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 19:09:32 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 		}
 		iteri->tok++;
 	}
-//	printing_struct_content(cmd_data);
 	if (check_for_heredoc(mini, cmd_data, env))
 		return (1);
 	exec_main(mini, cmd_data->head, env);

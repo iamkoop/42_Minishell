@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:15:43 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 19:19:07 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,7 @@ void	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 			g_signal = 0;
 		}
 		if (handle_input(env, mini, input))
-		{
-//			mini->exit_status = 0;
 			return ;
-		}
 	}
 }
 // Without isatty it would print exit even when the input comes through a pipe
@@ -71,7 +68,6 @@ static int	handle_input(t_single_linked_node **env, t_minishell *mini,
 	{
 		add_history(input);
 		initiate_tokenization(input, env, mini);
-		//free(input);
 	}
 	return (0);
 }

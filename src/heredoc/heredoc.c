@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 12:37:09 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 19:08:42 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 		return (mini->exit_status = 1, 1);
 	mini->heredoc_write_fd = open("/tmp", O_TMPFILE | O_WRONLY, 0600);
 	if (mini->heredoc_write_fd == -1)
-		return (perror("minshell: open heredoc failed"), mini->exit_status = 1, 1);
+	{
+		mini->exit_status = 1;
+		return (perror("minshell: open heredoc failed"), 1);
+	}
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (close(mini->heredoc_write_fd), 1);
 	if (creating_read_fd(redir_content, mini))
@@ -65,7 +68,6 @@ static int	creating_read_fd(t_redir_list *redir_content,
 	if (read_fd == -1)
 		return (perror("minishell: open heredoc failed"), 1);
 	redir_content->fd = read_fd;
-
 	return (0);
 }
 

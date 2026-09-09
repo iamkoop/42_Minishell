@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/08 14:18:01 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 19:07:51 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	exec_command(char	**cmd_and_args, t_single_linked_node	**envp,
 		ft_putendl_fd("minishell: exec_command: conversion failed", 2);
 	else
 		execve(path, cmd_and_args, converted_envp);
-	if(!check_for_dir(path, mini))
+	if (!check_for_dir(path, mini))
 		err_msg(path, NULL, NULL);
 	free(path);
 	ft_free_the_split(converted_envp);

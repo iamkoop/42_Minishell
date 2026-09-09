@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_redirection.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 10:55:45 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/12 15:17:56 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/09 19:17:00 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			redirect(t_single_linked_node *env,
 				t_token_iteri *iteri, t_cmd_data *cmd_data,
@@ -22,7 +22,7 @@ static int	add_redir_to_struct(t_single_linked_node *env,
 				t_minishell *mini);
 static int	add_heredoc_to_struct(t_redir_list *curr_redir,
 				t_token_iteri *iteri, t_minishell *mini);
-static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env, 
+static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env,
 				t_redir_list *curr_redir, t_token_iteri *iteri,
 				t_minishell *mini);
 
@@ -96,7 +96,7 @@ static int	add_heredoc_to_struct(t_redir_list *curr_redir,
 	return (0);
 }
 
-static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env, 
+static int	qrve_n_add_other_redirs_to_struct(t_single_linked_node *env,
 				t_redir_list *curr_redir, t_token_iteri *iteri,
 				t_minishell *mini)
 {

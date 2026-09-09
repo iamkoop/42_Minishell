@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -fno-omit-frame-pointer -I -I42_Libft -MMD -Wnull-dereference
+CFLAGS = -Werror -Wall -Wextra -g -fno-omit-frame-pointer -I. -I42_Libft -MMD -Wnull-dereference
 LDFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
@@ -8,7 +8,8 @@ ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.
 						 src/environment_conversion/get_env_from_lst.c \
 						 src/environment_conversion/default_env.c
 
-BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
+BUILTIN_FUNCTIONS = src/builtin_functions/cd_utils.c \
+					src/builtin_functions/cd.c \
 					src/builtin_functions/echo.c \
 					src/builtin_functions/env.c \
 					src/builtin_functions/exit.c \
@@ -17,6 +18,7 @@ BUILTIN_FUNCTIONS = src/builtin_functions/cd.c \
 					src/builtin_functions/unset.c
 
 COMMAND_EXECUTION = src/command_execution/command_execution.c \
+					src/command_execution/get_path_utils.c \
 					src/command_execution/get_path.c \
 					src/command_execution/is_builtin.c
  
@@ -39,6 +41,7 @@ EXECFILES = $(ENVIRONMENT_CONVERSION) $(BUILTIN_FUNCTIONS) $(COMMAND_EXECUTION) 
 
 START = src/minishell_start/inializing_minishell.c \
 		src/minishell_start/readline.c \
+		src/minishell_start/signals_help.c \
 		src/minishell_start/signals.c
 
 ARENA = src/arena/arena.c

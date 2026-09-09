@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:50:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/09 19:43:07 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,14 @@ int						env(char	**input, t_single_linked_node	**envp);
 int						echo(char	**input);
 int						builtin_exit(char	**input, t_minishell	*mini);
 int						pwd(char	**input);
+t_env_var				*get_env(t_single_linked_node *envp, char *to_find);
+int						update_env(char *pwd, char *to_find,
+							t_single_linked_node *envp);
+int						above_dir_del_case(t_pwds_vars	*pwds,
+							t_single_linked_node	*envp, char	*cmd_arg);
+void					copy_pwd_from_env(t_pwds_vars *pwds, char *to_find,
+							t_single_linked_node *envp);
+char					*find_target(char **input, t_single_linked_node *envp);
 int						cd(char **input, t_single_linked_node	*envp);
 int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node **envp);
@@ -211,6 +219,8 @@ void					exec_command(char	**cmd_and_args,
 							t_single_linked_node	**envp, t_minishell *mini);
 char					*get_path(char *cmd, t_single_linked_node	*envp,
 							t_minishell *mini);
+char					*find_exacutable(char *path_var, char	*cmd,
+							t_minishell	*mini);
 void					exec_main(t_minishell *mini,
 							t_single_linked_node	*cmd_lst,
 							t_single_linked_node	**envp);
@@ -229,8 +239,8 @@ void					err_msg(char	*func, char *value,
 
 //PARSING PART
 //tokenization
-int						tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
-							t_token_iteri *iteri);
+int						tokenization(char *input, t_single_linked_node **env,
+							t_minishell *mini, t_token_iteri *iteri);
 int						here_or_append(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
 int						operators1(char *input,
@@ -239,26 +249,29 @@ int						operators2(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
 int						redirections(char *input,
 							t_minishell *mini, t_token_iteri *iteri);
-int						start_first_token(t_minishell *mini, t_token_iteri *iteri);
-int						add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
+int						start_first_token(t_minishell *mini,
+							t_token_iteri *iteri);
+int						add_to_token(char c, t_minishell *mini,
+							t_token_iteri *iteri);
 int						delimit_token(t_minishell *mini, t_token_iteri *iteri);
 
 //here_doc
 char					*quote_removal(char *delimiter);
 int						here_doc(t_single_linked_node *env, t_minishell *mini,
 							t_redir_list *redir_content);
-int						adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
+int						adding_heredoc_into_file(t_minishell *mini,
+							bool expansion, char *delimiter,
 							t_single_linked_node *env);
 int						expand_n_write(t_heredoc_data *hd_data,
 							t_minishell *mini, t_single_linked_node *env);
-int						check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
-        					t_single_linked_node **env);
+int						check_for_heredoc(t_minishell *mini,
+							t_cmd_data *cmd_data, t_single_linked_node **env);
 
 //error and exit functions
 void					error(char *message);
-void    				free_command_struct(t_single_linked_node *cmd_lst);
+void					free_command_struct(t_single_linked_node *cmd_lst);
 void					close_fd(int	*fd);
-void					close_all_fds(t_minishell  *mini);
+void					close_all_fds(t_minishell	*mini);
 
 // parsing
 int						initiate_parsing(t_single_linked_node **env,
