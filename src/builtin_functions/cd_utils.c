@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 19:38:59 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/09 19:43:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:59:21 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ t_env_var	*get_env(t_single_linked_node *envp, char *to_find)
 	return (NULL);
 }
 
-int	update_env(char *pwd, char *to_find, t_single_linked_node *envp)
+int	update_env(char *pwd, char *to_find, t_single_linked_node **envp)
 {
 	t_single_linked_node	*new_node;
 	t_env_var				*tmp;
 	char					*new_env_var;
 
-	tmp = get_env(envp, to_find);
+	tmp = get_env(*envp, to_find);
 	if (!tmp)
 	{
 		new_env_var = ft_strjoin_three(to_find, "=", pwd);
@@ -44,7 +44,7 @@ int	update_env(char *pwd, char *to_find, t_single_linked_node *envp)
 		new_node = ft_single_lstnew(tmp);
 		if (!new_node)
 			return (free(new_env_var), del_env_node_content(tmp), 0);
-		ft_lstadd_back_single_linked(&envp, new_node);
+		ft_lstadd_back_single_linked(envp, new_node);
 		free(new_env_var);
 		return (1);
 	}
@@ -55,7 +55,7 @@ int	update_env(char *pwd, char *to_find, t_single_linked_node *envp)
 	return (1);
 }
 
-int	above_dir_del_case(t_pwds_vars	*pwds, t_single_linked_node	*envp,
+int	above_dir_del_case(t_pwds_vars	*pwds, t_single_linked_node	**envp,
 	char	*cmd_arg)
 {
 	char	*new_pwd;
@@ -85,20 +85,20 @@ void	copy_pwd_from_env(t_pwds_vars *pwds, char *to_find,
 		ft_strlcpy(pwds->old_pwd, ".", sizeof(pwds->old_pwd));
 }
 
-char	*find_target(char **input, t_single_linked_node *envp)
+char	*find_target(char **input, t_single_linked_node **envp)
 {
 	t_env_var	*tmp;
 
 	if (input[0] && !input[1])
 	{
-		tmp = get_env(envp, "HOME");
+		tmp = get_env(*envp, "HOME");
 		if (!tmp)
 			return (err_msg("cd", NULL, "HOME not set"), NULL);
 		return (tmp->value);
 	}
 	if (!ft_strcmp(input[1], "-"))
 	{
-		tmp = get_env(envp, "OLDPWD");
+		tmp = get_env(*envp, "OLDPWD");
 		if (!tmp)
 			return (err_msg("cd", NULL, "OLDPWD not set"), NULL);
 		return (tmp->value);

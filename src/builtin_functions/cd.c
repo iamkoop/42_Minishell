@@ -6,13 +6,13 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 01:23:00 by username          #+#    #+#             */
-/*   Updated: 2026/09/09 19:40:32 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:58:41 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	cd(char **input, t_single_linked_node *envp)
+int	cd(char **input, t_single_linked_node **envp)
 {
 	char		*target;
 	t_pwds_vars	pwds;
@@ -25,7 +25,7 @@ int	cd(char **input, t_single_linked_node *envp)
 	if (!target)
 		return (1);
 	if (!getcwd(pwds.old_pwd, sizeof(pwds.old_pwd)))
-		copy_pwd_from_env(&pwds, "PWD", envp);
+		copy_pwd_from_env(&pwds, "PWD", *envp);
 	if (chdir(target) == -1)
 		return (err_msg("cd", target, NULL), 1);
 	if (!getcwd(pwds.new_pwd, sizeof(pwds.new_pwd)))

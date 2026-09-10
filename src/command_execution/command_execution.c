@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/10 12:13:31 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:56:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	execute_builtin(char	**cmd_and_args,
 		t_single_linked_node	**envp, t_minishell	*mini)
 {
 	if (!ft_strcmp(cmd_and_args[0], "cd"))
-		return (cd(cmd_and_args, *envp));
+		return (cd(cmd_and_args, envp));
 	if (!ft_strcmp(cmd_and_args[0], "echo"))
 		return (echo(cmd_and_args));
 	if (!ft_strcmp(cmd_and_args[0], "env"))

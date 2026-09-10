@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 19:43:07 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:59:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,13 +204,13 @@ int						builtin_exit(char	**input, t_minishell	*mini);
 int						pwd(char	**input);
 t_env_var				*get_env(t_single_linked_node *envp, char *to_find);
 int						update_env(char *pwd, char *to_find,
-							t_single_linked_node *envp);
+							t_single_linked_node **envp);
 int						above_dir_del_case(t_pwds_vars	*pwds,
-							t_single_linked_node	*envp, char	*cmd_arg);
+							t_single_linked_node	**envp, char	*cmd_arg);
 void					copy_pwd_from_env(t_pwds_vars *pwds, char *to_find,
 							t_single_linked_node *envp);
-char					*find_target(char **input, t_single_linked_node *envp);
-int						cd(char **input, t_single_linked_node	*envp);
+char					*find_target(char **input, t_single_linked_node **envp);
+int						cd(char **input, t_single_linked_node	**envp);
 int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node **envp);
 
