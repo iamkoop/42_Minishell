@@ -86,17 +86,17 @@ REMOVE = rm -f
 all: $(NAME)
 
 $(NAME): $(OFILES)
-	make -C $(LIBFT)
+	$(MAKE) -C $(LIBFT)
 	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
 fclean: clean test_fclean
 	$(REMOVE) $(NAME)
-	@make -C $(LIBFT) fclean
+	$(MAKE) -C $(LIBFT) fclean
 
 clean: test_clean
 	$(REMOVE) $(OFILES)
 	$(REMOVE) $(DFILES)
-	@make -C $(LIBFT) clean
+	$(MAKE) -C $(LIBFT) clean
 
 re: fclean all
 
