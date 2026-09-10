@@ -77,9 +77,9 @@ To exit minishell press either `Ctrl+D` (EOF) or use the `exit` command.
 
 ### Signals and EOF
 
-- **`Ctrl+\`**: Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts the current running command and produces a core dump. With exit status of 131 (128 + sigal number of 3).
+- **`Ctrl+\`**: Sends SIGQUIT. In interactive mode or heredoc mode it gets ignored. Interrupts the current running command and produces a core dump. With exit status of 131 (128 + sigal number of 3). (When pressing ctrl+\\ in the heredoc it flushes the current line from the terminal - it's still visible on the screen but not being processed.)
 - **`Ctrl+C`**: Sends SIGINT. Interrupts the current running command, hereodc mode or half written command and displays a new prompt on a new line. With exit status of 130 (128 + sigal number of 2).
-- **`Ctrl+D`**: Sends EOF (not a signal). In interactive and heredoc mode: When pressed on a non empty line nothing happens. On an empty line it delimits the heredoc and it exists the minishell in interactive mode.
+- **`Ctrl+D`**: Sends EOF (not a signal). In interactive and heredoc mode: When pressed on a non empty line nothing happens. On an empty line it delimits the heredoc and it exists the minishell in interactive mode. (When EOF is pressed in heredoc on an non-empty line that line can't be deleted any more.)
 
 ### Built-in Commands
 
