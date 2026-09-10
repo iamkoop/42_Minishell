@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int	check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
 		t_single_linked_node **env)

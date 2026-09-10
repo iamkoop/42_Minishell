@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 01:08:18 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/08 14:06:37 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:28 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 t_single_linked_node	*get_env_from_lst(char	*to_find,
 							t_single_linked_node	*envp)

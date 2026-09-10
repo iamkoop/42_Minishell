@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 17:50:42 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 12:49:23 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:27 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	del_env_node_content(void	*content)
 {

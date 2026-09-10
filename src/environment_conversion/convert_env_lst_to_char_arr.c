@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 19:54:45 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 12:54:10 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:27 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 char	**env_to_char_arr(t_single_linked_node	*lst)
 {

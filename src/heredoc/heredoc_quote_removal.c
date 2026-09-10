@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 13:58:00 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:18 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 char		*quote_removal(char *delimiter);
 static void	add_char(char *delimiter, int *i, int *j);

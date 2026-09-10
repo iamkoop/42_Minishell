@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 19:13:26 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/09 19:18:28 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	set_sigquit_to_default(void)
 {

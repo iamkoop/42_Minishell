@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:12:39 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			expand_n_write(t_heredoc_data *hd_data,
 				t_minishell *mini, t_single_linked_node *env);

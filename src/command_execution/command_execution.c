@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/09 19:07:51 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:22 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static int	execute_builtin(char	**cmd_and_args,
 		t_single_linked_node	**envp, t_minishell	*mini)

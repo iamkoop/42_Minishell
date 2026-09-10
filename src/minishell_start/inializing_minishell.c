@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 19:31:17 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:34 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int						initializing_minishell(char **envp);
 static int				update_shell_level(t_single_linked_node *env);

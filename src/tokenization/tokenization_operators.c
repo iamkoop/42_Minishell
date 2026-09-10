@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 19:21:28 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:50:13 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int	operators1(char *input,
 		t_minishell *mini, t_token_iteri *iteri);

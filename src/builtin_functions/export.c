@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:48 by username          #+#    #+#             */
-/*   Updated: 2026/09/08 15:27:14 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:19 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static int	is_valid_identifier(char *input)
 {

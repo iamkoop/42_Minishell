@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   close_all_fds.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/22 18:04:21 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/05 13:44:16 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:29 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	close_all_fds(t_minishell	*mini)
 {

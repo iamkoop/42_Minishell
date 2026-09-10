@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 10:31:50 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 12:53:06 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:27 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 t_single_linked_node	*default_env(void);
 static int				add_to_list(t_single_linked_node **env, char *str);

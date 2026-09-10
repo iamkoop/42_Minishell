@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:52:45 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:15 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:31 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void		free_command_struct(t_single_linked_node *cmd_lst);
 static void	free_argv(t_command *cmd_content);

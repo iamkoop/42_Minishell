@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec_err_msg.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 12:37:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/05 13:42:00 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:31 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static char	*add_to_string(char	*curr, char	*to_append1, char	*to_append2)
 {

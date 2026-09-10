@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 17:11:31 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/09 19:15:55 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:34 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	ignore_sigint(void)
 {

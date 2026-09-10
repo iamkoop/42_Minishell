@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 12:13:54 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:31 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int		is_redirection(t_arena *arena_tokens, t_token_iteri *iteri);
 void	free_strarray(char **array);

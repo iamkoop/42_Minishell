@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 16:36:21 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/09 18:50:30 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			tokenization(char *input, t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/31 16:27:55 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:07 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:30 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	error(char *message)
 {

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 17:09:29 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 12:51:10 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:26 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static t_env_var	*create_node_and_key(t_create_env_node_vars	*vars, char *s)
 {

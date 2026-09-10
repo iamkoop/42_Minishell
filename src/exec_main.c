@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:56:59 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/07 12:29:05 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:11:05 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 void	exec_main(t_minishell	*mini, t_single_linked_node	*cmd_lst,
 			t_single_linked_node	**envp)
