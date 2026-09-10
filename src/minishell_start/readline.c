@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 15:43:39 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 10:53:58 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:34 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 void		get_commandline_input(t_single_linked_node **env,
 				t_minishell *mini);
@@ -41,10 +41,7 @@ void	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 			g_signal = 0;
 		}
 		if (handle_input(env, mini, input))
-		{
-//			mini->exit_status = 0;
 			return ;
-		}
 	}
 }
 // Without isatty it would print exit even when the input comes through a pipe
@@ -71,7 +68,6 @@ static int	handle_input(t_single_linked_node **env, t_minishell *mini,
 	{
 		add_history(input);
 		initiate_tokenization(input, env, mini);
-		//free(input);
 	}
 	return (0);
 }
@@ -102,7 +98,6 @@ void	reset_mini(t_minishell *mini)
 	mini->redir_out = -42;
 	mini->in = -42;
 	mini->out = -42;
-	mini->builtin_has_been_redir = -42;
 	mini->prev_in = -42;
 	mini->prev_out = -42;
 }

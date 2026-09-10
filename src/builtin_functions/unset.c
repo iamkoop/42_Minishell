@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nilsdruon <nilsdruon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:41:54 by username          #+#    #+#             */
-/*   Updated: 2026/09/05 13:01:46 by nilsdruon        ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:21 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static void	remove_node(t_single_linked_node	**curr,
 	t_single_linked_node	**prev, t_single_linked_node	**envp)

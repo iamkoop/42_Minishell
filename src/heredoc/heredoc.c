@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 11:17:02 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/27 16:56:51 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 11:55:08 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			here_doc(t_single_linked_node *env, t_minishell *mini,
 				t_redir_list *redir_content);
@@ -30,14 +30,17 @@ int	here_doc(t_single_linked_node *env, t_minishell *mini,
 	expansion = false;
 	ft_bzero(delimiter, sizeof(char) * HD_DELIMITER_LEN);
 	if (prepare_delimiter(delimiter, redir_content, &expansion))
-		return (1);
+		return (mini->exit_status = 1, 1);
 	mini->heredoc_write_fd = open("/tmp", O_TMPFILE | O_WRONLY, 0600);
 	if (mini->heredoc_write_fd == -1)
+	{
+		mini->exit_status = 1;
 		return (perror("minshell: open heredoc failed"), 1);
+	}
 	if (adding_heredoc_into_file(mini, expansion, delimiter, env))
 		return (close(mini->heredoc_write_fd), 1);
 	if (creating_read_fd(redir_content, mini))
-		return (close(mini->heredoc_write_fd), 1);
+		return (close(mini->heredoc_write_fd), mini->exit_status = 1, 1);
 	close(mini->heredoc_write_fd);
 	return (0);
 }
@@ -59,13 +62,12 @@ static int	creating_read_fd(t_redir_list *redir_content,
 	full_path = ft_strjoin(path_to_write_fd, write_fd_char);
 	free(write_fd_char);
 	if (!full_path)
-		return (perror("minishell: malloc failure"), mini->exit_status = 1, 1);
+		return (perror("minishell: malloc failure"), 1);
 	read_fd = open(full_path, O_CLOEXEC, O_RDONLY);
 	free (full_path);
 	if (read_fd == -1)
 		return (perror("minishell: open heredoc failed"), 1);
 	redir_content->fd = read_fd;
-
 	return (0);
 }
 

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 16:39:36 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/08 16:21:07 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:31 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 // prev_pipe and nxt_pipe have the fds that are needed in that child and
 // therefore shouldnt be closed at the beginning of the child

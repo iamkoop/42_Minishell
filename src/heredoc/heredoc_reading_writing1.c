@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_reading+writing1.c                         :+:      :+:    :+:   */
+/*   heredoc_reading_writing1.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:22 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			adding_heredoc_into_file(t_minishell *mini, bool expansion,
 				char *delimiter, t_single_linked_node *env);

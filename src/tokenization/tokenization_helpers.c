@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 10:56:18 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:33:42 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int	start_first_token(t_minishell *mini, t_token_iteri *iteri);
 int	add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);

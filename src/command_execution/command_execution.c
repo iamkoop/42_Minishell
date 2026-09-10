@@ -6,17 +6,17 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/01 08:17:58 by nilsdruon         #+#    #+#             */
-/*   Updated: 2026/09/08 14:18:01 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:56:33 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static int	execute_builtin(char	**cmd_and_args,
 		t_single_linked_node	**envp, t_minishell	*mini)
 {
 	if (!ft_strcmp(cmd_and_args[0], "cd"))
-		return (cd(cmd_and_args, *envp));
+		return (cd(cmd_and_args, envp));
 	if (!ft_strcmp(cmd_and_args[0], "echo"))
 		return (echo(cmd_and_args));
 	if (!ft_strcmp(cmd_and_args[0], "env"))
@@ -73,11 +73,11 @@ void	exec_command(char	**cmd_and_args, t_single_linked_node	**envp,
 	if (!path)
 		return ;
 	converted_envp = env_to_char_arr(*envp);
-	if (!converted_envp)
+	if (!*env && !converted_envp)
 		ft_putendl_fd("minishell: exec_command: conversion failed", 2);
 	else
 		execve(path, cmd_and_args, converted_envp);
-	if(!check_for_dir(path, mini))
+	if (!check_for_dir(path, mini))
 		err_msg(path, NULL, NULL);
 	free(path);
 	ft_free_the_split(converted_envp);

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 12:20:37 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:39 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			add_word_to_struct(t_cmd_data *cmd_data,
 				t_minishell *mini);

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:24:32 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/27 16:12:59 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			dollar_found(char *s, t_minishell *mini,
 				t_quote_iteri *iteri, t_single_linked_node *env);
@@ -29,7 +29,6 @@ int	dollar_found(char *s, t_minishell *mini,
 	int		v;
 
 	ft_bzero(var, VAR_SIZE - 1);
-	assert(s[iteri->i] == '$');
 	iteri->i++;
 	v = 0;
 	while (s[iteri->i] && is_name(v, s[iteri->i]) && v < VAR_SIZE)

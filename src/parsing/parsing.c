@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/05 16:46:40 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/07 12:23:42 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			initiate_parsing(t_single_linked_node **env,
 				t_minishell *mini, t_token_iteri *iteri);
@@ -34,7 +34,6 @@ int	initiate_parsing(t_single_linked_node **env,
 	if (!cmd_data.head)
 		return (free(cmd), 1);
 	cmd_data.tail = cmd_data.head;
-	assert(cmd_data.head != NULL);
 	ft_bzero(iteri, sizeof(t_token_iteri));
 	iteri->tok = (t_token_node *)mini->arena_tokens.data;
 	if (parsing(env, mini, iteri, &cmd_data))
@@ -66,7 +65,6 @@ int	parsing(t_single_linked_node **env, t_minishell *mini,
 		}
 		iteri->tok++;
 	}
-//	printing_struct_content(cmd_data);
 	if (check_for_heredoc(mini, cmd_data, env))
 		return (1);
 	exec_main(mini, cmd_data->head, env);

@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 12:45:00 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:34:10 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int			find_var(char *var, t_minishell *mini,
 				t_quote_iteri *iteri, t_single_linked_node *env);
@@ -96,7 +96,6 @@ static int	field_splitting(t_minishell *mini,
 	if (!grow_arena_element(arena_split_tokens, sizeof(char *)))
 		return (mini->exit_status = 1, 1);
 	iteri->field[0] = get_arena_element_start(arena_split_strings);
-	iteri->split_count++;
 	iteri->str_pos = 0;
 	return (0);
 }

@@ -6,15 +6,14 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 14:57:36 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 15:00:38 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:34 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 int						initializing_minishell(char **envp);
 static int				update_shell_level(t_single_linked_node *env);
-t_single_linked_node	*creating_fake_env(void);
 
 int	initializing_minishell(char **envp)
 {
@@ -45,14 +44,14 @@ int	initializing_minishell(char **envp)
 
 static int	create_shlvl_in_env(t_single_linked_node *env)
 {
-	char *args[3];
+	char	*args[3];
 
 	args[0] = "export";
 	args[1] = "SHLVL=1";
 	args[2] = NULL;
 	if (export(args, &env))
 		return (1);
-	return (0);	
+	return (0);
 }
 
 static int	update_shell_level(t_single_linked_node *env)
@@ -60,7 +59,6 @@ static int	update_shell_level(t_single_linked_node *env)
 	t_single_linked_node	*shlvl_node;
 	t_env_var				*tmp;
 	char					*curr_shlvl;
-	int						prev_s_nr;
 	int						i;
 
 	shlvl_node = get_env_from_lst("SHLVL", env);
@@ -74,12 +72,10 @@ static int	update_shell_level(t_single_linked_node *env)
 	i = 0;
 	while (tmp->value[i])
 	{
-		if (!ft_isdigit(tmp->value[i]))
+		if (!ft_isdigit(tmp->value[i++]))
 			return (error("var SHLVL is not a number"), 0);
-		i++;
 	}
-	prev_s_nr = ft_atoi(tmp->value);
-	curr_shlvl = ft_itoa(prev_s_nr + 1);
+	curr_shlvl = ft_itoa(ft_atoi(tmp->value) + 1);
 	if (!curr_shlvl)
 		return (perror("minishell: malloc new shlvl failed"), 1);
 	free(tmp->value);

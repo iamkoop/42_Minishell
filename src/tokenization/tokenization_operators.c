@@ -6,48 +6,48 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 19:21:28 by bastalze          #+#    #+#             */
-/*   Updated: 2026/08/20 21:33:51 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:36 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
-int	operators1(char *input, t_single_linked_node *env,
+int	operators1(char *input,
 		t_minishell *mini, t_token_iteri *iteri);
-int	operators2(char *input, t_single_linked_node *env,
+int	operators2(char *input,
 		t_minishell *mini, t_token_iteri *iteri);
-int	here_or_append(char *input, t_single_linked_node *env,
+int	here_or_append(char *input,
 		t_minishell *mini, t_token_iteri *iteri);
-int	redirections(char *input, t_single_linked_node *env,
+int	redirections(char *input,
 		t_minishell *mini, t_token_iteri *iteri);
 
-int	operators1(char *input, t_single_linked_node *env,
+int	operators1(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
 	if (iteri->i != 0 && ((input[iteri->i - 1] == '>'
 				&& input[iteri->i] == '>')
 			|| (input[iteri->i - 1] == '<' && input[iteri->i] == '<')))
 	{
-		if (here_or_append(input, env, mini, iteri))
+		if (here_or_append(input, mini, iteri))
 			return (1);
 	}
 	else if (input[iteri->i] == '<' || input[iteri->i] == '>'
 		|| input[iteri->i] == '|')
 	{
-		if (operators2(input, env, mini, iteri))
+		if (operators2(input, mini, iteri))
 			return (1);
 	}
 	return (0);
 }
 
-int	operators2(char *input, t_single_linked_node *env,
+int	operators2(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
 	if (add_to_token(input[iteri->i], mini, iteri))
 		return (1);
 	if (input[iteri->i] == '<' || input[iteri->i] == '>')
 	{
-		if (redirections(input, env, mini, iteri))
+		if (redirections(input, mini, iteri))
 			return (1);
 	}
 	else if (input[iteri->i] == '|')
@@ -59,10 +59,9 @@ int	operators2(char *input, t_single_linked_node *env,
 	return (0);
 }
 
-int	here_or_append(char *input, t_single_linked_node *env,
+int	here_or_append(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
-	(void)env;
 	if (input[iteri->i - 1] == '>' && input[iteri->i] == '>')
 	{
 		if (add_to_token(input[iteri->i], mini, iteri))
@@ -82,10 +81,9 @@ int	here_or_append(char *input, t_single_linked_node *env,
 	return (0);
 }
 
-int	redirections(char *input, t_single_linked_node *env,
+int	redirections(char *input,
 		t_minishell *mini, t_token_iteri *iteri)
 {
-	(void)env;
 	if (input[iteri->i] == '<')
 	{
 		iteri->tok->token_type = REDIR_IN;

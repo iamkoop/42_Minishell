@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 15:38:17 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/08 17:50:30 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 13:59:35 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 # include <sys/stat.h>
 # include <sys/ioctl.h>
 # include <termios.h>
-//Delete after testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# include <assert.h>
 
 # define HD_DELIMITER_LEN 100
 # define VAR_SIZE 1024
@@ -127,16 +125,12 @@ typedef struct s_word_iteri
 typedef struct s_quote_iteri
 {
 	int		i;
-	int		wi;
-	int		wj;
 	char	**field;
 	int		str_pos;
-	int		split_count;
 	bool	has_char;
 	bool	quoted;
 	bool	heredoc;
 	int		exit_status;
-	size_t	word_count;
 }		t_quote_iteri;
 
 //vars structs that will need to goo
@@ -157,24 +151,7 @@ typedef struct s_pwds_vars
 {
 	char				old_pwd[4096];
 	char				new_pwd[4096];
-	int					is_dash;
 }					t_pwds_vars;
-
-typedef struct s_print_sorted_env_vars
-{
-	t_single_linked_node	*tmp_lst;
-	t_env_var				*tmp_env_var;
-	t_single_linked_node	*curr_smllst_alpha;
-	t_single_linked_node	*prev_smllst_alpha;
-	int						lst_len;
-	int						curr_cnt;
-}				t_print_sorted_env_vars;
-
-typedef struct s_export_vars
-{
-	t_single_linked_node	*node;
-
-}				t_export_vars;
 
 typedef struct s_minishell
 {
@@ -196,7 +173,6 @@ typedef struct s_minishell
 	int						redir_out;
 	int						in;
 	int						out;
-	int						builtin_has_been_redir;
 	int						prev_in;
 	int						prev_out;
 }				t_minishell;
@@ -226,7 +202,15 @@ int						env(char	**input, t_single_linked_node	**envp);
 int						echo(char	**input);
 int						builtin_exit(char	**input, t_minishell	*mini);
 int						pwd(char	**input);
-int						cd(char **input, t_single_linked_node	*envp);
+t_env_var				*get_env(t_single_linked_node *envp, char *to_find);
+int						update_env(char *pwd, char *to_find,
+							t_single_linked_node **envp);
+int						above_dir_del_case(t_pwds_vars	*pwds,
+							t_single_linked_node	**envp, char	*cmd_arg);
+void					copy_pwd_from_env(t_pwds_vars *pwds, char *to_find,
+							t_single_linked_node *envp);
+char					*find_target(char **input, t_single_linked_node **envp);
+int						cd(char **input, t_single_linked_node	**envp);
 int						unset(char	**input, t_single_linked_node	**envp);
 int						export(char **input, t_single_linked_node **envp);
 
@@ -235,6 +219,8 @@ void					exec_command(char	**cmd_and_args,
 							t_single_linked_node	**envp, t_minishell *mini);
 char					*get_path(char *cmd, t_single_linked_node	*envp,
 							t_minishell *mini);
+char					*find_exacutable(char *path_var, char	*cmd,
+							t_minishell	*mini);
 void					exec_main(t_minishell *mini,
 							t_single_linked_node	*cmd_lst,
 							t_single_linked_node	**envp);
@@ -253,38 +239,39 @@ void					err_msg(char	*func, char *value,
 
 //PARSING PART
 //tokenization
-int						tokenization(char *input, t_single_linked_node **env, t_minishell *mini,
+int						tokenization(char *input, t_single_linked_node **env,
+							t_minishell *mini, t_token_iteri *iteri);
+int						here_or_append(char *input,
+							t_minishell *mini, t_token_iteri *iteri);
+int						operators1(char *input,
+							t_minishell *mini, t_token_iteri *iteri);
+int						operators2(char *input,
+							t_minishell *mini, t_token_iteri *iteri);
+int						redirections(char *input,
+							t_minishell *mini, t_token_iteri *iteri);
+int						start_first_token(t_minishell *mini,
 							t_token_iteri *iteri);
-int						here_or_append(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
-int						operators1(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
-int						operators2(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
-int						redirections(char *input, t_single_linked_node *env,
-							t_minishell *mini, t_token_iteri *iteri);
-int						start_first_token(t_minishell *mini, t_token_iteri *iteri);
-int						add_to_token(char c, t_minishell *mini, t_token_iteri *iteri);
+int						add_to_token(char c, t_minishell *mini,
+							t_token_iteri *iteri);
 int						delimit_token(t_minishell *mini, t_token_iteri *iteri);
 
 //here_doc
 char					*quote_removal(char *delimiter);
 int						here_doc(t_single_linked_node *env, t_minishell *mini,
 							t_redir_list *redir_content);
-int						adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
+int						adding_heredoc_into_file(t_minishell *mini,
+							bool expansion, char *delimiter,
 							t_single_linked_node *env);
 int						expand_n_write(t_heredoc_data *hd_data,
 							t_minishell *mini, t_single_linked_node *env);
-int						check_for_heredoc(t_minishell *mini, t_cmd_data *cmd_data,
-        					t_single_linked_node **env);
+int						check_for_heredoc(t_minishell *mini,
+							t_cmd_data *cmd_data, t_single_linked_node **env);
 
 //error and exit functions
 void					error(char *message);
-void    				free_command_struct(t_single_linked_node *cmd_lst);
+void					free_command_struct(t_single_linked_node *cmd_lst);
 void					close_fd(int	*fd);
-void					close_all_fds(t_minishell  *mini);
-void    				free_all(t_single_linked_node *env, t_minishell *mini);
-void    				close_heredoc_fds(t_minishell *mini);
+void					close_all_fds(t_minishell	*mini);
 
 // parsing
 int						initiate_parsing(t_single_linked_node **env,
@@ -314,16 +301,6 @@ int						start_first_word(t_minishell *mini,
 							t_quote_iteri *iteri);
 int						add_to_word(char c, t_minishell *mini,
 							t_quote_iteri *iteri);
-int						delimit_word_array(t_minishell *mini,
-							t_quote_iteri *iteri);
-
-//TEST FUNCTIONS - delete later!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void					tokenization_testing(t_token_node *token_lst,
-							t_single_linked_node *env);
-void					printing_struct_content(t_cmd_data *cmd_data);
-void					main_testing(char **argv, char **env);
-void					testing_parsing(t_single_linked_node *env);
-void					main_testing(char **argv, char **envp);
 
 //arenas
 t_arena					arena_init(void);

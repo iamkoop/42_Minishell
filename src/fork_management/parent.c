@@ -6,11 +6,11 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 15:38:08 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/08 16:57:08 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 10:10:32 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static int	*create_id_array(int size)
 {
@@ -41,15 +41,10 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 		if (printed_nl == false)
 		{
 			if (mini->exit_status == 130)
-			{
 				ft_putendl_fd("", 1);
-				printed_nl = true;
-			}
 			if (mini->exit_status == 131)
-			{
 				ft_putendl_fd("Quit (core dumped)", 1);
-				printed_nl = true;
-			}
+			printed_nl = true;
 		}
 		i++;
 	}
@@ -58,7 +53,6 @@ static void	wait_for_children(t_minishell *mini, int *fork_id, int size)
 static int	fork_options(int *fork_id, int size, t_minishell	*mini,
 				t_single_linked_node	**envp)
 {
-
 	if (fork_id[size] == -1)
 		return (mini->exit_status = 1, perror("fork in parent failed"), 0);
 	if (fork_id[size] == 0)
@@ -103,10 +97,9 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 			exit(1);
 		}
 		fork_id[size] = fork();
-		if (!fork_options(fork_id, size, mini, envp))
+		if (!fork_options(fork_id, size++, mini, envp))
 			break ;
 		mini->cmd_lst_iteri = mini->cmd_lst_iteri->next;
-		size++;
 	}
 	wait_for_children(mini, fork_id, size);
 	signal_strl_c();
