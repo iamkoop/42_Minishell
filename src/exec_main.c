@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:56:59 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/10 10:11:05 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/10 18:44:48 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ void	exec_main(t_minishell	*mini, t_single_linked_node	*cmd_lst,
 	mini->curr_cmd = (t_command *)cmd_lst->content;
 	if (mini->cmd_lst_size == 1 && mini->curr_cmd->argv
 		&& is_builtin(mini->curr_cmd->argv[0]))
-		builtin_redir_special_case(mini, envp);
+	{
+		if (!builtin_redir_special_case(mini, envp))
+			mini->exit_status = 1;
+	}
 	else
 		parent(mini, envp);
 }
