@@ -175,8 +175,14 @@ If the environment doesn't get surpressed, `SHLVL` gets updated with every new c
 # Resources
 
 ## Online
-- [Bash Manual](https://www.gnu.org/software/bash/manual/bash.html)
+- [Bash Reference Manual](https://www.gnu.org/software/bash/manual/bash.html)
 - [POSIX: The Open Group Base Specifications Issue 7, Chapter 2. Shell Command Language](https://pubs.opengroup.org/onlinepubs/9699919799/)
+- [Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
+- [Geeks for Geeks](https://www.geeksforgeeks.org/c/c-programming-language/)
+- [Stack Overflow](https://stackoverflow.com/questions)
+- [GNU Readline Library](https://tiswww.case.edu/php/chet/readline/readline.html)
+- [GNU History Library](https://tiswww.case.edu/php/chet/readline/history.html)
+- [Minishell Tester](https://github.com/LeaYeh/42_minishell_tester)
 
 ## Help from peers
 - We were discussing concepts with Kian, David, Stefan A., Stefan L., Michal C., Dorian and others
