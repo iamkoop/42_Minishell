@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/25 01:23:00 by username          #+#    #+#             */
-/*   Updated: 2026/09/10 13:58:41 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/11 17:24:08 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	cd(char **input, t_single_linked_node **envp)
 	if (!getcwd(pwds.new_pwd, sizeof(pwds.new_pwd)))
 		return (above_dir_del_case(&pwds, envp, input[1]));
 	if (input[1] && !ft_strcmp(input[1], "-"))
-		printf("%s\n", pwds.new_pwd);
+		ft_putendl_fd(pwds.new_pwd, 1);
 	if (!update_env(pwds.old_pwd, "OLDPWD", envp))
 		err_msg("cd", NULL, "malloc fail in update_env");
 	if (!update_env(pwds.new_pwd, "PWD", envp))
