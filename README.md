@@ -94,6 +94,7 @@ To exit minishell press either `Ctrl+D` (EOF) or use the `exit` command.
 - **Usage:** `cd [directory]`
   - Options: 
     - Without arguments, changes to `$HOME`
+	- `~` : Also changes to `$HOME`, but it doenst handle like bash (bash uses getpwuid to get the HOME). (Therefore it works the exact same way as cd without arguments in our Minishell)
     - `.` : goes into the current directory
     - `..`: goes out of the current dir
     - `-` : goes to the previous working directory
