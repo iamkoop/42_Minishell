@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 19:38:59 by nildruon          #+#    #+#             */
-/*   Updated: 2026/09/10 13:59:21 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/11 17:27:40 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char	*find_target(char **input, t_single_linked_node **envp)
 {
 	t_env_var	*tmp;
 
-	if (input[0] && !input[1])
+	if (input[0] && (!input[1] || !ft_strcmp(input[1], "~")))
 	{
 		tmp = get_env(*envp, "HOME");
 		if (!tmp)
