@@ -92,8 +92,5 @@ static int	prepare_delimiter(char *delimiter, t_redir_list *redir_content,
 		quote_removal(delimiter);
 	else
 		*expansion = true;
-	len = ft_strlen(delimiter);
-	delimiter[len] = '\n';
-	delimiter[len + 1] = 0;
 	return (0);
 }

@@ -60,6 +60,8 @@ static int	write_heredoc_line(char *heredoc_input, int fd)
 {
 	if (ft_write(fd, heredoc_input, ft_strlen(heredoc_input)))
 		return (1);
+	if (ft_write(fd, "\n", 1))
+		return (1);
 	return (0);
 }
 

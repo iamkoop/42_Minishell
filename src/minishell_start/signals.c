@@ -37,7 +37,7 @@ static void	handler_c(int signo)
 	g_signal = signo;
 }
 
-static int	rl_signal_hook_ctrl_c(void)
+int	rl_signal_hook_ctrl_c(void)
 {
 	if (g_signal == SIGINT)
 	{
@@ -45,6 +45,7 @@ static int	rl_signal_hook_ctrl_c(void)
 		rl_replace_line("", 0);
 		write(1, "\n", 1);
 		rl_redisplay();
+		g_signal = 42;
 		return (1);
 	}
 	return (0);
@@ -60,5 +61,5 @@ void	signal_strl_c(void)
 	if (sigaction(SIGINT, &c, NULL))
 		perror("minishell: SIGINT failed");
 	else
-		rl_signal_event_hook = rl_signal_hook_ctrl_c;
+		rl_event_hook = rl_signal_hook_ctrl_c;
 }

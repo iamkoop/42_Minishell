@@ -77,6 +77,23 @@ static int	fork_options(int *fork_id, int size, t_minishell	*mini,
 	return (1);
 }
 
+static int	curr_cmd(t_minishell *mini, int *fork_id, int size,
+				t_single_linked_node	**envp)
+{
+	if (size > 0)
+		mini->prev_read_fd = mini->next_pipe_fds[0];
+	if (mini->cmd_lst_iteri->next && pipe(mini->next_pipe_fds) == -1)
+	{
+		err_msg("pipe", NULL, NULL);
+		mini->exit_status = 1;
+		return (0);
+	}
+	fork_id[size] = fork();
+	if (!fork_options(fork_id, size, mini, envp))
+		return (0);
+	return (1);
+}
+
 void	parent(t_minishell *mini, t_single_linked_node	**envp)
 {
 	int	size;
@@ -86,19 +103,17 @@ void	parent(t_minishell *mini, t_single_linked_node	**envp)
 	mini->cmd_lst_iteri = mini->cmd_lst;
 	mini->cmd_lst_size = ft_single_lstsize(mini->cmd_lst);
 	fork_id = create_id_array(mini->cmd_lst_size);
+	if (!fork_id)
+	{
+		mini->exit_status = 1;
+		return ;
+	}
 	ignore_sigint();
 	while (mini->cmd_lst_iteri)
 	{
-		if (size > 0)
-			mini->prev_read_fd = mini->next_pipe_fds[0];
-		if (mini->cmd_lst_iteri->next && pipe(mini->next_pipe_fds) == -1)
-		{
-			perror("pipe: ");
-			exit(1);
-		}
-		fork_id[size] = fork();
-		if (!fork_options(fork_id, size++, mini, envp))
+		if (!curr_cmd(mini, fork_id, size, envp))
 			break ;
+		size++;
 		mini->cmd_lst_iteri = mini->cmd_lst_iteri->next;
 	}
 	wait_for_children(mini, fork_id, size);
