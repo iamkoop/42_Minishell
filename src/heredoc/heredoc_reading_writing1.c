@@ -19,8 +19,9 @@ int			adding_heredoc_into_file(t_minishell *mini, bool expansion,
 static int	sigint_check(t_minishell *mini);
 //static int	input_handling_after_eof(t_heredoc_data *hd_data,
 //				t_minishell *mini);
-//static int	merging_last_eof_input_with_heredoc_input(t_heredoc_data *hd_data,
-//				t_minishell *mini);
+//static int	merging_last_eof_input_with_heredoc_input(
+//					t_heredoc_data *hd_data, t_minishell *mini);
+int			rl_heredoc_hook_c(void);
 
 int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 				t_single_linked_node *env)
@@ -50,6 +51,18 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 	rl_event_hook = rl_signal_hook_ctrl_c;
 	return (0);
 }
+
+int	rl_heredoc_hook_c(void)
+{
+	if (g_signal == SIGINT)
+	{
+		rl_done = 1;
+		g_signal = 42;
+		return (1);
+	}
+	return (0);
+}
+
 /*
 static int	process_heredoc_line(t_minishell *mini, t_heredoc_data *hd_data,
 				char *delimiter, t_single_linked_node *env)

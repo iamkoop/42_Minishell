@@ -63,14 +63,3 @@ void	signal_strl_c(void)
 	else
 		rl_event_hook = rl_signal_hook_ctrl_c;
 }
-
-int	rl_heredoc_hook_c(void)
-{
-	if (g_signal == SIGINT)
-	{
-		rl_done = 1;
-		g_signal = 42;
-		return (1);
-	}
-	return (0);
-}
