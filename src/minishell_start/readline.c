@@ -35,7 +35,7 @@ void	get_commandline_input(t_single_linked_node **env, t_minishell *mini)
 			exit(mini->exit_status);
 		}
 		put_prompt_get_line(&input);
-		if (g_signal == SIGINT)
+		if (g_signal == 42)
 		{
 			mini->exit_status = 130;
 			g_signal = 0;

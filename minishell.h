@@ -186,6 +186,7 @@ void					set_sigint_to_default(void);
 void					ignore_sigquit(void);
 void					signal_strl_c(void);
 void					ignore_sigint(void);
+int						rl_signal_hook_ctrl_c(void);
 
 //environment stuff
 t_single_linked_node	*env_to_lst(char	**envp);
@@ -266,6 +267,7 @@ int						expand_n_write(t_heredoc_data *hd_data,
 							t_minishell *mini, t_single_linked_node *env);
 int						check_for_heredoc(t_minishell *mini,
 							t_cmd_data *cmd_data, t_single_linked_node **env);
+int						rl_heredoc_hook_c(void);
 
 //error and exit functions
 void					error(char *message);
