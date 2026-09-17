@@ -1,6 +1,6 @@
 CC = cc
-CFLAGS = -Werror -Wall -Wextra -g -fno-omit-frame-pointer -I. -I42_Libft -MMD -Wnull-dereference
-LDFLAGS = -lreadline
+CFLAGS = -Werror -Wall -Wextra -g -I. -I42_Libft -MMD
+RDLFLAGS = -lreadline
 
 ENVIRONMENT_CONVERSION = src/environment_conversion/convert_env_char_arr_to_lst.c \
 						 src/environment_conversion/del_env_node_content.c \
@@ -87,17 +87,19 @@ all: $(NAME)
 
 $(NAME): $(OFILES)
 	$(MAKE) -C $(LIBFT)
-	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OFILES) $(LIBFT_A) $(RDLFLAGS) -o $(NAME)
 
-fclean: clean test_fclean
+fclean: clean
 	$(REMOVE) $(NAME)
 	$(MAKE) -C $(LIBFT) fclean
 
-clean: test_clean
+clean:
 	$(REMOVE) $(OFILES)
 	$(REMOVE) $(DFILES)
 	$(MAKE) -C $(LIBFT) clean
 
-re: fclean all
+re:
+	$(MAKE) fclean
+	$(MAKE) all
 
-.PHONY: all clean fclean re test test_clean test_fclean
+.PHONY: all clean fclean re
