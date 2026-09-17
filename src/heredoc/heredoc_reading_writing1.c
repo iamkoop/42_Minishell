@@ -6,7 +6,7 @@
 /*   By: nildruon <nildruon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 12:24:34 by bastalze          #+#    #+#             */
-/*   Updated: 2026/09/10 10:10:33 by nildruon         ###   ########.fr       */
+/*   Updated: 2026/09/17 20:13:00 by nildruon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	adding_heredoc_into_file(t_minishell *mini, bool expansion, char *delimiter,
 		if (!hd_data.heredoc_input)
 			return (write(2, "minishell: warning: here-document delimited by"
 					" end-of-file instead of delimiter\n", 80),
-				mini->exit_status = 1, 1);
+				mini->exit_status = 0, 0);
 		if (!ft_strcmp(delimiter, hd_data.heredoc_input))
 			return (free(hd_data.heredoc_input), 0);
 		if (expand_n_write(&hd_data, mini, env))
